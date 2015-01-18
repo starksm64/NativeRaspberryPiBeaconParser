@@ -1,4 +1,5 @@
 #include <iostream>
+#include <regex>
 #include "ParserLogic.h"
 #include "Beacon.h"
 #include "MqttPublisher.h"
@@ -22,7 +23,13 @@ void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) 
     string line;
     std::getline(stream, line);
     while(stream.good()) {
-        if (regex_match(trim(line.c_str()), ibeaconRE)) {
+        long length = line.size();
+        if(line.at(length-1) == ' ') {
+            length --;
+            line.resize(length);
+        }
+        // Check against "> 04 ... 1A FF 4C
+        if (line.compare(0, 5, "> 04 ") && line.compare(length-8, 8, "1A FF 4C")) {
             string buffer(trim(line.c_str()));
             std::getline(stream, line);
             buffer.append(trim(line.c_str()));

@@ -34,5 +34,7 @@ add_executable(testUnserializeBeacon ${testUnserializeBeacon_FILES})
 target_link_libraries (testUnserializeBeacon LINK_PUBLIC Beacon)
 add_test(testUnserializeBeacon ${CMAKE_CURRENT_BINARY_DIR}/testUnserializeBeacon)
 
-# Run
-add_test(NativeScanner-ParseDUMPFileTest ${CMAKE_CURRENT_BINARY_DIR}/NativeScanner -d /Users/starksm/Dev/IoT/BLE/RaspberryPiBeaconParser/src/test/resources/hcidump.raw)
+set(testParserLogic_FILES testParserLogic.cpp)
+add_executable(testParserLogic ${testParserLogic_FILES})
+target_link_libraries (testParserLogic LINK_PUBLIC Beacon)
+add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testUnserializeBeacon)
