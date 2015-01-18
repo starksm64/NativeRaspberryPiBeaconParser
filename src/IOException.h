@@ -14,7 +14,7 @@ public:
         delete msg;
     }
 
-    const char* what() const _NOEXCEPT {
+    const char* what() const noexcept {
         return msg;
     }
 };
