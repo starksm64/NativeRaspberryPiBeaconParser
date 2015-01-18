@@ -1,5 +1,4 @@
 #include <iostream>
-#include <mqtt/async_client.h>
 #include "ParserLogic.h"
 #include "Beacon.h"
 #include "MqttPublisher.h"
