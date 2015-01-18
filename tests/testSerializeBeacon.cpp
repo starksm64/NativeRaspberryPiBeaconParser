@@ -13,7 +13,7 @@ int main() {
     int minor = 12345;
     int power = -253;
     int rssi = -62;
-    time_t time = std::time(nullptr);
+    time_t time = ::time(nullptr);
     Beacon beacon(scannerID, uuid, code, manufacturer, major, minor, power, rssi, time);
     vector<byte> data = beacon.toByteMsg();
     // Write out the serialize form of the beacon to a file
