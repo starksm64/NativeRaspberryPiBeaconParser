@@ -5,6 +5,14 @@
 #include <string>
 #include <vector>
 
+// Somehow
+#ifdef major
+#undef major
+#endif
+#ifdef minor
+#undef minor
+#endif
+
 using byte = unsigned char;
 using namespace std;
 
