@@ -30,3 +30,6 @@
 # ctest
 Testing
 */Testing
+
+# CLion
+.idea/workspace.xml

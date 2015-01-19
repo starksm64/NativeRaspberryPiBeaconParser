@@ -34,7 +34,11 @@ add_executable(testUnserializeBeacon ${testUnserializeBeacon_FILES})
 target_link_libraries (testUnserializeBeacon LINK_PUBLIC Beacon)
 add_test(testUnserializeBeacon ${CMAKE_CURRENT_BINARY_DIR}/testUnserializeBeacon)
 
+# The eclipse paho mqtt client libs
+add_library(MqttCLib SHARED IMPORTED)
+set_property(TARGET MqttCLib PROPERTY IMPORTED_LOCATION /usr/local/lib/libpaho-mqtt3c.so.1.0)
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/lib)
 set(testParserLogic_FILES testParserLogic.cpp)
 add_executable(testParserLogic ${testParserLogic_FILES})
-target_link_libraries (testParserLogic LINK_PUBLIC Beacon)
+target_link_libraries (testParserLogic LINK_PUBLIC Beacon MqttCLib)
 add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testUnserializeBeacon)

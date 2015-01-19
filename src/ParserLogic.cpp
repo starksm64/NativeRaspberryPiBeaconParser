@@ -19,7 +19,8 @@ void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) 
     if(clientID.empty())
         clientID = parseCommand.scannerID;
     MqttPublisher mqtt(parseCommand.brokerURL, clientID);
-    mqtt.start();
+    if(!parseCommand.skipPublish)
+        mqtt.start();
     string line;
     std::getline(stream, line);
     while(stream.good()) {
@@ -29,7 +30,7 @@ void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) 
             line.resize(length);
         }
         // Check against "> 04 ... 1A FF 4C
-        if (line.compare(0, 5, "> 04 ") && line.compare(length-8, 8, "1A FF 4C")) {
+        if (line.compare(0, 5, "> 04 ") == 0 && line.compare(length-8, 8, "1A FF 4C") == 0) {
             string buffer(trim(line.c_str()));
             std::getline(stream, line);
             buffer.append(trim(line.c_str()));
@@ -38,7 +39,10 @@ void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) 
 
             Beacon beacon = Beacon::parseHCIDump(parseCommand.scannerID.c_str(), buffer);
             vector<byte> msg = beacon.toByteMsg();
-            mqtt.publish(parseCommand.topicName, MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
+            if(!parseCommand.skipPublish)
+                mqtt.publish(parseCommand.topicName, MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
+            else
+                cout << "Parsed: " << beacon.toString() << endl;
         } else {
             cout << "No match: " << line << endl;
         }

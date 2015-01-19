@@ -4,7 +4,7 @@ MqttPublisher::MqttPublisher(string brokerUrl, string clientID)
         : brokerURL(brokerUrl),
           clientID(clientID)
 {
-
+    client = nullptr;
 }
 MqttPublisher::MqttPublisher(string brokerUrl, string userName, string password, string clientID)
         : brokerURL(brokerUrl),
@@ -12,7 +12,7 @@ MqttPublisher::MqttPublisher(string brokerUrl, string userName, string password,
     password(password),
     clientID(clientID)
 {
-
+    client = nullptr;
 }
 
 MqttPublisher::~MqttPublisher() {
@@ -37,8 +37,10 @@ void MqttPublisher::start() {
 void MqttPublisher::stop() {
     // Disconnect
     std::cout << "Disconnecting..." << std::flush;
-    MQTTClient_disconnect(client, 10000);
-    MQTTClient_destroy(&client);
+    if(client != nullptr) {
+        MQTTClient_disconnect(client, 10000);
+        MQTTClient_destroy(&client);
+    }
     client = nullptr;
     std::cout << "OK" << std::endl;
 }
