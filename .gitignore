@@ -27,6 +27,11 @@
 *.out
 *.app
 
+# cmake
+*/CMakeFiles/*
+*.cmake
+Makefile
+
 # ctest
 Testing
 */Testing
