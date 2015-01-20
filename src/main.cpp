@@ -61,6 +61,7 @@ int main(int argc, const char **argv) {
     istream* dumpStream = getDumpStream(rawDumpFile);
     ParserLogic parserLogic;
     ParseCommand command(scannerID.getValue(), brokerURL.getValue(), clientID.getValue(), topicName.getValue());
+    command.setSkipPublish(skipPublish.getValue());
     parserLogic.processHCIStream(*dumpStream, command);
     parserLogic.cleanup();
     if(dumpStream != &cin)

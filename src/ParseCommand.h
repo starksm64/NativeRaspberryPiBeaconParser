@@ -6,18 +6,18 @@
 using namespace std;
 
 class ParseCommand {
-public:
-
-    ParseCommand(string scannerID, string brokerURL, string clientID, string topicName)
-            : scannerID(scannerID), brokerURL(brokerURL), clientID(clientID), topicName(topicName) {
-    }
-
+private:
     string scannerID;
     string brokerURL;
     string clientID;
     string topicName;
     bool skipPublish;
 
+public:
+
+    ParseCommand(string scannerID, string brokerURL, string clientID, string topicName)
+            : scannerID(scannerID), brokerURL(brokerURL), clientID(clientID), topicName(topicName) {
+    }
 
     string getScannerID() const {
         return scannerID;

@@ -13,12 +13,15 @@ static string trim(string str) {
 }
 
 void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) {
-    string clientID(parseCommand.clientID);
+    string clientID(parseCommand.getClientID());
     if(clientID.empty())
-        clientID = parseCommand.scannerID;
-    MqttPublisher mqtt(parseCommand.brokerURL, clientID);
-    if(!parseCommand.skipPublish)
+        clientID = parseCommand.getScannerID();
+    MqttPublisher mqtt(parseCommand.getBrokerURL(), clientID);
+    if(!parseCommand.isSkipPublish())
         mqtt.start();
+    else
+        cout << "Skipping publish of parse beacons" << endl;
+
     string line;
     std::getline(stream, line);
     while(stream.good()) {
@@ -38,10 +41,10 @@ void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) 
             std::getline(stream, line);
             buffer.append(trim(line.c_str()));
 
-            Beacon beacon = Beacon::parseHCIDump(parseCommand.scannerID.c_str(), buffer);
+            Beacon beacon = Beacon::parseHCIDump(parseCommand.getScannerID().c_str(), buffer);
             vector<byte> msg = beacon.toByteMsg();
-            if(!parseCommand.skipPublish)
-                mqtt.publish(parseCommand.topicName, MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
+            if(!parseCommand.isSkipPublish())
+                mqtt.publish(parseCommand.getTopicName(), MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
             else
                 cout << "Parsed: " << beacon.toString() << endl;
         } else {

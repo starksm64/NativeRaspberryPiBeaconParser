@@ -17,11 +17,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="55e4b41c-d249-43a7-b6a6-613b76acfae1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Beacon.cpp" afterPath="$PROJECT_DIR$/src/Beacon.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ParseCommand.h" afterPath="$PROJECT_DIR$/src/ParseCommand.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ParserLogic.cpp" afterPath="$PROJECT_DIR$/src/ParserLogic.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/testParserLogic.cpp" afterPath="$PROJECT_DIR$/tests/testParserLogic.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
     </list>
     <ignored path="NativeRaspberryPiBeaconParser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -67,11 +65,21 @@
       <file leaf-file-name="ParserLogic.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/ParserLogic.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4408602" vertical-offset="9" max-vertical-offset="930">
-              <caret line="17" column="42" selection-start-line="17" selection-start-column="42" selection-end-line="17" selection-end-column="42" />
+            <state vertical-scroll-proportion="0.70430106" vertical-offset="417" max-vertical-offset="975">
+              <caret line="54" column="1" selection-start-line="54" selection-start-column="1" selection-end-line="54" selection-end-column="1" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ParseCommand.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ParseCommand.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="27" max-vertical-offset="1005">
+              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -114,8 +122,8 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="350" max-vertical-offset="1080">
-              <caret line="46" column="50" selection-start-line="46" selection-start-column="39" selection-end-line="46" selection-end-column="50" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="537" max-vertical-offset="1095">
+              <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -130,19 +138,19 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/MqttPublisher.h" />
-        <option value="$PROJECT_DIR$/src/main.cpp" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/Beacon.h" />
         <option value="$PROJECT_DIR$/src/IOException.h" />
         <option value="$PROJECT_DIR$/tests/testSerializeBeacon.cpp" />
         <option value="$PROJECT_DIR$/src/ParserLogic.h" />
         <option value="$PROJECT_DIR$/tests/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/src/ParseCommand.h" />
         <option value="$PROJECT_DIR$/src/MqttPublisher.cpp" />
         <option value="$PROJECT_DIR$/src/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/Beacon.cpp" />
         <option value="$PROJECT_DIR$/tests/testParserLogic.cpp" />
+        <option value="$PROJECT_DIR$/src/main.cpp" />
+        <option value="$PROJECT_DIR$/src/ParseCommand.h" />
         <option value="$PROJECT_DIR$/src/ParserLogic.cpp" />
       </list>
     </option>
@@ -268,7 +276,7 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="false" name="NativeScanner hcidump test" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--scannerID NativeScannerTestParse -d /Users/starksm/Dev/IoT/BLE/RaspberryPiBeaconParser/src/test/resources/hcidump.raw" WORKING_DIR="" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="NativeScanner" TARGET_NAME="NativeScanner" CONFIG_NAME="Debug">
+    <configuration default="false" name="NativeScanner hcidump test" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--scannerID NativeScannerTestParse -d /Users/starksm/Dev/IoT/BLE/RaspberryPiBeaconParser/src/test/resources/hcidump.raw --skipPublish" WORKING_DIR="" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="NativeScanner" TARGET_NAME="NativeScanner" CONFIG_NAME="Debug">
       <envs />
       <method />
     </configuration>
@@ -389,6 +397,11 @@
           <line>3708</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/main.cpp</url>
+          <line>63</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -398,7 +411,7 @@
           <properties />
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="19" />
+      <option name="time" value="21" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -704,13 +717,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ParseCommand.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="125" max-vertical-offset="1005">
-          <caret line="29" column="32" selection-start-line="29" selection-start-column="32" selection-end-line="29" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../org.eclipse.paho.mqtt.c/src/MQTTClient.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2633" max-vertical-offset="20115">
@@ -788,14 +794,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="350" max-vertical-offset="1080">
-          <caret line="46" column="50" selection-start-line="46" selection-start-column="39" selection-end-line="46" selection-end-column="50" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Beacon.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1344" max-vertical-offset="2850">
@@ -835,10 +833,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/ParseCommand.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="27" max-vertical-offset="1005">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="537" max-vertical-offset="1095">
+          <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/ParserLogic.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4408602" vertical-offset="9" max-vertical-offset="930">
-          <caret line="17" column="42" selection-start-line="17" selection-start-column="42" selection-end-line="17" selection-end-column="42" />
+        <state vertical-scroll-proportion="0.70430106" vertical-offset="417" max-vertical-offset="975">
+          <caret line="54" column="1" selection-start-line="54" selection-start-column="1" selection-end-line="54" selection-end-column="1" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
