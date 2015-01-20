@@ -1,5 +1,6 @@
 #include <iostream>
 #include <regex>
+#include <ICADevices/ICADevices.h>
 #include "ParserLogic.h"
 #include "Beacon.h"
 #include "MqttPublisher.h"
@@ -29,11 +30,14 @@ void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) 
             length --;
             line.resize(length);
         }
-        // Check against "> 04 ... 1A FF 4C
-        if (line.compare(0, 5, "> 04 ") == 0 && line.compare(length-8, 8, "1A FF 4C") == 0) {
+        // Check against "> 04 ...  1A FF
+        // May need to do full parsing of the hcidump prefix and AD structures...
+        if (line.compare(0, 7, "> 04 3E") == 0 && line.find(" 1A FF ", 16) > 16) {
             string buffer(trim(line.c_str()));
+            buffer.push_back(' ');
             std::getline(stream, line);
             buffer.append(trim(line.c_str()));
+            buffer.push_back(' ');
             std::getline(stream, line);
             buffer.append(trim(line.c_str()));
 

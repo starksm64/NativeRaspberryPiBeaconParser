@@ -1,8 +1,6 @@
 set(VERBOSE 1)
 
-include_directories(.
-    /Users/starksm/Dev/IoT/BLE/org.eclipse.paho.mqtt.c/src
-    /Users/starksm/Dev/IoT/BLE/org.eclipse.paho.mqtt.cpp/src)
+include_directories(. /Users/starksm/Dev/IoT/BLE/org.eclipse.paho.mqtt.c/src)
 
 # Define the non-main classes to build a reusable libBeacon.a for use with the tests
 set(SOURCE_FILES Beacon.h Beacon.cpp ByteBuffer.h ByteBuffer.cpp MqttPublisher.h MqttPublisher.cpp ParserLogic.h ParserLogic.cpp)
