@@ -1,6 +1,5 @@
 #include <iostream>
 #include <regex>
-#include <ICADevices/ICADevices.h>
 #include "ParserLogic.h"
 #include "Beacon.h"
 #include "MqttPublisher.h"
