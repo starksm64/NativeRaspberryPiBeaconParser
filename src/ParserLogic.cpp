@@ -6,12 +6,10 @@
 
 using namespace std;
 
-static std::string trim(std::string str) {
-    size_t endpos = str.find_last_not_of(" \t");
-    if( string::npos != endpos ) {
-        str = str.substr( 0, endpos+1 );
-    }
-    return str;
+static string trim(string str) {
+    std::size_t first = str.find_first_not_of(' ');
+    std::size_t last  = str.find_last_not_of(' ');
+    return str.substr(first, last-first+1);
 }
 
 void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) {
@@ -31,7 +29,7 @@ void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) 
         }
         // Check against "> 04 ...  1A FF
         // May need to do full parsing of the hcidump prefix and AD structures...
-        if (line.compare(0, 7, "> 04 3E") == 0 && line.find(" 1A FF ", 16) > 16) {
+        if (line.compare(0, 7, "> 04 3E") == 0 && line.find(" 1A FF ", 16) != std::string::npos) {
             string buffer(trim(line.c_str()));
             buffer.push_back(' ');
             std::getline(stream, line);

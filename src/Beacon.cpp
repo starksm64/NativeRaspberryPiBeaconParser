@@ -106,11 +106,14 @@ Beacon Beacon::parseHCIDump(const char * scannerID, std::string packet) {
         // Now go through the AD Structure elements in the payload until we find the manufacturer specific data
         int length = mystoi(packet.substr(index, 2), 16);
         int type = mystoi(packet.substr(index+3, 2), 16);
-        while(type != 0XFF) {
+        while(type != 0XFF && index < size-1) {
             index += 3*(length+1);
             length = mystoi(packet.substr(index, 2), 16);
             type = mystoi(packet.substr(index+3, 2), 16);
         }
+        if(index >= size)
+            throw std::invalid_argument( "Input packet has no manufacturer specific data" );
+
         // Move past length and 0xFF octets
         index += 6;
 
