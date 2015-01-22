@@ -24,6 +24,7 @@ cd Debug
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 cd ..
 cmake --build Debug --target NativeScanner
+cmake --build Debug --target NativeScannerBlueZ
 
 ## Making a release build
 mkdir Release
@@ -57,4 +58,10 @@ Test parsing a stored hcidump file and publish the messages:
 Release/src/NativeScanner --scannerID test1 --brokerURL "tcp://192.168.1.107:1883" --rawDumpFile /tmp/hcidump.raw
 
 ## Running the scanner
+Below are example command lines for running the scanner
+### Run the scanner using the text output from hcidump as input
+This consumes the hcidump command output as the input for the beacon events, and publishes the beacon event
+messages to the MQTT server running at address tcp://192.168.1.107:1883
 hcidump -R | Release/src/NativeScanner --scannerID ProdScanner1 --brokerURL "tcp://192.168.1.107:1883"
+
+### 
