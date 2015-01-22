@@ -6,9 +6,17 @@ include_directories(. ../src)
 
 #set(BEACON_FILES ../src/Beacon.cpp ../src/Beacon.h)
 
+set(testTime_FILES testTime.c)
+add_executable(testTime ${testTime_FILES})
+add_test(testTime ${CMAKE_CURRENT_BINARY_DIR}/testTime)
+
 set(testCout_FILES testCout.cpp)
 add_executable(testCout ${testCout_FILES})
 add_test(testCout ${CMAKE_CURRENT_BINARY_DIR}/testCout)
+
+set(testParseNativeHCIDump_FILES testParseNativeHCIDump.c)
+add_executable(testParseNativeHCIDump ${testParseNativeHCIDump_FILES})
+add_test(testParseNativeHCIDump ${CMAKE_CURRENT_BINARY_DIR}/testParseNativeHCIDump)
 
 set(testRE1_FILES testRE1.cpp)
 add_executable(testRE1 ${testRE1_FILES})
