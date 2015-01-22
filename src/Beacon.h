@@ -17,7 +17,7 @@ using byte = unsigned char;
 using namespace std;
 
 /** The current byte[] toByteMsg/fromByteMsg version format */
-static int VERSION = 2;
+static int VERSION = 3;
 
 class Beacon {
 
@@ -30,8 +30,9 @@ private:
     int major;
     int minor;
     int power;
+    int calibratedPower;
     int rssi;
-    // std::time() value
+    // std::time() value * 1000
     long time;
 
 public:
@@ -45,7 +46,7 @@ public:
             : scannerID(scannerID),
                 uuid("0123456789ABCDEF"){
     }
-    Beacon(const char * scannerID, const char * uuid, int code, int manufacturer, int major, int minor, int power, int rssi, long time)
+    Beacon(const char * scannerID, const char * uuid, int code, int manufacturer, int major, int minor, int power, int calibratedPower, int rssi, long time)
             : scannerID(scannerID),
               uuid(uuid),
               code(code),
@@ -53,10 +54,11 @@ public:
               major(major),
               minor(minor),
               power(power),
+              calibratedPower(calibratedPower),
               rssi(rssi),
               time(time) {
     }
-    Beacon(string scannerID, string uuid, int code, int manufacturer, int major, int minor, int power, int rssi, long time)
+    Beacon(string scannerID, string uuid, int code, int manufacturer, int major, int minor, int power, int calibratedPower, int rssi, long time)
             : scannerID(scannerID),
               uuid(uuid),
               code(code),
@@ -64,6 +66,7 @@ public:
               major(major),
               minor(minor),
               power(power),
+              calibratedPower(calibratedPower),
               rssi(rssi),
               time(time) {
     }
@@ -124,6 +127,14 @@ public:
 
     void setPower(int power) {
         Beacon::power = power;
+    }
+
+    int getCalibratedPower() const {
+        return calibratedPower;
+    }
+
+    void setCalibratedPower(int calibratedPower) {
+        Beacon::calibratedPower = calibratedPower;
     }
 
     int getRssi() const {

@@ -1,12 +1,10 @@
 #include "Beacon.h"
-#include "IOException.h"
 #include "ByteBuffer.h"
-#include <exception>
 #include <execinfo.h>
 #include <ctime>
-#include <iostream>
 #include <unistd.h>
 #include <regex>
+#include <sys/time.h>
 
 // The portion of the BLE advertising event specific to the hcidump output
 static int HCIDUMP_PREFIX = 7;
@@ -34,13 +32,27 @@ static int mystoi(string str, int base) {
     }
     return value;
 }
+
+static void buildTimeString(time_t tsInMS, char *timestr) {
+    struct timeval  tv;
+    struct timezone tz;
+    struct tm      *tm;
+
+    tv.tv_sec = tsInMS / 1000;
+    tv.tv_usec = tsInMS * 1000 - tv.tv_sec * 1000000;
+    tm = localtime(&tv.tv_sec);
+
+    size_t length = strftime(timestr, 128, "%F %T", tm);
+    snprintf(timestr+length, 128-length, ".%ld", tv.tv_usec/1000);
+}
 string Beacon::toString() {
     char tmp[256];
 
-    // convert time to string form
-    char* dateStr = ctime(&time);
-    sprintf(tmp, "{[%s,%d,%d]@%s; code=%d,manufacturer=%d,power=%d,rssi=%d,time=%s}", uuid.c_str(), major, minor, scannerID.c_str(),
-            code, manufacturer, power, rssi, dateStr);
+    // convert time in milliseconds to string form
+    char timestr[128];
+    buildTimeString(time, timestr);
+    sprintf(tmp, "{[%s,%d,%d]@%s; code=%d,manufacturer=%d,power=%d,calibratedPower=%d,rssi=%d,time=%s}", uuid.c_str(), major, minor, scannerID.c_str(),
+            code, manufacturer, power, calibratedPower, rssi, timestr);
     return string(tmp);
 }
 
@@ -58,11 +70,11 @@ Beacon Beacon::fromByteMsg(byte *msg, uint32_t length) {
         int major = dis.readInt();
         int minor = dis.readInt();
         int power = dis.readInt();
+        int calibratedPower = dis.readInt();
         int rssi = dis.readInt();
         // The format is milliseconds since Epoch, but c++ time expects seconds
         long time = dis.readLong();
-        time /= 1000;
-        Beacon beacon = Beacon(scannerID, uuid, code, manufacturer, major, minor, power, rssi, time);
+        Beacon beacon = Beacon(scannerID, uuid, code, manufacturer, major, minor, power, calibratedPower, rssi, time);
         return beacon;
 }
 
@@ -83,9 +95,9 @@ vector<byte> Beacon::toByteMsg() {
         dos.writeInt(major);
         dos.writeInt(minor);
         dos.writeInt(power);
+        dos.writeInt(calibratedPower);
         dos.writeInt(rssi);
-        // Save as milliseconds since Epoch since this is what Java uses
-        dos.writeLong(1000*time);
+        dos.writeLong(time);
         return dos.getData();
 }
 
@@ -157,7 +169,7 @@ Beacon Beacon::parseHCIDump(const char * scannerID, std::string packet) {
         index += 3;
         int iminor = 256 * mystoi(minor0, 16) + mystoi(minor1, 16);
 
-        // Get the transmitted power, which is encoded as the 2's complement of the calibrated Tx Power
+        // Get the calibrated power, which is encoded as the 2's complement of the calibrated Tx Power
         string power = packet.substr(index, 2);
         index += 3;
         int ipower = mystoi(power, 16);
@@ -171,11 +183,12 @@ Beacon Beacon::parseHCIDump(const char * scannerID, std::string packet) {
         // Generate the timestamp the beacon was received at
         time_t now;
         ::time(&now);
+        now *= 1000;
         char * cuuid = new char [uuid.length()+1];
         std::strcpy (cuuid, uuid.c_str());
 
         // Create the beacon object
-        Beacon beacon(scannerID, cuuid, code, manufacturer, imajor, iminor, ipower, irssi, now);
+        Beacon beacon(scannerID, cuuid, code, manufacturer, imajor, iminor, 0, ipower, irssi, now);
         return beacon;
     } catch(exception &e) {
         stack_trace(e);
