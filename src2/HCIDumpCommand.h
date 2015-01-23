@@ -13,6 +13,7 @@ private:
     string topicName;
     string hciDev = "hci0";
     bool skipPublish;
+    bool asyncMode;
 
 public:
 
@@ -67,6 +68,14 @@ public:
 
     void setSkipPublish(bool skipPublish) {
         HCIDumpCommand::skipPublish = skipPublish;
+    }
+
+    bool isAsyncMode() const {
+        return asyncMode;
+    }
+
+    void setAsyncMode(bool asyncMode) {
+        HCIDumpCommand::asyncMode = asyncMode;
     }
 };
 

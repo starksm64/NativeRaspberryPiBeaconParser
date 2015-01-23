@@ -370,6 +370,13 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
             p_indent(level, frm);
             printf("TX power level: %d\n", info->power);
 #endif
+
+        case 0x12:
+            //  Slave Connection Interval Range sent by Gimbals
+#ifdef PRINT_DEBUG
+            p_indent(level, frm);
+            printf("Slave Connection Interval Range %d bytes data\n", type, len);
+#endif
             break;
         case 0xff:
             info->time = htobl(frm->ts.tv_sec)*1000 + htobl(frm->ts.tv_usec)/1000;

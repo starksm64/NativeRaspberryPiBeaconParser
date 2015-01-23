@@ -12,6 +12,7 @@ private:
     string clientID;
     string topicName;
     bool skipPublish;
+    bool asyncMode;
 
 public:
 
@@ -57,6 +58,14 @@ public:
 
     void setSkipPublish(bool skipPublish) {
         ParseCommand::skipPublish = skipPublish;
+    }
+
+    bool isAsyncMode() const {
+        return asyncMode;
+    }
+
+    void setAsyncMode(bool asyncMode) {
+        ParseCommand::asyncMode = asyncMode;
     }
 };
 #endif

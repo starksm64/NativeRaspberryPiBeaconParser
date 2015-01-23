@@ -13,9 +13,11 @@ set_property(TARGET BluezLibInternal PROPERTY IMPORTED_LOCATION ${BluezHome}/lib
 # The eclipse paho mqtt client libs
 add_library(MqttCLib SHARED IMPORTED)
 set_property(TARGET MqttCLib PROPERTY IMPORTED_LOCATION /usr/local/lib/libpaho-mqtt3c.so)
+add_library(MqttAsyncCLib SHARED IMPORTED)
+set_property(TARGET MqttAsyncCLib PROPERTY IMPORTED_LOCATION /usr/local/lib/libpaho-mqtt3as.so)
 set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/lib)
 
 # The NativeScannerBlueZ executable depends on our local source and the tools_hcidump_SOURCES from the bluez source tree
 add_executable(NativeScannerBlueZ main.cpp HCIDumpCommand.h HCIDumpParser.h HCIDumpParser.cpp
     hcidumpinternal.c hcidumpinternal.h ${tools_hcidump_SOURCES})
-target_link_libraries (NativeScannerBlueZ LINK_PUBLIC Beacon MqttCLib BluezLibInternal)
+target_link_libraries (NativeScannerBlueZ LINK_PUBLIC Beacon MqttCLib MqttAsyncCLib BluezLibInternal)
