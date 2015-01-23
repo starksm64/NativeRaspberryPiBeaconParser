@@ -1,3 +1,4 @@
+#include <MQTTAsync.h>
 #include "MqttPublisher.h"
 
 MqttPublisher::MqttPublisher(string brokerUrl, string clientID)
@@ -63,6 +64,9 @@ extern "C" void onSend(void* context, MQTTAsync_successData* response)
     printf("Message with token value %d delivery confirmed\n", response->token);
 #endif
 }
+extern "C" void onSendFailure(void* context,  MQTTAsync_failureData* response) {
+    printf("delivery failed, token: %d \n", response->token);
+}
 
 void MqttPublisher::queueForPublish(string topicName, MqttQOS qos, byte *payload, size_t len) {
     MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
@@ -70,6 +74,7 @@ void MqttPublisher::queueForPublish(string topicName, MqttQOS qos, byte *payload
     int rc;
 
     opts.onSuccess = onSend;
+    opts.onFailure = onSendFailure;
     opts.context = asyncClient;
 
     pubmsg.payload = payload;
