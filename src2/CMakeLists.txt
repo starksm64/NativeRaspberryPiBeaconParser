@@ -1,7 +1,11 @@
 project(NativeScannerBlueZ)
 
 # The location of a local bluez source tree
-set(BluezHome $ENV{HOME}/bluez-5.25)
+if(EXISTS $ENV{HOME}/bluez-5.25)
+    set(BluezHome $ENV{HOME}/bluez-5.25)
+else()
+    set(BluezHome ../../bluez-5.25)
+endif()
 # We use the tools/parser contents from the bluez source tree as is
 set(BluezToolsParser ${BluezHome}/tools/parser)
 include_directories(. ../src ${BluezHome} ${BluezHome}/tools)
