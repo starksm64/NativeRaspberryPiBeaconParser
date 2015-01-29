@@ -7,10 +7,12 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     if(clientID.empty())
         clientID = parseCommand.getScannerID();
     mqtt = new MqttPublisher(parseCommand.getBrokerURL(), clientID);
-    if(!parseCommand.isSkipPublish())
-        mqtt->start();
-    else
+    if(!parseCommand.isSkipPublish()) {
+        mqtt->start(parseCommand.isAsyncMode());
+    }
+    else {
         printf("Skipping publish of parse beacons\n");
+    }
 
     char cdev = parseCommand.getHciDev().at(parseCommand.getHciDev().size()-1);
     int device = cdev - '0';

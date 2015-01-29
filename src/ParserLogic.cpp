@@ -17,10 +17,12 @@ void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) 
     if(clientID.empty())
         clientID = parseCommand.getScannerID();
     MqttPublisher mqtt(parseCommand.getBrokerURL(), clientID);
-    if(!parseCommand.isSkipPublish())
-        mqtt.start();
-    else
+    if(!parseCommand.isSkipPublish()) {
+        mqtt.start(parseCommand.isAsyncMode());
+    }
+    else {
         cout << "Skipping publish of parse beacons" << endl;
+    }
 
     string line;
     std::getline(stream, line);

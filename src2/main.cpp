@@ -47,11 +47,16 @@ int main(int argc, const char **argv) {
     TCLAP::SwitchArg skipPublish("S", "skipPublish",
             "Indicate that the parsed beacons should not be published",
             false);
+    TCLAP::SwitchArg asyncMode("A", "asyncMode",
+            "Indicate that the parsed beacons should be published using async delivery mode",
+            false);
     TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
             "Specify the name of the host controller interface to use; default hci0",
             false, "hci0", "string", cmd);
     try {
+        // Add the flag arguments
         cmd.add(skipPublish);
+        cmd.add(asyncMode);
         // Parse the argv array.
         printf("Parsing command line...\n");
         cmd.parse( argc, argv );
@@ -64,6 +69,7 @@ int main(int argc, const char **argv) {
     HCIDumpCommand command(scannerID.getValue(), brokerURL.getValue(), clientID.getValue(), topicName.getValue());
     command.setSkipPublish(skipPublish.getValue());
     command.setHciDev(hciDev.getValue());
+    command.setAsyncMode(asyncMode.getValue());
     printf("Begin scanning...\n");
     parserLogic.processHCI(command);
     parserLogic.cleanup();
