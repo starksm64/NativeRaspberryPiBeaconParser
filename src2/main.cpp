@@ -3,7 +3,6 @@
 #include <regex>
 #include <fstream>
 #include <sys/stat.h>
-#include <Foundation/Foundation.h>
 // http://tclap.sourceforge.net/manual.html
 #include "tclap/CmdLine.h"
 #include "HCIDumpParser.h"
