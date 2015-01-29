@@ -615,7 +615,7 @@ int process_frames(int dev, int sock, int fd, unsigned long flags, beacon_event 
     nfds++;
 
     long frameNo = 0;
-    bool stopped = true;
+    bool stopped = false;
     while (!stopped) {
         int i, n = poll(fds, nfds, -1);
         if (n <= 0)

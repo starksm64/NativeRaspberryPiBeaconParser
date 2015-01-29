@@ -3,6 +3,7 @@
 #include <regex>
 #include <fstream>
 #include <sys/stat.h>
+#include <Foundation/Foundation.h>
 // http://tclap.sourceforge.net/manual.html
 #include "tclap/CmdLine.h"
 #include "HCIDumpParser.h"
@@ -13,7 +14,11 @@ static HCIDumpParser parserLogic;
 
 inline bool stopMarkerExists() {
     struct stat buffer;
-    return (stat (STOP_MARKER_FILE, &buffer) == 0);
+    bool stop = (stat (STOP_MARKER_FILE, &buffer) == 0);
+    if(stop) {
+        printf("Found STOP marker file, will exit...\n");
+    }
+    return stop;
 }
 static long eventCount = 0;
 static long lastMarkerCheckTime = 0;
