@@ -7,7 +7,7 @@
 extern "C" {
 #include "hcidumpinternal.h"
 }
-extern "C" void beacon_event_callback(const beacon_info *info);
+extern "C" bool beacon_event_callback(const beacon_info *info);
 
 using namespace std;
 

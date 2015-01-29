@@ -1,15 +1,35 @@
+#include <cstdio>
 #include <string>
 #include <regex>
 #include <fstream>
+#include <sys/stat.h>
 // http://tclap.sourceforge.net/manual.html
 #include "tclap/CmdLine.h"
 #include "HCIDumpParser.h"
 
 static HCIDumpParser parserLogic;
 
-extern "C" void beacon_event_callback(const beacon_info *info) {
+#define STOP_MARKER_FILE "STOP"
+
+inline bool stopMarkerExists() {
+    struct stat buffer;
+    return (stat (STOP_MARKER_FILE, &buffer) == 0);
+}
+static long eventCount = 0;
+static long lastMarkerCheckTime = 0;
+
+extern "C" bool beacon_event_callback(const beacon_info *info) {
     //printf("beacon_event_callback(%s, code=%d)\n", info->uuid, info->code);
     parserLogic.beaconEvent(info);
+    eventCount ++;
+    // Check for a termination marker every 1000 events or 5 seconds
+    bool stop = false;
+    long elapsed = info->time - lastMarkerCheckTime;
+    if((eventCount % 1000) == 0 || elapsed > 5000) {
+        lastMarkerCheckTime = info->time;
+        stop = stopMarkerExists();
+    }
+    return stop;
 }
 
 using namespace std;
@@ -64,6 +84,11 @@ int main(int argc, const char **argv) {
     }
     catch (TCLAP::ArgException &e) {
         fprintf(stderr, "error: %s for arg: %s\n", e.error().c_str(), e.argId().c_str());
+    }
+
+    // Remove any stop marker file
+    if(remove(STOP_MARKER_FILE) == 0) {
+        printf("Removed existing %s marker file\n", STOP_MARKER_FILE);
     }
 
     HCIDumpCommand command(scannerID.getValue(), brokerURL.getValue(), clientID.getValue(), topicName.getValue());
