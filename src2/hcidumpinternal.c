@@ -615,8 +615,8 @@ int process_frames(int dev, int sock, int fd, unsigned long flags, beacon_event 
     nfds++;
 
     long frameNo = 0;
-    bool running = true;
-    while (running) {
+    bool stopped = true;
+    while (!stopped) {
         int i, n = poll(fds, nfds, -1);
         if (n <= 0)
             continue;
@@ -679,7 +679,7 @@ int process_frames(int dev, int sock, int fd, unsigned long flags, beacon_event 
 #endif
         do_parse(&frm, &info);
         if(info.time > 0)
-            running = callback(&info);
+            stopped = callback(&info);
     }
 
     return 0;
