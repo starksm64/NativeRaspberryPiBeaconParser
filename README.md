@@ -19,19 +19,19 @@ this repository from:
 git clone https://github.com/starksm64/NativeRaspberryPiBeaconParser.git
 
 ## Making a debug build
-mkdir Debug
-cd Debug
-cmake -DCMAKE_BUILD_TYPE=Debug ..
-cd ..
-cmake --build Debug --target NativeScanner
-cmake --build Debug --target NativeScannerBlueZ
+	mkdir Debug
+	cd Debug
+	cmake -DCMAKE_BUILD_TYPE=Debug ..
+	cd ..
+	cmake --build Debug --target NativeScanner
+	cmake --build Debug --target NativeScannerBlueZ
 
 ## Making a release build
-mkdir Release
-cd Release
-cmake -DCMAKE_BUILD_TYPE=Release ..
-cd ..
-cmake --build Release --target NativeScanner
+	mkdir Release
+	cd Release
+	cmake -DCMAKE_BUILD_TYPE=Release ..
+	cd ..
+	cmake --build Release --target NativeScanner
 
 ## <a name="ScanMode"></a>Putting the bluetooth interface into scan mode
 	hciconfig hci0 up
