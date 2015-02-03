@@ -33,7 +33,7 @@ private:
     int calibratedPower;
     int rssi;
     // std::time() value * 1000
-    long time;
+    int64_t time;
 
 public:
 
@@ -145,11 +145,11 @@ public:
         Beacon::rssi = rssi;
     }
 
-    long getTime() const {
+    int64_t getTime() const {
         return time;
     }
 
-    void setTime(long time) {
+    void setTime(int64_t time) {
         Beacon::time = time;
     }
 

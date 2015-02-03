@@ -6,12 +6,15 @@
 
 using namespace std;
 
+/*
+ * Testing sending a message to a topic using the proton api
+ */
 int main(int argc, char **argv) {
 
     pn_message_t * message;
     pn_messenger_t * messenger;
     pn_data_t * body;
-    const char *brokerURL = "amqp://192.168.1.107:5672/beaconEvents";
+    const char *brokerURL = "amqp://192.168.1.107:5672/topic://beaconEvents";
 
     message = pn_message();
     messenger = pn_messenger(NULL);
