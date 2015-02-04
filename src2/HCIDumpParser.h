@@ -2,7 +2,7 @@
 #define HCIDumpParserLogic_H
 
 #include "HCIDumpCommand.h"
-#include <MqttPublisher.h>
+#include <MsgPublisher.h>
 #include <fstream>
 extern "C" {
 #include "hcidumpinternal.h"
@@ -14,10 +14,10 @@ using namespace std;
 class HCIDumpParser {
 private:
     HCIDumpCommand *parseCommand;
-    MqttPublisher *mqtt;
+    MsgPublisher *publisher;
 
 public:
-    HCIDumpParser() : mqtt(nullptr) {
+    HCIDumpParser() : publisher(nullptr) {
     }
 
     void processHCI(HCIDumpCommand& parseCommand);
