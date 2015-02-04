@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
         //     ssl://localhost:61617
         //
         std::string brokerURI =
-                "failover:(tcp://localhost:61616"
+                "tcp://127.0.0.1:61616"
 //        "?wireFormat=openwire"
 //        "&transport.useInactivityMonitor=false"
 //        "&connection.alwaysSyncSend=true"
@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
 //        "?transport.commandTracingEnabled=true"
 //        "&transport.tcpTracingEnabled=true"
 //        "&wireFormat.tightEncodingEnabled=true"
-                        ")";
+                        ;
 
         //============================================================
         // set to true to use topics instead of queues

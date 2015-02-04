@@ -2,16 +2,12 @@
 #include "MqttPublisher.h"
 
 MqttPublisher::MqttPublisher(string brokerUrl, string clientID)
-        : brokerURL(brokerUrl),
-          clientID(clientID)
+        : MsgPublisher(brokerUrl, clientID, "", "")
 {
     client = nullptr;
 }
 MqttPublisher::MqttPublisher(string brokerUrl, string userName, string password, string clientID)
-        : brokerURL(brokerUrl),
-    userName(userName),
-    password(password),
-    clientID(clientID)
+        : MsgPublisher(brokerUrl, userName, password, clientID)
 {
     client = nullptr;
 }

@@ -5,20 +5,12 @@
 #include <iostream>
 #include <MQTTAsync.h>
 #include "MQTTClient.h"
+#include "MsgPublisher.h"
+#include "QOS.h"
 
 using namespace std;
-using byte = unsigned char;
 
-enum MqttQOS {
-    // QOS = 0
-            AT_MOST_ONCE,
-    // OQS = 1
-            AT_LEAST_ONCE,
-    // QOS = 2
-            EXACTLY_ONCE
-};
-
-class MqttPublisher {
+class MqttPublisher : public MsgPublisher {
 private:
     MQTTClient client;
     MQTTAsync asyncClient;

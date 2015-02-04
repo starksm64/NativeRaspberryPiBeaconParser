@@ -1,8 +1,6 @@
 # NativeRaspberryPiBeaconParser
-Native code version of the RaspberryPiBeaconParser
-The Java version of this repository is located at: [RaspberryPiBeaconParser](https://github.com/starksm64/RaspberryPiBeaconParser), and
-it contains the Java org.jboss.summit2015.beacon.Beacon code for handling the creation/parsing of the MQTT binary
-messages produced by the RaspberryPiBeaconParser.
+This is the native code version of the RaspberryPiBeaconParser. 
+The Java version of this repository is located at: [RaspberryPiBeaconParser](https://github.com/starksm64/RaspberryPiBeaconParser), and it contains the Java org.jboss.summit2015.beacon.Beacon code for handling the creation/parsing of the MQTT binary messages produced by the NativeRaspberryPiBeaconParser.
 
 # The iBeacon format seen in hcidump -R
 TODO
@@ -11,7 +9,59 @@ TODO
 The
 
 # Creating the RaspberryPiBeaconParser pidora image
-TODO: need to create an image from the customized pidora image I have
+A custom pidora image needs to be created in order to be able to build the required software apis. A prebuilt custom image is available from here: [TBD]()
+
+The preconfigured logins are:
+
+	pi
+	raspberry
+	
+	root
+	root0FPi
+
+Otherwsie, you can build your own image by starting with the
+[Pidora-2014-R3](http://downloads.raspberrypi.org/pidora_latest) Fedora remix. See the following page for information on how to burn the image to a SD card:
+[RPi_Easy_SD_Card_Setup](http://elinux.org/RPi_Easy_SD_Card_Setup)
+
+## Customizing the base Pidora-2014-R3 image
+Perform the following instalations and downloads to enable access to the development tools and code needed to build the native scanner.
+
+	yum install net-tools
+	yum install glib2-devel dbus-glib-devel gcc-c++ git
+
+### BlueZ
+	wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.28.tar.xz
+	tar -xJf bluez-5.28.tar.xz
+	yum install libudev-devel
+	yum install libical-devel readline-devel
+	yum install cmake dbus-devel
+	cd bluez-5.28
+	./configure
+	make
+	make install
+
+
+### Paho mqtt client
+	yum install openssl-devel
+	git clone https://github.com/eclipse/paho.mqtt.c.git
+	cd paho.mqtt.c
+	make
+	make install
+
+### activemq CMS client library
+	wget http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/3.8.3/activemq-cpp-library-3.8.3-src.tar.gz
+	yum install apr-devel
+	yum install cppunit cppunit-devel
+	./configure
+	make
+	make install
+
+### NativeRaspberryPiBeaconParser
+	git clone https://github.com/starksm64/NativeRaspberryPiBeaconParser.git
+	cd NativeRaspberryPiBeaconParser
+
+The next section describes the various targets that can be built from the NativeRaspberryPiBeaconParser tree.
+
 
 # Building the code on pidora
 The pidora image has a NativeRaspberryPiBeaconParser under root that contains the native scanner code. You can clone
