@@ -39,6 +39,7 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <ctype.h>
+#include <tclDecls.h>
 
 #include "parser/parser.h"
 #include "parser/sdp.h"
@@ -538,6 +539,7 @@ static inline void event_dump(int level, struct frame *frm, beacon_info *info)
 
         default:
             printf("Skipping event=%d\n", event);
+            raw_dump(level+1, frm);
             break;
     }
 }
