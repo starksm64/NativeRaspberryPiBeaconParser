@@ -39,7 +39,6 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <ctype.h>
-#include <tclDecls.h>
 
 #include "parser/parser.h"
 #include "parser/sdp.h"
