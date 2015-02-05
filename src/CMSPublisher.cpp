@@ -4,7 +4,6 @@
 void CMSPublisher::start(bool asyncMode) {
 
     // Create a ConnectionFactory
-    decaf::net::URI uri(brokerUrl.c_str());
     auto_ptr<ConnectionFactory> connectionFactory(ConnectionFactory::createCMSConnectionFactory(brokerUrl));
 
     // Create a Connection
