@@ -31,6 +31,8 @@
 */CMakeFiles/*
 *.cmake
 Makefile
+Debug
+Release
 
 # ctest
 Testing
@@ -38,3 +40,4 @@ Testing
 
 # CLion
 .idea/workspace.xml
+
