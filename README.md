@@ -116,6 +116,13 @@ Below are example command lines for running the scanner. It is assumed that prev
 This consumes the hcidump command output as the input for the beacon events, and publishes the beacon event messages to the MQTT server running at address tcp://192.168.1.107:1883.
 	
 	hcidump -R | Release/src/NativeScanner --scannerID ProdScanner1 --brokerURL "tcp://192.168.1.107:1883"
+	
+### Run the bluez native scanner using the text output from an hcidump saved to a file as input
+This consumes the hcidump command output as the input for the beacon events, and publishes the beacon event messages to the MQTT server running at address tcp://192.168.1.107:1883.
+	
+	
+	Debug/src2/NativeScannerBlueZ --scannerID NativeScannerBlueZ --rawDumpFile tests/hcidumpBig.raw --brokerURL "tcp://192.168.1.107:1883"
+
 
 ### Running the bluez native scanner using hci1
 This command takes the beacon events coming from the hci1 bluetooth interface and publishes them to the MQTT server running at address tcp://192.168.1.107:1883.  

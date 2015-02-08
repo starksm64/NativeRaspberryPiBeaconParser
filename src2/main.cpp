@@ -6,6 +6,7 @@
 // http://tclap.sourceforge.net/manual.html
 #include "tclap/CmdLine.h"
 #include "HCIDumpParser.h"
+#include "MsgPublisherTypeConstraint.h"
 
 static HCIDumpParser parserLogic;
 
@@ -77,6 +78,11 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
             "Specify the name of the host controller interface to use; default hci0",
             false, "hci0", "string", cmd);
+    MsgPublisherTypeConstraint pubTypeConstraint;
+    TCLAP::ValueArg<std::string> pubType("P", "pubType",
+            "Specify the MsgPublisherType enum for the publisher implementation to use; default PAHO_MQTT",
+            false, "PAHO_MQTT", &pubTypeConstraint, cmd, nullptr);
+
     try {
         // Add the flag arguments
         cmd.add(skipPublish);
@@ -99,6 +105,7 @@ int main(int argc, const char **argv) {
     command.setSkipPublish(skipPublish.getValue());
     command.setHciDev(hciDev.getValue());
     command.setAsyncMode(asyncMode.getValue());
+    command.setPubType(pubTypeConstraint.toType(pubType.getValue()));
     printf("Begin scanning...\n");
     parserLogic.processHCI(command);
     parserLogic.cleanup();

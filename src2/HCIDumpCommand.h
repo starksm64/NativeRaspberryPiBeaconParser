@@ -2,6 +2,7 @@
 #define HCIDumpCommand_H
 
 #include <string>
+#include <MsgPublisher.h>
 
 using namespace std;
 
@@ -14,11 +15,16 @@ private:
     string hciDev = "hci0";
     bool skipPublish;
     bool asyncMode;
+    MsgPublisherType pubType;
 
 public:
 
     HCIDumpCommand(string scannerID, string brokerURL, string clientID, string topicName)
-            : scannerID(scannerID), brokerURL(brokerURL), clientID(clientID), topicName(topicName) {
+            : scannerID(scannerID),
+              brokerURL(brokerURL),
+              clientID(clientID),
+              topicName(topicName),
+              pubType(MsgPublisherType::PAHO_MQTT) {
     }
 
 
@@ -76,6 +82,15 @@ public:
 
     void setAsyncMode(bool asyncMode) {
         HCIDumpCommand::asyncMode = asyncMode;
+    }
+
+
+    MsgPublisherType const &getPubType() const {
+        return pubType;
+    }
+
+    void setPubType(MsgPublisherType const &pubType) {
+        HCIDumpCommand::pubType = pubType;
     }
 };
 

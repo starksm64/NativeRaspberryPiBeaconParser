@@ -10,7 +10,8 @@ using byte = unsigned char;
 enum MsgPublisherType {
     PAHO_MQTT,
     AMQP_PROTON,
-    AMQP_CMS
+    AMQP_CMS,
+    INVALID=-1
 } ;
 
 /**
