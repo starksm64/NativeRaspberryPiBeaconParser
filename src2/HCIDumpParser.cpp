@@ -6,7 +6,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     string clientID(parseCommand.getClientID());
     if(clientID.empty())
         clientID = parseCommand.getScannerID();
-    publisher = MsgPublisher::create(MsgPublisherType::AMQP_CMS , parseCommand.getBrokerURL(), parseCommand.getClientID(), "", "");
+    publisher = MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), parseCommand.getClientID(), "", "");
     if(!parseCommand.isSkipPublish()) {
         publisher->start(parseCommand.isAsyncMode());
     }
