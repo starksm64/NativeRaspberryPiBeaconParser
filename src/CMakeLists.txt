@@ -11,9 +11,9 @@ add_library (BeaconObjs OBJECT ${SOURCE_FILES})
 add_library (Beacon STATIC $<TARGET_OBJECTS:BeaconObjs>)
 
 add_executable(NativeScanner main.cpp)
-target_link_libraries (NativeScanner LINK_PUBLIC Beacon MqttCLib MqttAsyncCLib CMS ssl crypto z apr-1.0)
+target_link_libraries (NativeScanner LINK_PUBLIC Beacon MqttCLib MqttAsyncCLib CMS ssl crypto z apr-1)
 
 # Tests
 set(testCmsFactory_FILES testCmsFactory.cpp)
 add_executable(testCmsFactory ${testCmsFactory_FILES})
-target_link_libraries (testCmsFactory LINK_PUBLIC Beacon MqttCLib MqttAsyncCLib CMS ssl crypto z apr-1.0)
+target_link_libraries (testCmsFactory LINK_PUBLIC Beacon MqttCLib MqttAsyncCLib CMS ssl crypto z apr-1)
