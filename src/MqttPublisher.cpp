@@ -5,11 +5,13 @@ MqttPublisher::MqttPublisher(string brokerUrl, string clientID)
         : MsgPublisher(brokerUrl, clientID, "", "")
 {
     client = nullptr;
+    asyncClient = nullptr;
 }
 MqttPublisher::MqttPublisher(string brokerUrl, string userName, string password, string clientID)
         : MsgPublisher(brokerUrl, userName, password, clientID)
 {
     client = nullptr;
+    asyncClient = nullptr;
 }
 
 MqttPublisher::~MqttPublisher() {
@@ -18,6 +20,8 @@ MqttPublisher::~MqttPublisher() {
 
 void MqttPublisher::start(bool asyncMode) {
     MqttPublisher::asyncMode = asyncMode;
+    client = nullptr;
+    asyncClient = nullptr;
     if(asyncMode)
         setupAsyncClient();
     else

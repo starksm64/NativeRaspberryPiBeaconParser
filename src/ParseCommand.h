@@ -17,7 +17,9 @@ private:
 public:
 
     ParseCommand(string scannerID, string brokerURL, string clientID, string topicName)
-            : scannerID(scannerID), brokerURL(brokerURL), clientID(clientID), topicName(topicName) {
+            : scannerID(scannerID), brokerURL(brokerURL), clientID(clientID), topicName(topicName),
+              skipPublish(false),
+              asyncMode(false) {
     }
 
     string getScannerID() const {
