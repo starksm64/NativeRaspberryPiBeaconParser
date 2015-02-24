@@ -45,5 +45,5 @@ add_test(testUnserializeBeacon ${CMAKE_CURRENT_BINARY_DIR}/testUnserializeBeacon
 set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/lib)
 set(testParserLogic_FILES testParserLogic.cpp)
 add_executable(testParserLogic ${testParserLogic_FILES})
-target_link_libraries (testParserLogic LINK_PUBLIC Beacon MqttCLib)
+target_link_libraries (testParserLogic LINK_PUBLIC Beacon MqttCLib  MqttAsyncCLib)
 add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testUnserializeBeacon)

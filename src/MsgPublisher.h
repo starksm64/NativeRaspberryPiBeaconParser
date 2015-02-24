@@ -11,6 +11,7 @@ enum MsgPublisherType {
     PAHO_MQTT,
     AMQP_PROTON,
     AMQP_CMS,
+    AMQP_QPID,
     INVALID=-1
 } ;
 

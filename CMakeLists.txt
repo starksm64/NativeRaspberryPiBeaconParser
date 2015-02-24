@@ -21,6 +21,13 @@ add_library(MqttAsyncCLib SHARED IMPORTED)
 set_property(TARGET MqttAsyncCLib PROPERTY IMPORTED_LOCATION /usr/local/lib/libpaho-mqtt3as.so)
 set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/lib)
 
+# Proton and Qpid Messaging library in /opt/local
+find_package(Proton REQUIRED PATHS /opt/local/lib/cmake/Proton)
+MESSAGE(STATUS "Found Proton: ${Proton_Libraries} (version \"${Proton_VERSION}\")")
+
+find_package(Qpid REQUIRED PATHS /opt/local/lib/cmake/Qpid)
+MESSAGE(STATUS "Found Qpid: ${Qpid_Libraries} (version \"${Qpid_VERSION}\")")
+
 # Source directories
 add_subdirectory(src)
 add_subdirectory(src2)

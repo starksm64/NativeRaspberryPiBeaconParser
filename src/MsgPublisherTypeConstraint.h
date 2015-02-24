@@ -31,6 +31,8 @@ public:
             return true;
         if(value.compare("AMQP_CMS") == 0)
             return true;
+        if(value.compare("AMQP_QPID") == 0)
+            return true;
         return false;
     }
 
@@ -41,6 +43,8 @@ public:
             return MsgPublisherType::AMQP_PROTON;
         if(value.compare("AMQP_CMS") == 0)
             return MsgPublisherType::AMQP_CMS;
+        if(value.compare("AMQP_QPID") == 0)
+            return MsgPublisherType::AMQP_QPID;
         return MsgPublisherType::INVALID;
     }
 };

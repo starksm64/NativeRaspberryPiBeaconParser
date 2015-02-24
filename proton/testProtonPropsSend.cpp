@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 #include "proton/message.h"
 #include "proton/messenger.h"
 #include "../src/Beacon.h"

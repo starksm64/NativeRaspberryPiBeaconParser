@@ -2,6 +2,7 @@
 #include "MqttPublisher.h"
 #include "ProtonPublisher.h"
 #include "CMSPublisher.h"
+#include "QpidPublisher.h"
 
 MsgPublisher* MsgPublisher::create(MsgPublisherType type, string brokerUrl, string clientID, string userName, string password) {
     MsgPublisher* publisher = nullptr;
@@ -15,6 +16,10 @@ MsgPublisher* MsgPublisher::create(MsgPublisherType type, string brokerUrl, stri
         case AMQP_CMS:
             publisher = new CMSPublisher(brokerUrl, clientID, userName, password);
             printf("Created CMSPublisher instance\n");
+            break;
+        case AMQP_QPID:
+            publisher = new QpidPublisher(brokerUrl, clientID, userName, password);
+            printf("Created QpidPublisher instance\n");
             break;
     }
     return publisher;
