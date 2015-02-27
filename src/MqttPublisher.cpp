@@ -107,7 +107,7 @@ void MqttPublisher::publish(string topicName, MqttQOS qos, byte *payload, size_t
 #ifdef DEBUG
     printf("Waiting for up to %ld seconds for publication of %s\n"
                     "on topic %s for client with ClientID: %s\n",
-            timeout/1000, "beacon", topicName.c_str(), clientID.c_str());
+            timeout/1000, "beacon", destinationName.c_str(), clientID.c_str());
 #endif
     int rc = MQTTClient_waitForCompletion(client, token, timeout);
     if(rc != 0)

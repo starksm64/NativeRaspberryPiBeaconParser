@@ -9,9 +9,13 @@ using namespace qpid;
 // Quote and prefix the project simple topic name.
 // * The quotes pass the name to qpid messaging correctly
 // * The prefix gets the AMQ broker to use a topic and not a queue
-string AmqTopicName(const string topicName) {
-  return "'topic://" + topicName + "'";
+string AmqTopicName(const string name) {
+  return "'topic://" + name + "'";
 }
+string AmqQueueName(const string name) {
+  return "'queue://" + name + "'";
+}
+
 
 void QpidPublisher::start(bool asyncMode) {
   // Open connection
@@ -22,7 +26,8 @@ void QpidPublisher::start(bool asyncMode) {
   session = connection.createSession();
 
   // Create sender with default topic destination address
-  sender = session.createSender(AmqTopicName(topicName));
+  string destName = isUseTopics() ? AmqTopicName(destinationName) : AmqQueueName(destinationName);
+  sender = session.createSender(destName);
 }
 
 void QpidPublisher::stop() {
@@ -35,12 +40,14 @@ void QpidPublisher::queueForPublish(string topicName, MqttQOS qos, byte *payload
   // HACK ALERT: tbd
 }
 
-void QpidPublisher::publish(string topicName, MqttQOS qos, byte *payload, size_t len) {
+void QpidPublisher::publish(string destName, MqttQOS qos, byte *payload, size_t len) {
 
-  // Use default topic unless a new one is specified
+  // Use default destination unless a new one is specified
   messaging::Sender sndr = sender;
-  if (topicName.length() > 0)
-    sndr = session.createSender(AmqTopicName(topicName));
+  if (destName.length() > 0) {
+    string fullDestName = isUseTopics() ? AmqTopicName(destName) : AmqQueueName(destName);
+    sndr = session.createSender(fullDestName);
+  }
 
   // Create message
   messaging::Message message((const char *)payload, len);

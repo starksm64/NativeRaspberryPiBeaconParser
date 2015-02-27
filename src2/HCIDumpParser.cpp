@@ -6,8 +6,9 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     string clientID(parseCommand.getClientID());
     if(clientID.empty())
         clientID = parseCommand.getScannerID();
-    publisher = MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), parseCommand.getClientID(), "", "");
+    publisher = MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", "");
     if(!parseCommand.isSkipPublish()) {
+        publisher->setDestinationName(parseCommand.getDestinationName());
         publisher->start(parseCommand.isAsyncMode());
     }
     else {
@@ -24,7 +25,7 @@ void HCIDumpParser::beaconEvent(const beacon_info *info) {
     info->power, info->calibrated_power, info->rssi, info->time);
     vector<byte> msg = beacon.toByteMsg();
     if(!parseCommand->isSkipPublish())
-        publisher->publish(parseCommand->getTopicName(), MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
+        publisher->publish("", MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
     else
         printf("Parsed: %s\n", beacon.toString().c_str());
 }

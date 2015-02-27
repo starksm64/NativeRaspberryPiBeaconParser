@@ -46,7 +46,7 @@ void ParserLogic::processHCIStream(istream & stream, ParseCommand parseCommand) 
             Beacon beacon = Beacon::parseHCIDump(parseCommand.getScannerID().c_str(), buffer);
             vector<byte> msg = beacon.toByteMsg();
             if(!parseCommand.isSkipPublish())
-                mqtt.publish(parseCommand.getTopicName(), MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
+                mqtt.publish(parseCommand.getDestinationName(), MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
             else
                 cout << "Parsed: " << beacon.toString() << endl;
         } else {

@@ -16,7 +16,10 @@ void CMSPublisher::start(bool asyncMode) {
     session->start();
 
     // Create the destination (Topic)
-    destination = session->createTopic(topicName);
+    if(isUseTopics())
+        destination = session->createTopic(destinationName);
+    else
+        destination = session->createQueue(destinationName);
 
     producer = session->createProducer(destination);
     producer->setDeliveryMode(DeliveryMode::NON_PERSISTENT);
@@ -33,11 +36,15 @@ void CMSPublisher::queueForPublish(string topicName, MqttQOS qos, byte *payload,
 
 }
 
-void CMSPublisher::publish(string topicName, MqttQOS qos, byte *payload, size_t len) {
+void CMSPublisher::publish(string destName, MqttQOS qos, byte *payload, size_t len) {
 
     Destination *dest = destination;
-    if(topicName.length() > 0)
-        dest = session->createTopic(topicName);
+    if(destName.length() > 0) {
+        if(isUseTopics())
+            dest = session->createTopic(destName);
+        else
+            dest = session->createQueue(destName);
+    }
 
     std::auto_ptr<BytesMessage> message(session->createBytesMessage(payload, len));
     producer->send(message.get());

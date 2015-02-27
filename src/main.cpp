@@ -41,7 +41,7 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<std::string> brokerURL("b", "brokerURL",
             "Specify the brokerURL to connect to the MQTT broker with; default tcp://localhost:1883",
             false, "tcp://localhost:1883", "string", cmd);
-    TCLAP::ValueArg<std::string> topicName("t", "topicName",
+    TCLAP::ValueArg<std::string> topicName("t", "destinationName",
             "Specify the name of the queue on the MQTT broker to publish to; default beaconEvents",
             false, "beaconEvents", "string", cmd);
     TCLAP::SwitchArg skipPublish("S", "skipPublish",

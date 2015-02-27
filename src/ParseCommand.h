@@ -10,14 +10,14 @@ private:
     string scannerID;
     string brokerURL;
     string clientID;
-    string topicName;
+    string destinationName;
     bool skipPublish;
     bool asyncMode;
 
 public:
 
-    ParseCommand(string scannerID, string brokerURL, string clientID, string topicName)
-            : scannerID(scannerID), brokerURL(brokerURL), clientID(clientID), topicName(topicName),
+    ParseCommand(string scannerID, string brokerURL, string clientID, string destinationName)
+            : scannerID(scannerID), brokerURL(brokerURL), clientID(clientID), destinationName(destinationName),
               skipPublish(false),
               asyncMode(false) {
     }
@@ -46,12 +46,12 @@ public:
         ParseCommand::clientID = clientID;
     }
 
-    string getTopicName() const {
-        return topicName;
+    string getDestinationName() const {
+        return destinationName;
     }
 
-    void setTopicName(string &topicName) {
-        ParseCommand::topicName = topicName;
+    void setDestinationName(string &topicName) {
+        ParseCommand::destinationName = topicName;
     }
 
     bool isSkipPublish() const {

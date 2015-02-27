@@ -33,8 +33,8 @@ public:
 
     void start(bool asyncMode);
     void stop();
-    void queueForPublish(string topicName, MqttQOS qos, byte *payload, size_t len);
-    void publish(string topicName, MqttQOS qos, byte *payload, size_t len);
+    void queueForPublish(string destinationName, MqttQOS qos, byte *payload, size_t len);
+    void publish(string destinationName, MqttQOS qos, byte *payload, size_t len);
 
 };
 #endif

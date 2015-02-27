@@ -11,19 +11,20 @@ private:
     string scannerID;
     string brokerURL;
     string clientID;
-    string topicName;
+    string destinationName;
     string hciDev = "hci0";
     bool skipPublish;
     bool asyncMode;
+    bool useTopics;
     MsgPublisherType pubType;
 
 public:
 
-    HCIDumpCommand(string scannerID, string brokerURL, string clientID, string topicName)
+    HCIDumpCommand(string scannerID, string brokerURL, string clientID, string destinationName)
             : scannerID(scannerID),
               brokerURL(brokerURL),
               clientID(clientID),
-              topicName(topicName),
+              destinationName(destinationName),
               pubType(MsgPublisherType::PAHO_MQTT) {
     }
 
@@ -60,12 +61,12 @@ public:
         HCIDumpCommand::clientID = clientID;
     }
 
-    string getTopicName() const {
-        return topicName;
+    string getDestinationName() const {
+        return destinationName;
     }
 
-    void setTopicName(string &topicName) {
-        HCIDumpCommand::topicName = topicName;
+    void setDestinationName(string &topicName) {
+        HCIDumpCommand::destinationName = topicName;
     }
 
     bool isSkipPublish() const {
@@ -87,6 +88,15 @@ public:
 
     MsgPublisherType const &getPubType() const {
         return pubType;
+    }
+
+
+    bool isUseTopics() const {
+        return useTopics;
+    }
+
+    void setUseTopics(bool useTopics) {
+        HCIDumpCommand::useTopics = useTopics;
     }
 
     void setPubType(MsgPublisherType const &pubType) {
