@@ -15,7 +15,7 @@ private:
     string hciDev = "hci0";
     bool skipPublish;
     bool asyncMode;
-    bool useTopics;
+    bool useQueues;
     MsgPublisherType pubType;
 
 public:
@@ -91,12 +91,12 @@ public:
     }
 
 
-    bool isUseTopics() const {
-        return useTopics;
+    bool isUseQueues() const {
+        return useQueues;
     }
 
-    void setUseTopics(bool useTopics) {
-        HCIDumpCommand::useTopics = useTopics;
+    void setUseQueues(bool useQueues) {
+        HCIDumpCommand::useQueues = useQueues;
     }
 
     void setPubType(MsgPublisherType const &pubType) {

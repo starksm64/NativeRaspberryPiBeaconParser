@@ -80,9 +80,9 @@ int main(int argc, const char **argv) {
     TCLAP::SwitchArg asyncMode("A", "asyncMode",
             "Indicate that the parsed beacons should be published using async delivery mode",
             false);
-    TCLAP::SwitchArg useTopics("T", "useTopics",
-            "Indicate that the destination type is a topic is true, a queue if false",
-            true);
+    TCLAP::SwitchArg useQueues("Q", "useQueues",
+            "Indicate that the destination type is a queue. If not given the default type is a topic.",
+            false);
     TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
             "Specify the name of the host controller interface to use; default hci0",
             false, "hci0", "string", cmd);
@@ -95,7 +95,7 @@ int main(int argc, const char **argv) {
         // Add the flag arguments
         cmd.add(skipPublish);
         cmd.add(asyncMode);
-        cmd.add(useTopics);
+        cmd.add(useQueues);
         // Parse the argv array.
         printf("Parsing command line...\n");
         cmd.parse( argc, argv );
@@ -115,7 +115,6 @@ int main(int argc, const char **argv) {
     command.setHciDev(hciDev.getValue());
     command.setAsyncMode(asyncMode.getValue());
     command.setPubType(pubTypeConstraint.toType(pubType.getValue()));
-    command.setUseTopics(command.isUseTopics());
     printf("Begin scanning...\n");
     parserLogic.processHCI(command);
     parserLogic.cleanup();

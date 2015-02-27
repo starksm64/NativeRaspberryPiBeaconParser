@@ -8,6 +8,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
         clientID = parseCommand.getScannerID();
     publisher = MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", "");
     if(!parseCommand.isSkipPublish()) {
+        publisher->setUseTopics(!parseCommand.isUseQueues());
         publisher->setDestinationName(parseCommand.getDestinationName());
         publisher->start(parseCommand.isAsyncMode());
     }
