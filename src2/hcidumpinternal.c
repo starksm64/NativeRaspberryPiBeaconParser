@@ -379,7 +379,9 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
 #endif
             break;
         case 0xff:
-            info->time = htobl(frm->ts.tv_sec)*1000 + htobl(frm->ts.tv_usec)/1000;
+            info->time = frm->ts.tv_sec;
+            info->time *= 1000;
+            info->time += frm->ts.tv_usec/1000;
 #ifdef PRINT_DEBUG
             p_indent(level, frm);
             printf("ManufacturerData:");

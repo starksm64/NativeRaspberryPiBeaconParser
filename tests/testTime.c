@@ -19,7 +19,13 @@ int main(int argc, char **argv) {
     snprintf(timestr+length, 128-length, ".%ld", tv.tv_usec/1000);
     printf("Time string: %s\n", timestr);
 
+    printf("Sizeof(time_t) = %ld\n", sizeof(time_t));
+    printf("Sizeof(tv.tv_sec) = %ld\n", sizeof(tv.tv_sec));
+    printf("Sizeof(tv.tv_usec) = %ld\n", sizeof(tv.tv_usec));
     long ms = htobl(tv.tv_sec)*1000 + htobl(tv.tv_usec)/1000;
-    int64_t ms64 = htobl(tv.tv_sec)*1000 + htobl(tv.tv_usec)/1000;
-    printf("Sizeof(long) = %d, ms=%ld, ms64=%ld\n", sizeof(ms), ms, ms64);
+    int64_t ms64 = tv.tv_sec;
+    ms64 *= 1000;
+    ms64 += tv.tv_usec / 1000;
+    int64_t ms64h = htobl(ms64);
+    printf("Sizeof(long)=%d, sizeof(int64_t)=%ld, ms=%ld, ms64=%8lu, ms64h=%8lu\n", sizeof(ms), sizeof(int64_t), ms, ms64, ms64h);
 }

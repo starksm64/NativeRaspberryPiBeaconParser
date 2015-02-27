@@ -33,7 +33,7 @@ static int mystoi(string str, int base) {
     return value;
 }
 
-static void buildTimeString(time_t tsInMS, char *timestr) {
+static void buildTimeString(int64_t tsInMS, char *timestr) {
     struct timeval  tv;
     struct timezone tz;
     struct tm      *tm;
