@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
     gettimeofday(&tv, &tz);
     tm = localtime(&tv.tv_sec);
 
-    char timestr[128];
+    char timestr[256];
     size_t length = strftime(timestr, 128, "%F %T", tm);
     snprintf(timestr+length, 128-length, ".%ld", tv.tv_usec/1000);
     printf("Time string: %s\n", timestr);
@@ -35,13 +35,14 @@ int main(int argc, char **argv) {
     printf("Sizeof(time_t) = %ld\n", sizeof(time_t));
     printf("Sizeof(tv.tv_sec) = %ld\n", sizeof(tv.tv_sec));
     printf("Sizeof(tv.tv_usec) = %ld\n", sizeof(tv.tv_usec));
+    printf("tv_sec=%ld, tv_usec=%ld\n", tv.tv_sec, tv.tv_usec);
     long ms = htobl(tv.tv_sec)*1000 + htobl(tv.tv_usec)/1000;
     int64_t ms64 = tv.tv_sec;
     ms64 *= 1000;
     ms64 += tv.tv_usec / 1000;
     int64_t ms64h = htobl(ms64);
-    printf("Sizeof(long)=%d, sizeof(int64_t)=%ld, ms=%ld, ms64=%8lu, ms64h=%8lu\n", sizeof(ms), sizeof(int64_t), ms, ms64, ms64h);
+    printf("Sizeof(long)=%d, sizeof(int64_t)=%ld, ms=%ld/%lu, ms64=%llu, ms64h=%llu\n", sizeof(ms), sizeof(int64_t), ms, ms, ms64, ms64h);
     // convert time in milliseconds to string form
     buildTimeString(ms64, timestr);
-    printf("buildTimeString=%s\n", timestr);
+    printf("buildTimeString(%lld) = %s\n", ms64, timestr);
 }

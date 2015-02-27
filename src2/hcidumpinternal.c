@@ -682,11 +682,13 @@ int process_frames(int dev, int sock, int fd, unsigned long flags, beacon_event 
 #ifdef PRINT_DEBUG
         printf("Begin do_parse(ts=%ld.%ld)#%ld\n", frm.ts.tv_sec, frm.ts.tv_usec, frameNo);
 #endif
+        int64_t time = -1;
         do_parse(&frm, &info);
-        if(info.time > 0)
+        time = info.time;
+        if(time > 0)
             stopped = callback(&info);
 #ifdef PRINT_DEBUG
-        printf("End do_parse(info.time=%ld)\n", info.time);
+        printf("End do_parse(info.time=%lld)\n", time);
 #endif
 
     }

@@ -21,20 +21,20 @@ inline bool stopMarkerExists() {
     return stop;
 }
 static long eventCount = 0;
-static long lastMarkerCheckTime = 0;
+static int64_t lastMarkerCheckTime = 0;
 
 /**
 * Callback invoked by the hdidumpinternal.c code when a LE_ADVERTISING_REPORT event is seen on the stack
 */
 extern "C" bool beacon_event_callback(const beacon_info *info) {
 #ifdef PRINT_DEBUG
-    printf("beacon_event_callback(%s, code=%d)\n", info->uuid, info->code);
+    printf("beacon_event_callback(%s, code=%d, time=%ld)\n", info->uuid, info->code, info->time);
 #endif
     parserLogic.beaconEvent(info);
     eventCount ++;
     // Check for a termination marker every 1000 events or 5 seconds
     bool stop = false;
-    long elapsed = info->time - lastMarkerCheckTime;
+    int64_t elapsed = info->time - lastMarkerCheckTime;
     if((eventCount % 1000) == 0 || elapsed > 5000) {
         lastMarkerCheckTime = info->time;
         stop = stopMarkerExists();
