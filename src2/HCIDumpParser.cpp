@@ -11,7 +11,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
         publisher->start(parseCommand.isAsyncMode());
     }
     else {
-        printf("Skipping publish of parse beacons\n");
+        printf("Skipping publish of parsed beacons\n");
     }
 
     char cdev = parseCommand.getHciDev().at(parseCommand.getHciDev().size()-1);

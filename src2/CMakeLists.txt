@@ -1,5 +1,15 @@
 project(NativeScannerBlueZ)
 
+OPTION(PRINT_DEBUG
+  "Build the project using print debugging enabled"
+  OFF)
+IF(PRINT_DEBUG)
+  MESSAGE("Adding print debug flag...")
+  ADD_DEFINITIONS(-DPRINT_DEBUG)
+  SET(CMAKE_BUILD_TYPE Debug)
+  MESSAGE("Build type is " ${CMAKE_BUILD_TYPE})
+ENDIF(PRINT_DEBUG)
+
 # The location of a local bluez source tree
 if(EXISTS $ENV{HOME}/bluez-5.28)
     set(BluezHome $ENV{HOME}/bluez-5.28)

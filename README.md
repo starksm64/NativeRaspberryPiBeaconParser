@@ -126,7 +126,12 @@ This consumes the hcidump output that has been saved to a file as the input for 
 This command takes the beacon events coming from the hci1 bluetooth interface and publishes them to the MQTT server running at address tcp://192.168.1.107:1883.  
 
 	Debug/src2/NativeScannerBlueZ --scannerID NativeScannerBlueZ --hciDev hci1 --brokerURL "tcp://192.168.1.107:1883"
-	
+
+### Running the bluez native scanner using hci0 without publishing events to broker
+This command takes the beacon events coming from the default hci0 bluetooth interface and simply prints them out to the console for debugging.  
+
+	Debug/src2/NativeScannerBlueZ --scannerID NativeScannerBlueZ --skipPublish
+		
 ### Running the bluez native scanner using hci1 and async message publishing
 This command takes the beacon events coming from the hci1 bluetooth interface and publishes them to the MQTT server running at address tcp://192.168.1.107:1883 using asynchronous delivery.
 
