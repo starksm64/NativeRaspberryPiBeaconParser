@@ -76,6 +76,14 @@ git clone https://github.com/starksm64/NativeRaspberryPiBeaconParser.git
 	cmake --build Debug --target NativeScanner
 	cmake --build Debug --target NativeScannerBlueZ
 
+## Making a debug build with extra printing enabled
+	mkdir Debug
+	cd Debug
+	cmake -DPRINT_DEBUG=ON -DCMAKE_BUILD_TYPE=Debug ..
+	cd ..
+	cmake --build Debug --target NativeScannerBlueZ
+
+
 ## Making a release build
 	mkdir Release
 	cd Release
@@ -136,3 +144,12 @@ This command takes the beacon events coming from the default hci0 bluetooth inte
 This command takes the beacon events coming from the hci1 bluetooth interface and publishes them to the MQTT server running at address tcp://192.168.1.107:1883 using asynchronous delivery.
 
 	NativeScannerBlueZ --scannerID NativeScannerBlueZ --hciDev hci1 --brokerURL "tcp://192.168.1.107:1883" --asyncMode
+	
+### Running the bluez native scanner using hci0 and the AMQP QPID msg publisher using default topic destination type and default "beaconEvents" name
+
+NativeScannerBlueZ --scannerID NativeScannerBlueZ --pubType AMQP_QPID --brokerURL "192.168.1.107:5672"
+
+### Running the bluez native scanner using hci0 and the AMQP QPID msg publisher using a queue type destination with default "beaconEvents" name
+
+NativeScannerBlueZ --scannerID NativeScannerBlueZ --pubType AMQP_QPID --brokerURL "192.168.1.107:5672" --useQueues
+
