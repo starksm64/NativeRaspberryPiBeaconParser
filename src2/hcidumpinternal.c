@@ -381,6 +381,8 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
         case 0xff:
             info->time = htobl(frm->ts.tv_sec)*1000 + htobl(frm->ts.tv_usec)/1000;
 #ifdef PRINT_DEBUG
+            p_indent(level, frm);
+            printf("ManufacturerData:");
             print_bytes(data, len);
             hex_debug(level, frm);
 #endif
@@ -676,11 +678,15 @@ int process_frames(int dev, int sock, int fd, unsigned long flags, beacon_event 
         memset(&info, 0, sizeof(info));
         frameNo ++;
 #ifdef PRINT_DEBUG
-        printf("do_parse(ts=%ld.%ld)#%ld\n", frm.ts.tv_sec, frm.ts.tv_usec, frameNo);
+        printf("Begin do_parse(ts=%ld.%ld)#%ld\n", frm.ts.tv_sec, frm.ts.tv_usec, frameNo);
 #endif
         do_parse(&frm, &info);
         if(info.time > 0)
             stopped = callback(&info);
+#ifdef PRINT_DEBUG
+        printf("End do_parse(info.time=%ld)\n", info.time);
+#endif
+
     }
 
     return 0;
