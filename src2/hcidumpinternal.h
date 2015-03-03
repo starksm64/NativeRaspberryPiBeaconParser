@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 typedef struct beacon_info {
-    char uuid[20];
+    char uuid[36];
     int32_t code;
     int32_t manufacturer;
     int32_t major;
