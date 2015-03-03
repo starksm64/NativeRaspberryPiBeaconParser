@@ -407,11 +407,18 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
             }
             // null terminate the 2*UUID_SIZE bytes that make up the uuid string
             info->uuid[2*UUID_SIZE] = '\0';
-
+#ifdef PRINT_DEBUG
+            p_indent(level, frm);
+            printf("UUID:%s\n", info->uuid);
+#endif
             // Get the beacon major id
             info->major = 256 * data[index++] + data[index++];
             // Get the beacon minor id
             info->minor = 256 * data[index++] + data[index++];
+#ifdef PRINT_DEBUG
+            p_indent(level, frm);
+            printf("Major:%d, Minor:%d\n", info->major, info->minor);
+#endif
 
             // Get the transmitted power, which is encoded as the 2's complement of the calibrated Tx Power
             info->calibrated_power = data[index] - 256;
