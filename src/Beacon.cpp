@@ -7,9 +7,9 @@
 #include <sys/time.h>
 
 // The portion of the BLE advertising event specific to the hcidump output
-static int32_t HCIDUMP_PREFIX = 7;
-static int32_t BADDR_SIZE = 6;
-static int32_t UUID_SIZE = 16;
+static int HCIDUMP_PREFIX = 7;
+static int BADDR_SIZE = 6;
+static int UUID_SIZE = 16;
 
 static void stack_trace(exception &e) {
     void *array[10];
@@ -21,10 +21,10 @@ static void stack_trace(exception &e) {
     size = backtrace(array, 10);
     backtrace_symbols_fd(array, size, STDERR_FILENO);
 }
-static int32_t mystoi(string str, int32_t base) {
-    int32_t value = 0;
+static int mystoi(string str, int base) {
+    int value = 0;
     try {
-        int32_t size = str.size();
+        int size = str.size();
         const char *debug = str.c_str();
         value = std::stoi(str, nullptr, base);
     } catch(exception &e) {
@@ -58,22 +58,22 @@ string Beacon::toString() {
 
 Beacon Beacon::fromByteMsg(byte *msg, uint32_t length) {
         ByteBuffer dis(msg, length);
-        int32_t version = dis.readInt();
+        int version = dis.readInt();
         if(version != VERSION) {
             char *tmp = new char[1024]{'\0'};
             snprintf(tmp, 1024, "Msg version: %d does not match current version: %d", version, VERSION);
         }
         string scannerID = dis.readString();
         string uuid = dis.readString();
-        int32_t code = dis.readInt();
-        int32_t manufacturer = dis.readInt();
-        int32_t major = dis.readInt();
-        int32_t minor = dis.readInt();
-        int32_t power = dis.readInt();
-        int32_t calibratedPower = dis.readInt();
-        int32_t rssi = dis.readInt();
+        int code = dis.readInt();
+        int manufacturer = dis.readInt();
+        int major = dis.readInt();
+        int minor = dis.readInt();
+        int power = dis.readInt();
+        int calibratedPower = dis.readInt();
+        int rssi = dis.readInt();
         // The format is milliseconds since Epoch, but c++ time expects seconds
-        int64_t time = dis.readLong();
+        long time = dis.readLong();
         Beacon beacon = Beacon(scannerID, uuid, code, manufacturer, major, minor, power, calibratedPower, rssi, time);
         return beacon;
 }
@@ -107,17 +107,17 @@ vector<byte> Beacon::toByteMsg() {
 Beacon Beacon::parseHCIDump(const char * scannerID, std::string packet) {
     std::string uuid;
     try {
-        int64_t size = packet.size();
+        long size = packet.size();
         const char *debug = packet.c_str();
         // Move past the hcidump prefix and baddr portion of the packet
-        int32_t index = 2 + HCIDUMP_PREFIX * 3; // > N XX hex octets + N spaces
+        int index = 2 + HCIDUMP_PREFIX * 3; // > N XX hex octets + N spaces
         // Move past the BADDR value
         index += BADDR_SIZE*3;
         // Move past the remaining length value
         index += 3;
         // Now go through the AD Structure elements in the payload until we find the manufacturer specific data
-        int32_t length = mystoi(packet.substr(index, 2), 16);
-        int32_t type = mystoi(packet.substr(index+3, 2), 16);
+        int length = mystoi(packet.substr(index, 2), 16);
+        int type = mystoi(packet.substr(index+3, 2), 16);
         while(type != 0XFF && index < size-1) {
             index += 3*(length+1);
             length = mystoi(packet.substr(index, 2), 16);
@@ -130,7 +130,7 @@ Beacon Beacon::parseHCIDump(const char * scannerID, std::string packet) {
         index += 6;
 
         // Get the first octet of the manufacturer code
-        int32_t manufacturer = 256 * mystoi(packet.substr(index, 2), 16);
+        int manufacturer = 256 * mystoi(packet.substr(index, 2), 16);
         index += 3;
         // Get the second octet of the manufacturer code
         manufacturer += mystoi(packet.substr(index, 2), 16);
@@ -143,10 +143,10 @@ Beacon Beacon::parseHCIDump(const char * scannerID, std::string packet) {
         string code1 = packet.substr(index, 2);
         index += 3;
         // The second octet referrs to the higher order byte of the 16 bit beacon code
-        int32_t code = 256 * mystoi(code0, 16) + mystoi(code1, 16);
+        int code = 256 * mystoi(code0, 16) + mystoi(code1, 16);
 
         // Get the proximity uuid
-        for(int32_t n = 0; n < UUID_SIZE*3; n ++) {
+        for(int n = 0; n < UUID_SIZE*3; n ++) {
             char c = packet[index+n];
             if(c != ' ')
                 uuid += c;
@@ -159,7 +159,7 @@ Beacon Beacon::parseHCIDump(const char * scannerID, std::string packet) {
         // Get the second octet of the beacon major id
         string major1 = packet.substr(index, 2);
         index += 3;
-        int32_t imajor = 256 * mystoi(major0, 16) + mystoi(major1, 16);
+        int imajor = 256 * mystoi(major0, 16) + mystoi(major1, 16);
 
         // Get the first octet of the beacon minor id
         string minor0 = packet.substr(index, 2);
@@ -167,17 +167,17 @@ Beacon Beacon::parseHCIDump(const char * scannerID, std::string packet) {
         // Get the second octet of the beacon minor id
         string minor1 = packet.substr(index, 2);
         index += 3;
-        int32_t iminor = 256 * mystoi(minor0, 16) + mystoi(minor1, 16);
+        int iminor = 256 * mystoi(minor0, 16) + mystoi(minor1, 16);
 
         // Get the calibrated power, which is encoded as the 2's complement of the calibrated Tx Power
         string power = packet.substr(index, 2);
         index += 3;
-        int32_t ipower = mystoi(power, 16);
+        int ipower = mystoi(power, 16);
         ipower -= 256;
 
         // Get the received signal strength indication, encoded as 2's complement
         string rssi = packet.substr(index, 2);
-        int32_t irssi = mystoi(rssi, 16);
+        int irssi = mystoi(rssi, 16);
         irssi -= 256;
 
         // Generate the timestamp the beacon was received at

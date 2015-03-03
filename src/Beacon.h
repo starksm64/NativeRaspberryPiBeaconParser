@@ -17,7 +17,7 @@ using byte = unsigned char;
 using namespace std;
 
 /** The current byte[] toByteMsg/fromByteMsg version format */
-static int32_t VERSION = 3;
+static int VERSION = 3;
 
 class Beacon {
 
@@ -25,13 +25,13 @@ class Beacon {
 private:
     string scannerID;
     string uuid;
-    int32_t code;
-    int32_t manufacturer;
-    int32_t major;
-    int32_t minor;
-    int32_t power;
-    int32_t calibratedPower;
-    int32_t rssi;
+    int code;
+    int manufacturer;
+    int major;
+    int minor;
+    int power;
+    int calibratedPower;
+    int rssi;
     // std::time() value * 1000
     int64_t time;
 
@@ -46,7 +46,7 @@ public:
             : scannerID(scannerID),
                 uuid("0123456789ABCDEF"){
     }
-    Beacon(const char * scannerID, const char * uuid, int32_t code, int32_t manufacturer, int32_t major, int32_t minor, int32_t power, int32_t calibratedPower, int32_t rssi, int64_t time)
+    Beacon(const char * scannerID, const char * uuid, int code, int manufacturer, int major, int minor, int power, int calibratedPower, int rssi, long time)
             : scannerID(scannerID),
               uuid(uuid),
               code(code),
@@ -58,7 +58,7 @@ public:
               rssi(rssi),
               time(time) {
     }
-    Beacon(string scannerID, string uuid, int32_t code, int32_t manufacturer, int32_t major, int32_t minor, int32_t power, int32_t calibratedPower, int32_t rssi, int64_t time)
+    Beacon(string scannerID, string uuid, int code, int manufacturer, int major, int minor, int power, int calibratedPower, int rssi, long time)
             : scannerID(scannerID),
               uuid(uuid),
               code(code),
@@ -89,59 +89,59 @@ public:
         Beacon::uuid = uuid;
     }
 
-    int32_t getCode() const {
+    int getCode() const {
         return code;
     }
 
-    void setCode(int32_t code) {
+    void setCode(int code) {
         Beacon::code = code;
     }
 
-    int32_t getManufacturer() const {
+    int getManufacturer() const {
         return manufacturer;
     }
 
-    void setManufacturer(int32_t manufacturer) {
+    void setManufacturer(int manufacturer) {
         Beacon::manufacturer = manufacturer;
     }
 
-    int32_t getMajor() const {
+    int getMajor() const {
         return major;
     }
 
-    void setMajor(int32_t major) {
+    void setMajor(int major) {
         Beacon::major = major;
     }
 
-    int32_t getMinor() const {
+    int getMinor() const {
         return minor;
     }
 
-    void setMinor(int32_t minor) {
+    void setMinor(int minor) {
         Beacon::minor = minor;
     }
 
-    int32_t getPower() const {
+    int getPower() const {
         return power;
     }
 
-    void setPower(int32_t power) {
+    void setPower(int power) {
         Beacon::power = power;
     }
 
-    int32_t getCalibratedPower() const {
+    int getCalibratedPower() const {
         return calibratedPower;
     }
 
-    void setCalibratedPower(int32_t calibratedPower) {
+    void setCalibratedPower(int calibratedPower) {
         Beacon::calibratedPower = calibratedPower;
     }
 
-    int32_t getRssi() const {
+    int getRssi() const {
         return rssi;
     }
 
-    void setRssi(int32_t rssi) {
+    void setRssi(int rssi) {
         Beacon::rssi = rssi;
     }
 
