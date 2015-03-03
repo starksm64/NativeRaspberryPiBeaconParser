@@ -405,7 +405,8 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
                 info->uuid[n] = c0;
                 info->uuid[n+1] = c1;
             }
-            info->uuid[UUID_SIZE] = '\0';
+            // null terminate the 2*UUID_SIZE bytes that make up the uuid string
+            info->uuid[2*UUID_SIZE] = '\0';
 
             // Get the beacon major id
             info->major = 256 * data[index++] + data[index++];
