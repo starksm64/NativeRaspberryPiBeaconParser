@@ -21,6 +21,7 @@ inline bool stopMarkerExists() {
     return stop;
 }
 static long eventCount = 0;
+static long maxEventCount = 0;
 static int64_t lastMarkerCheckTime = 0;
 
 /**
@@ -39,6 +40,9 @@ extern "C" bool beacon_event_callback(const beacon_info *info) {
         lastMarkerCheckTime = info->time;
         stop = stopMarkerExists();
     }
+    // Check max event count limit
+    if(maxEventCount > 0 && eventCount >= maxEventCount)
+        stop = true;
     return stop;
 }
 
@@ -90,6 +94,9 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<std::string> pubType("P", "pubType",
             "Specify the MsgPublisherType enum for the publisher implementation to use; default PAHO_MQTT",
             false, "PAHO_MQTT", &pubTypeConstraint, cmd, nullptr);
+    TCLAP::ValueArg<int> maxCount("C", "maxCount",
+            "Specify a maxium number of events the scanner should process before exiting; default 0 means no limit",
+            false, 0, "int", cmd);
 
     try {
         // Add the flag arguments
@@ -115,6 +122,10 @@ int main(int argc, const char **argv) {
     command.setHciDev(hciDev.getValue());
     command.setAsyncMode(asyncMode.getValue());
     command.setPubType(pubTypeConstraint.toType(pubType.getValue()));
+    if(maxCount.getValue() > 0) {
+        maxEventCount = maxCount.getValue();
+        printf("Set maxEventCount: %ld\n", maxEventCount);
+    }
     printf("Begin scanning...\n");
     parserLogic.processHCI(command);
     parserLogic.cleanup();
