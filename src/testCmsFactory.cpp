@@ -28,9 +28,11 @@ int main() {
     printf("Creating CMS MsgPublisher, brokerUrl=%s\n", brokerUrl.c_str());
     fflush(stdout);
 
-    MsgPublisher *cms = MsgPublisher::create(type, brokerUrl, clientID, userName, password);
-    printf("Created CMS MsgPublisher, %s\n", cms->toString());
-    cms->start(false);
+    MsgPublisherFactory factory;
+    MsgPublisher cms;
+    factory.create(cms, type, brokerUrl, clientID, userName, password);
+    printf("Created CMS MsgPublisher, %s\n", cms.toString());
+    cms.start(false);
     printf("Started CMS MsgPublisher\n");
     // Create a messages
     Beacon beacon = testBeacon();
@@ -38,9 +40,9 @@ int main() {
         int64_t now = System::currentTimeMillis();
         beacon.setTime(now);
         vector<byte> data = beacon.toByteMsg();
-        cms->publish("", MqttQOS::AT_MOST_ONCE , data.data(), data.size());
+        cms.publish("", MqttQOS::AT_MOST_ONCE , data.data(), data.size());
         printf("Sent message #%d\n", ix + 1);
     }
-    cms->stop();
+    cms.stop();
     printf("Stopped CMS MsgPublisher\n");
 }

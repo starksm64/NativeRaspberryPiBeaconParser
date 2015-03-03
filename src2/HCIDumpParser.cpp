@@ -6,9 +6,10 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     string clientID(parseCommand.getClientID());
     if(clientID.empty())
         clientID = parseCommand.getScannerID();
-    publisher = MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), parseCommand.getClientID(), "", "");
+    MsgPublisherFactory factory;
+    factory.create(publisher, parseCommand.getPubType(), parseCommand.getBrokerURL(), parseCommand.getClientID(), "", "");
     if(!parseCommand.isSkipPublish()) {
-        publisher->start(parseCommand.isAsyncMode());
+        publisher.start(parseCommand.isAsyncMode());
     }
     else {
         printf("Skipping publish of parsed beacons\n");
@@ -24,12 +25,10 @@ void HCIDumpParser::beaconEvent(const beacon_info *info) {
     info->power, info->calibrated_power, info->rssi, info->time);
     vector<byte> msg = beacon.toByteMsg();
     if(!parseCommand->isSkipPublish())
-        publisher->publish(parseCommand->getTopicName(), MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
+        publisher.publish(parseCommand->getTopicName(), MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
     else
         printf("Parsed: %s\n", beacon.toString().c_str());
 }
 void HCIDumpParser::cleanup() {
-    if(publisher != nullptr)
-        publisher->stop();
-    publisher = nullptr;
+    publisher.stop();
 }

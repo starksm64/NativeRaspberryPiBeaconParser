@@ -14,10 +14,10 @@ using namespace std;
 class HCIDumpParser {
 private:
     HCIDumpCommand *parseCommand;
-    MsgPublisher *publisher;
+    MsgPublisher publisher;
 
 public:
-    HCIDumpParser() : publisher(nullptr) {
+    HCIDumpParser() {
     }
 
     void processHCI(HCIDumpCommand& parseCommand);

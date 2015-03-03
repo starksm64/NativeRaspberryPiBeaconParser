@@ -4,23 +4,34 @@
 #include "CMSPublisher.h"
 #include "QpidPublisher.h"
 
-MsgPublisher* MsgPublisher::create(MsgPublisherType type, string brokerUrl, string clientID, string userName, string password) {
-    MsgPublisher* publisher = nullptr;
+void MsgPublisherFactory::create(MsgPublisher& newPublisher, MsgPublisherType type, string brokerUrl, string clientID, string userName, string password) {
+
     switch (type) {
         case PAHO_MQTT:
-            publisher = new MqttPublisher(brokerUrl, clientID, userName, password);
+        {
+            MqttPublisher publisher(brokerUrl, clientID, userName, password);
+            newPublisher = publisher;
             break;
+        }
         case AMQP_PROTON:
-            publisher = new ProtonPublisher(brokerUrl, clientID, userName, password);
+        {
+            ProtonPublisher publisher(brokerUrl, clientID, userName, password);
+            newPublisher = publisher;
             break;
+        }
         case AMQP_CMS:
-            publisher = new CMSPublisher(brokerUrl, clientID, userName, password);
+        {
+            CMSPublisher publisher(brokerUrl, clientID, userName, password);
             printf("Created CMSPublisher instance\n");
+            newPublisher = publisher;
             break;
+        }
         case AMQP_QPID:
-            publisher = new QpidPublisher(brokerUrl, clientID, userName, password);
+        {
+            QpidPublisher publisher(brokerUrl, clientID, userName, password);
             printf("Created QpidPublisher instance\n");
+            newPublisher = publisher;
             break;
+        }
     }
-    return publisher;
 }

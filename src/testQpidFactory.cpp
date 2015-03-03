@@ -20,7 +20,7 @@ Beacon testBeacon() {
 
 int main() {
     MsgPublisherType type = MsgPublisherType::AMQP_QPID;
-    string brokerUrl("192.168.1.7:5672");
+    string brokerUrl("localhost:5672");
     string clientID("testQpidFactory");
     string userName;
     string password;
@@ -28,9 +28,11 @@ int main() {
     printf("Creating QPID MsgPublisher, brokerUrl=%s\n", brokerUrl.c_str());
     fflush(stdout);
 
-    MsgPublisher *qpid = MsgPublisher::create(type, brokerUrl, clientID, userName, password);
-    printf("Created QPID MsgPublisher, %s\n", qpid->toString());
-    qpid->start(false);
+    MsgPublisherFactory factory;
+    MsgPublisher qpid;
+    factory.create(qpid, type, brokerUrl, clientID, userName, password);
+    printf("Created QPID MsgPublisher, %s\n", qpid.toString());
+    qpid.start(false);
     printf("Started QPID MsgPublisher\n");
     // Create a messages
     Beacon beacon = testBeacon();
@@ -38,9 +40,9 @@ int main() {
         int64_t now = System::currentTimeMillis();
         beacon.setTime(now);
         vector<byte> data = beacon.toByteMsg();
-        qpid->publish("", MqttQOS::AT_MOST_ONCE , data.data(), data.size());
+        qpid.publish("", MqttQOS::AT_MOST_ONCE , data.data(), data.size());
         printf("Sent message #%d\n", ix + 1);
     }
-    qpid->stop();
+    qpid.stop();
     printf("Stopped QPID MsgPublisher\n");
 }

@@ -29,6 +29,7 @@ protected:
     string topicName;
 
 public:
+    MsgPublisher () {}
 
     MsgPublisher(string brokerUrl, string clientID, string userName, string password)
         : brokerUrl(brokerUrl),
@@ -42,18 +43,23 @@ public:
         return topicName;
     }
 
-    virtual void start(bool asyncMode) = 0;
-    virtual void stop() = 0;
-    virtual void queueForPublish(string topicName, MqttQOS qos, byte *payload, size_t len) = 0;
-    virtual void publish(string topicName, MqttQOS qos, byte *payload, size_t len) = 0;
+    virtual void start(bool asyncMode) {};
+    virtual void stop() {};
+    virtual void queueForPublish(string topicName, MqttQOS qos, byte *payload, size_t len) {};
+    virtual void publish(string topicName, MqttQOS qos, byte *payload, size_t len) {};
     virtual const char *toString() {
         int length = brokerUrl.length() + clientID.length();
         char *str = new char[length+128];
         sprintf(str, "%s[%s]", brokerUrl.c_str(), clientID.c_str());
         return str;
     }
+};
+
+class MsgPublisherFactory {
+public:
+    MsgPublisherFactory() {}
 
     // Factory method
-    static MsgPublisher* create(MsgPublisherType type, string brokerUrl, string clientID, string userName, string password);
+    void create(MsgPublisher& newPub, MsgPublisherType type, string brokerUrl, string clientID, string userName, string password);
 };
 #endif
