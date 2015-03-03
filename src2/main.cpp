@@ -28,7 +28,7 @@ static int64_t lastMarkerCheckTime = 0;
 */
 extern "C" bool beacon_event_callback(const beacon_info *info) {
 #ifdef PRINT_DEBUG
-    printf("beacon_event_callback(%s, code=%d, time=%lld)\n", info->uuid, info->code, info->time);
+    printf("beacon_event_callback(%ld: %s, code=%d, time=%lld)\n", eventCount, info->uuid, info->code, info->time);
 #endif
     parserLogic.beaconEvent(info);
     eventCount ++;
