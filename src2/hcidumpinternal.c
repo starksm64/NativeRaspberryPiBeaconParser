@@ -397,7 +397,7 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
 
             // Get the proximity uuid
             int n;
-            for(n = 0; n < UUID_SIZE; n += 2, index ++) {
+            for(n = 0; n < 2*UUID_SIZE; n += 2, index ++) {
                 int b0 = (data[index] & 0xf0) >> 4;
                 int b1 = data[index] & 0x0f;
                 char c0 = toHexChar(b0);
@@ -409,7 +409,7 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
             info->uuid[2*UUID_SIZE] = '\0';
 #ifdef PRINT_DEBUG
             p_indent(level, frm);
-            printf("UUID:%s\n", info->uuid);
+            printf("UUID(%d):%s\n", strlen(info->uuid), info->uuid);
 #endif
             // Get the beacon major id
             info->major = 256 * data[index++] + data[index++];
