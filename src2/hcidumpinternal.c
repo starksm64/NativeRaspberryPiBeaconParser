@@ -47,7 +47,11 @@
 #include "lib/hci_lib.h"
 
 #define SNAP_LEN	HCI_MAX_FRAME_SIZE
+// The size of the uuid in the manufacturer data
 #define UUID_SIZE 16
+// The minimum size of manufacturer data we are interested in. This consists of:
+// manufacturer(2), code(2), uuid(16), major(2), minor(2), calibrated power(1)
+#define MIN_MANUFACTURER_DATA_SIZE (2+2+UUID_SIZE+2+2+1)
 
 /* Modes */
 enum {
@@ -379,15 +383,20 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
 #endif
             break;
         case 0xff:
-            info->time = frm->ts.tv_sec;
-            info->time *= 1000;
-            info->time += frm->ts.tv_usec/1000;
+
 #ifdef PRINT_DEBUG
             p_indent(level, frm);
-            printf("ManufacturerData:");
+            printf("ManufacturerData(%d bytes), valid=%d:", len, len >= MIN_MANUFACTURER_DATA_SIZE);
             print_bytes(data, len);
             hex_debug(level, frm);
 #endif
+            // Skip any event that has less than the minimum data size for a beacon event
+            if(len < MIN_MANUFACTURER_DATA_SIZE)
+                return;
+
+            info->time = frm->ts.tv_sec;
+            info->time *= 1000;
+            info->time += frm->ts.tv_usec/1000;
             // Get the manufacturer code from the first two octets
             int index = 0;
             info->manufacturer = 256 * data[index++] + data[index++];
