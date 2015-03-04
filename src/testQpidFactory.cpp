@@ -2,10 +2,11 @@
 #include "MsgPublisher.h"
 #include <decaf/lang/System.h>
 #include <qpid/messaging/Connection.h>
+#include <sys/time.h>
 
 // Uncomment to test the sending of message properties
 //#define MSG_PROPERTIES
-#define MSG_PROPERTIES_BATCH
+//#define MSG_PROPERTIES_BATCH
 
 using namespace decaf::lang;
 
@@ -42,7 +43,10 @@ int main(int argc, char*argv[]) {
     // Create a messages
     Beacon beacon = testBeacon();
     vector<Beacon> events;
-    for (int ix = 0; ix < 100; ++ix) {
+    int N = 100000;
+    struct timeval  start;
+    gettimeofday(&start, nullptr);
+    for (int ix = 0; ix < N; ++ix) {
         int64_t now = System::currentTimeMillis();
         beacon.setTime(now);
 #ifdef MSG_PROPERTIES
@@ -54,13 +58,16 @@ int main(int argc, char*argv[]) {
 #else
         vector<byte> data = beacon.toByteMsg();
         qpid->publish("", MqttQOS::AT_MOST_ONCE , data.data(), data.size());
-        printf("Sent byte message #%d\n", ix + 1);
+        //printf("Sent byte message #%d\n", ix + 1);
 #endif
     }
 #ifdef MSG_PROPERTIES_BATCH
     qpid->publish(events);
-    printf("Sent 100 messages in batch\n");
+    printf("Sent %d messages in batch\n", N);
 #endif
+    struct timeval end;
+    gettimeofday(&end, nullptr);
+    printf("Elapsed, %d\n", end.tv_sec - start.tv_sec);
     qpid->stop();
     printf("Stopped QPID MsgPublisher\n");
 }

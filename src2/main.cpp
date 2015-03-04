@@ -97,7 +97,9 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<int> maxCount("C", "maxCount",
             "Specify a maxium number of events the scanner should process before exiting; default 0 means no limit",
             false, 0, "int", cmd);
-
+    TCLAP::ValueArg<int> batchCount("B", "batchCount",
+            "Specify a maxium number of events the scanner should combine before sending to broker; default 0 means no batching",
+            false, 0, "int", cmd);
     try {
         // Add the flag arguments
         cmd.add(skipPublish);
@@ -126,6 +128,7 @@ int main(int argc, const char **argv) {
         maxEventCount = maxCount.getValue();
         printf("Set maxEventCount: %ld\n", maxEventCount);
     }
+    parserLogic.setBatchCount(batchCount.getValue());
     printf("Begin scanning...\n");
     parserLogic.processHCI(command);
     parserLogic.cleanup();

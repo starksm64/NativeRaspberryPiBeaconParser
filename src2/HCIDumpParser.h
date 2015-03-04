@@ -15,9 +15,19 @@ class HCIDumpParser {
 private:
     HCIDumpCommand *parseCommand;
     MsgPublisher *publisher;
+    int batchCount;
+    vector<Beacon> events;
 
 public:
-    HCIDumpParser() : publisher(nullptr) {
+    HCIDumpParser() : publisher(nullptr), batchCount(0) {
+    }
+
+
+    int getBatchCount() const {
+        return batchCount;
+    }
+    void setBatchCount(int batchCount) {
+        HCIDumpParser::batchCount = batchCount;
     }
 
     void processHCI(HCIDumpCommand& parseCommand);
