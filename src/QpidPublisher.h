@@ -22,6 +22,8 @@ public:
     QpidPublisher(string brokerUrl, string clientID, string userName, string password)
             : MsgPublisher(brokerUrl, clientID, userName, password) {}
 
+    ~QpidPublisher() {}
+
     virtual void start(bool asyncMode);
 
     virtual void stop();
@@ -29,5 +31,7 @@ public:
     virtual void queueForPublish(string destinationName, MqttQOS qos, byte *payload, size_t len);
 
     virtual void publish(string destinationName, MqttQOS qos, byte *payload, size_t len);
+
+    virtual void publish(string destinationName, Beacon &beacon);
 };
 #endif

@@ -34,6 +34,9 @@ void QpidPublisher::stop() {
   sender.close();
   session.close();
   connection.close();
+  sender = messaging::Sender();
+  session = messaging::Session();
+  connection = messaging::Connection();
 }
 
 void QpidPublisher::queueForPublish(string topicName, MqttQOS qos, byte *payload, size_t len) {
@@ -51,6 +54,37 @@ void QpidPublisher::publish(string destName, MqttQOS qos, byte *payload, size_t 
 
   // Create message
   messaging::Message message((const char *)payload, len);
+  if (clientID.length() > 0)
+    message.setUserId(clientID);
+
+  // Send message
+  sndr.send(message);
+
+  // Close temporary sender
+  if (sndr != sender)
+    sndr.close();
+}
+
+void QpidPublisher::publish(string destName, Beacon &beacon) {
+
+  // Use default destination unless a new one is specified
+  messaging::Sender sndr = sender;
+  if (destName.length() > 0) {
+    string fullDestName = isUseTopics() ? AmqTopicName(destName) : AmqQueueName(destName);
+    sndr = session.createSender(fullDestName);
+  }
+
+  messaging::Message message;
+  message.setProperty("uuid", beacon.getUuid());
+  message.setProperty("scannerID", beacon.getScannerID());
+  message.setProperty("major", beacon.getMajor());
+  message.setProperty("minor", beacon.getMinor());
+  message.setProperty("manufacturer", beacon.getManufacturer());
+  message.setProperty("code", beacon.getCode());
+  message.setProperty("power", beacon.getCalibratedPower());
+  message.setProperty("rssi", beacon.getRssi());
+  message.setProperty("time", beacon.getTime());
+
   if (clientID.length() > 0)
     message.setUserId(clientID);
 

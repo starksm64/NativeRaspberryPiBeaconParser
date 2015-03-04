@@ -1,4 +1,5 @@
 #include <MQTTAsync.h>
+#include <MQTTClient.h>
 #include "MqttPublisher.h"
 
 MqttPublisher::MqttPublisher(string brokerUrl, string clientID)
@@ -112,6 +113,11 @@ void MqttPublisher::publish(string topicName, MqttQOS qos, byte *payload, size_t
     int rc = MQTTClient_waitForCompletion(client, token, timeout);
     if(rc != 0)
         printf("Failed to start sendMessage, return code %d\n", rc);
+}
+
+
+void MqttPublisher::publish(string destinationName, Beacon &beacon) {
+
 }
 
 void MqttPublisher::setupClient() {

@@ -16,3 +16,7 @@ void ProtonPublisher::queueForPublish(string topicName, MqttQOS qos, byte *paylo
 void ProtonPublisher::publish(string topicName, MqttQOS qos, byte *payload, size_t len) {
 
 }
+
+void ProtonPublisher::publish(string destinationName, Beacon &beacon) {
+
+}

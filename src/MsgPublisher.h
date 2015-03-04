@@ -3,6 +3,7 @@
 
 #include <string>
 #include "QOS.h"
+#include "Beacon.h"
 
 using namespace std;
 using byte = unsigned char;
@@ -26,7 +27,9 @@ protected:
     string clientID;
     string userName;
     string password;
+    /** The default message destination name */
     string destinationName;
+    /** Should the destination type be a topic(true) or a queue(false) */
     bool useTopics;
 
 public:
@@ -38,6 +41,9 @@ public:
           password(password),
           destinationName("beaconEvents"),
           useTopics(true) {
+    }
+
+    virtual ~MsgPublisher() {
     }
 
     void setDestinationName(const string& name) {
@@ -80,9 +86,15 @@ public:
     */
     virtual void publish(string destinationName, MqttQOS qos, byte *payload, size_t len) = 0;
 
+    /**
+    * Send a beacon event to the broker as a collection of message properties
+    * @param - beacon
+    */
+    virtual void publish(string destinationName, Beacon& beacon) = 0;
+
     virtual const char *toString() {
         int length = brokerUrl.length() + clientID.length();
-        char *str = new char[length+128];
+        char *str = new char[length + 128];
         sprintf(str, "%s[%s]", brokerUrl.c_str(), clientID.c_str());
         return str;
     }

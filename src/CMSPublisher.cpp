@@ -52,3 +52,29 @@ void CMSPublisher::publish(string destName, MqttQOS qos, byte *payload, size_t l
     if(dest != destination)
         delete dest;
 }
+
+void CMSPublisher::publish(string destName, Beacon &beacon) {
+    Destination *dest = destination;
+    if(destName.length() > 0) {
+        if(isUseTopics())
+            dest = session->createTopic(destName);
+        else
+            dest = session->createQueue(destName);
+    }
+
+    TextMessage *message = session->createTextMessage();
+    message->setStringProperty("uuid", beacon.getUuid());
+    message->setStringProperty("scannerID", beacon.getScannerID());
+    message->setIntProperty("major", beacon.getMajor());
+    message->setIntProperty("minor", beacon.getMinor());
+    message->setIntProperty("manufacturer", beacon.getManufacturer());
+    message->setIntProperty("code", beacon.getCode());
+    message->setIntProperty("power", beacon.getCalibratedPower());
+    message->setIntProperty("rssi", beacon.getRssi());
+    message->setLongProperty("time", beacon.getTime());
+    producer->send(message);
+    delete message;
+
+    if(dest != destination)
+        delete dest;
+}

@@ -2,6 +2,9 @@
 #include "MsgPublisher.h"
 #include <decaf/lang/System.h>
 
+// Uncomment to test the sending of message properties
+//#define MSG_PROPERTIES
+
 using namespace decaf::lang;
 
 Beacon testBeacon() {
@@ -18,12 +21,14 @@ Beacon testBeacon() {
     return beacon;
 }
 
-int main() {
+int main(int argc, char*argv[]) {
     MsgPublisherType type = MsgPublisherType::AMQP_QPID;
-    string brokerUrl("192.168.1.7:5672");
+    string brokerUrl("192.168.1.107:5672");
     string clientID("testQpidFactory");
     string userName;
     string password;
+
+    if (argc > 1) brokerUrl = argv[1];
 
     printf("Creating QPID MsgPublisher, brokerUrl=%s\n", brokerUrl.c_str());
     fflush(stdout);
@@ -37,8 +42,12 @@ int main() {
     for (int ix = 0; ix < 100; ++ix) {
         int64_t now = System::currentTimeMillis();
         beacon.setTime(now);
+#ifdef MSG_PROPERTIES
+        qpid->publish("", beacon);
+#else
         vector<byte> data = beacon.toByteMsg();
         qpid->publish("", MqttQOS::AT_MOST_ONCE , data.data(), data.size());
+#endif
         printf("Sent message #%d\n", ix + 1);
     }
     qpid->stop();
