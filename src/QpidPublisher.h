@@ -33,5 +33,7 @@ public:
     virtual void publish(string destinationName, MqttQOS qos, byte *payload, size_t len);
 
     virtual void publish(string destinationName, Beacon &beacon);
+
+    virtual void publish(vector<Beacon> events);
 };
 #endif

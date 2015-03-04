@@ -23,7 +23,7 @@ void QpidPublisher::start(bool asyncMode) {
   connection.open();
 
   // Create session
-  session = connection.createSession();
+  session = connection.createTransactionalSession();
 
   // Create sender with default topic destination address
   string destName = isUseTopics() ? AmqTopicName(destinationName) : AmqQueueName(destinationName);
@@ -94,4 +94,12 @@ void QpidPublisher::publish(string destName, Beacon &beacon) {
   // Close temporary sender
   if (sndr != sender)
     sndr.close();
+}
+
+void QpidPublisher::publish(vector<Beacon> events) {
+  for(int n = 0; n < events.size(); n ++) {
+    Beacon& b = events.at(n);
+    publish("", b);
+  }
+  session.commit();
 }

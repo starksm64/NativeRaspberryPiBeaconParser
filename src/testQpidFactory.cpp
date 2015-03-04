@@ -1,9 +1,11 @@
 #include <Beacon.h>
 #include "MsgPublisher.h"
 #include <decaf/lang/System.h>
+#include <qpid/messaging/Connection.h>
 
 // Uncomment to test the sending of message properties
 //#define MSG_PROPERTIES
+#define MSG_PROPERTIES_BATCH
 
 using namespace decaf::lang;
 
@@ -39,17 +41,26 @@ int main(int argc, char*argv[]) {
     printf("Started QPID MsgPublisher\n");
     // Create a messages
     Beacon beacon = testBeacon();
+    vector<Beacon> events;
     for (int ix = 0; ix < 100; ++ix) {
         int64_t now = System::currentTimeMillis();
         beacon.setTime(now);
 #ifdef MSG_PROPERTIES
         qpid->publish("", beacon);
+        printf("Sent properties message #%d\n", ix + 1);
+#endif
+#ifdef MSG_PROPERTIES_BATCH
+        events.push_back(beacon);
 #else
         vector<byte> data = beacon.toByteMsg();
         qpid->publish("", MqttQOS::AT_MOST_ONCE , data.data(), data.size());
+        printf("Sent byte message #%d\n", ix + 1);
 #endif
-        printf("Sent message #%d\n", ix + 1);
     }
+#ifdef MSG_PROPERTIES_BATCH
+    qpid->publish(events);
+    printf("Sent 100 messages in batch\n");
+#endif
     qpid->stop();
     printf("Stopped QPID MsgPublisher\n");
 }

@@ -88,9 +88,16 @@ public:
 
     /**
     * Send a beacon event to the broker as a collection of message properties
-    * @param - beacon
+    * @param - destinationName, a possibly empty name for the message destination
+    * @param - beacon, the beacon event to publish
     */
     virtual void publish(string destinationName, Beacon& beacon) = 0;
+
+    /**
+    * Send a collection of beacon events in batch to the broker, with each message consisting of the beacon
+    * properties
+    */
+    virtual void publish(vector<Beacon> events) = 0;
 
     virtual const char *toString() {
         int length = brokerUrl.length() + clientID.length();
