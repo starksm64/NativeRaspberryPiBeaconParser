@@ -34,6 +34,14 @@ public:
         HCIDumpParser::batchCount = batchCount;
     }
 
+    string &getScannerUUID() const {
+        return scannerUUID;
+    }
+
+    void setScannerUUID(string &scannerUUID) {
+        HCIDumpParser::scannerUUID = scannerUUID;
+    }
+
     void processHCI(HCIDumpCommand& parseCommand);
     void beaconEvent(const beacon_info *info);
     void cleanup();
