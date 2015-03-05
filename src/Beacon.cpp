@@ -72,6 +72,7 @@ Beacon Beacon::fromByteMsg(byte *msg, uint32_t length) {
         int32_t power = dis.readInt();
         int32_t calibratedPower = dis.readInt();
         int32_t rssi = dis.readInt();
+        int32_t messageType = dis.readInt();
         // The format is milliseconds since Epoch, but c++ time expects seconds
         int64_t time = dis.readLong();
         Beacon beacon = Beacon(scannerID, uuid, code, manufacturer, major, minor, power, calibratedPower, rssi, time);
@@ -98,6 +99,7 @@ vector<byte> Beacon::toByteMsg() {
         dos.writeInt(calibratedPower);
         dos.writeInt(rssi);
         dos.writeLong(time);
+        dos.writeInt(messageType);
         return dos.getData();
 }
 

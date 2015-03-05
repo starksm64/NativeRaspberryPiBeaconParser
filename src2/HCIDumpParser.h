@@ -15,11 +15,15 @@ class HCIDumpParser {
 private:
     HCIDumpCommand *parseCommand;
     MsgPublisher *publisher;
+    /** The count of messages to send in batches if > 0 */
     int batchCount;
+    /** vector of beacon events when sending events in batchCount transactions to the broker */
     vector<Beacon> events;
+    /** The uuid of the beacon associated with the scanner as its heartbeat/status signal */
+    string scannerUUID;
 
 public:
-    HCIDumpParser() : publisher(nullptr), batchCount(0) {
+    HCIDumpParser() : publisher(nullptr), batchCount(0), scannerUUID("") {
     }
 
 

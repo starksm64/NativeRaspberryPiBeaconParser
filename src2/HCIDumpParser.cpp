@@ -25,19 +25,30 @@ void HCIDumpParser::beaconEvent(const beacon_info *info) {
     Beacon beacon(parseCommand->getScannerID(), info->uuid, info->code, info->manufacturer, info->major, info->minor,
     info->power, info->calibrated_power, info->rssi, info->time);
     vector<byte> msg = beacon.toByteMsg();
+    // Check for heartbeat
+    bool isHeartbeat = scannerUUID.compare(info->uuid) == 0;
+    if(isHeartbeat)
+        beacon.setMessageType(BeconEventType::SCANNER_HEARTBEAT);
     if(!parseCommand->isSkipPublish()) {
         if(batchCount > 0) {
+            // Overwrite last event if it is a heartbeat and this is as well
+            if(isHeartbeat && events.back().getMessageType() == BeconEventType::SCANNER_HEARTBEAT)
+                events.pop_back();
             events.push_back(beacon);
             if(events.size() == batchCount) {
                 publisher->publish(events);
                 events.clear();
             }
+        } else if(isHeartbeat) {
+            publisher->publishStatus(beacon);
         } else {
             publisher->publish("", MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
         }
     }
-    else
-        printf("Parsed: %s\n", beacon.toString().c_str());
+    else {
+        const char *info = isHeartbeat ? "heartbeat" : "event";
+        printf("Parsed(%s): %s\n", info, beacon.toString().c_str());
+    }
 }
 void HCIDumpParser::cleanup() {
     if(publisher != nullptr)

@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <string>
 #include <vector>
+#include <stdint.h>
+#include <stdint-gcc.h>
 
 // Somehow
 #ifdef major
@@ -17,10 +19,16 @@ using byte = unsigned char;
 using namespace std;
 
 /** The current byte[] toByteMsg/fromByteMsg version format */
-static int32_t VERSION = 3;
+static int32_t VERSION = 4;
+
+enum BeconEventType {
+    /** A beacon event read by a scanner */
+            SCANNER_READ,
+    /** A status heartbeat from the scanner */
+            SCANNER_HEARTBEAT
+};
 
 class Beacon {
-
 
 private:
     string scannerID;
@@ -29,9 +37,13 @@ private:
     int32_t manufacturer;
     int32_t major;
     int32_t minor;
+    /** Current unused */
     int32_t power;
+    /** Power in DB measured at 1m away */
     int32_t calibratedPower;
     int32_t rssi;
+    /** BeconEventType */
+    int32_t messageType;
     // std::time() value * 1000
     int64_t time;
 
@@ -44,7 +56,8 @@ public:
 
     Beacon(string scannerID)
             : scannerID(scannerID),
-                uuid("0123456789ABCDEF"){
+                uuid("0123456789ABCDEF"),
+                messageType(BeconEventType::SCANNER_READ){
     }
     Beacon(const char * scannerID, const char * uuid, int32_t code, int32_t manufacturer, int32_t major, int32_t minor, int32_t power, int32_t calibratedPower, int32_t rssi, int64_t time)
             : scannerID(scannerID),
@@ -56,7 +69,8 @@ public:
               power(power),
               calibratedPower(calibratedPower),
               rssi(rssi),
-              time(time) {
+              time(time),
+              messageType(BeconEventType::SCANNER_READ){
     }
     Beacon(string scannerID, string uuid, int32_t code, int32_t manufacturer, int32_t major, int32_t minor, int32_t power, int32_t calibratedPower, int32_t rssi, int64_t time)
             : scannerID(scannerID),
@@ -68,7 +82,8 @@ public:
               power(power),
               calibratedPower(calibratedPower),
               rssi(rssi),
-              time(time) {
+              time(time),
+              messageType(BeconEventType::SCANNER_READ){
     }
     ~Beacon() {
     }
@@ -151,6 +166,15 @@ public:
 
     void setTime(int64_t time) {
         Beacon::time = time;
+    }
+
+
+    int32_t getMessageType() const {
+        return messageType;
+    }
+
+    void setMessageType(int32_t messageType) {
+        Beacon::messageType = messageType;
     }
 
     string toString();

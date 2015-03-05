@@ -99,6 +99,11 @@ public:
     */
     virtual void publish(vector<Beacon> events) = 0;
 
+    /**
+    * Called to publish a beacon event from the beacon associated with the scanner heartbeat
+    */
+    virtual void publishStatus(Beacon& beacon) = 0;
+
     virtual const char *toString() {
         int length = brokerUrl.length() + clientID.length();
         char *str = new char[length + 128];

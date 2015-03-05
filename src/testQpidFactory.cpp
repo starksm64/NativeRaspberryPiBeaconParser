@@ -3,10 +3,11 @@
 #include <decaf/lang/System.h>
 #include <qpid/messaging/Connection.h>
 #include <sys/time.h>
+#include <qpid/messaging/Duration.h>
 
 // Uncomment to test the sending of message properties
 //#define MSG_PROPERTIES
-//#define MSG_PROPERTIES_BATCH
+#define MSG_PROPERTIES_BATCH
 
 using namespace decaf::lang;
 
@@ -38,12 +39,13 @@ int main(int argc, char*argv[]) {
 
     MsgPublisher *qpid = MsgPublisher::create(type, brokerUrl, clientID, userName, password);
     printf("Created QPID MsgPublisher, %s\n", qpid->toString());
+    qpid->setUseTopics(false);
     qpid->start(false);
     printf("Started QPID MsgPublisher\n");
     // Create a messages
     Beacon beacon = testBeacon();
     vector<Beacon> events;
-    int N = 100000;
+    int N = 1000;
     struct timeval  start;
     gettimeofday(&start, nullptr);
     for (int ix = 0; ix < N; ++ix) {

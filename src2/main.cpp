@@ -58,7 +58,10 @@ int main(int argc, const char **argv) {
     TCLAP::CmdLine cmd("NativeScanner command line options", ' ', "0.1");
     //
     TCLAP::ValueArg<std::string> scannerID("s", "scannerID",
-            "Specify the ID of the scanner generating the beacon events",
+            "Specify the ID of the scanner reading the beacon events",
+            true, "DEFAULT", "string", cmd);
+    TCLAP::ValueArg<std::string> heartbeatUUID("H", "heartbeatUUID",
+            "Specify the UUID of the beacon used to signal the scanner heartbeat event",
             true, "DEFAULT", "string", cmd);
     TCLAP::ValueArg<std::string> rawDumpFile("d", "rawDumpFile",
             "Specify a path to an hcidump file to parse for testing",

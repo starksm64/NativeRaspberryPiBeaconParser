@@ -4,7 +4,6 @@
 #include <qpid/messaging/Sender.h>
 #include <qpid/messaging/Message.h>
 
-using namespace qpid;
 
 // Quote and prefix the project simple topic name.
 // * The quotes pass the name to qpid messaging correctly
@@ -74,22 +73,7 @@ void QpidPublisher::publish(string destName, Beacon &beacon) {
     sndr = session.createSender(fullDestName);
   }
 
-  messaging::Message message;
-  message.setProperty("uuid", beacon.getUuid());
-  message.setProperty("scannerID", beacon.getScannerID());
-  message.setProperty("major", beacon.getMajor());
-  message.setProperty("minor", beacon.getMinor());
-  message.setProperty("manufacturer", beacon.getManufacturer());
-  message.setProperty("code", beacon.getCode());
-  message.setProperty("power", beacon.getCalibratedPower());
-  message.setProperty("rssi", beacon.getRssi());
-  message.setProperty("time", beacon.getTime());
-
-  if (clientID.length() > 0)
-    message.setUserId(clientID);
-
-  // Send message
-  sndr.send(message);
+  doPublishProperties(sndr, beacon, BeconEventType::SCANNER_READ);
 
   // Close temporary sender
   if (sndr != sender)
@@ -102,4 +86,28 @@ void QpidPublisher::publish(vector<Beacon> events) {
     publish("", b);
   }
   session.commit();
+}
+
+void QpidPublisher::publishStatus(Beacon &beacon) {
+  doPublishProperties(sender, beacon, BeconEventType::SCANNER_HEARTBEAT);
+}
+
+void QpidPublisher::doPublishProperties(messaging::Sender sndr, Beacon &beacon, BeconEventType messageType) {
+  messaging::Message message;
+  message.setProperty("uuid", beacon.getUuid());
+  message.setProperty("scannerID", beacon.getScannerID());
+  message.setProperty("major", beacon.getMajor());
+  message.setProperty("minor", beacon.getMinor());
+  message.setProperty("manufacturer", beacon.getManufacturer());
+  message.setProperty("code", beacon.getCode());
+  message.setProperty("power", beacon.getCalibratedPower());
+  message.setProperty("rssi", beacon.getRssi());
+  message.setProperty("time", beacon.getTime());
+  message.setProperty("messageType", messageType);
+
+  if (clientID.length() > 0)
+    message.setUserId(clientID);
+
+  // Send message
+  sndr.send(message);
 }

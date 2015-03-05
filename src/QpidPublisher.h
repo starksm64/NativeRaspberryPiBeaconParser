@@ -11,11 +11,22 @@
 #include <qpid/messaging/Sender.h>
 #include <qpid/messaging/Message.h>
 
+using namespace qpid;
+
 class QpidPublisher : public MsgPublisher {
 private:
     qpid::messaging::Connection connection;
     qpid::messaging::Session session;
     qpid::messaging::Sender sender;
+
+protected:
+    /**
+    * Publish a beacon event as a collection of message properties with the given messageType
+    * @param - sndr encapsulation of publisher and destination
+    * @param - beacon, the beacon event to publish
+    * @param - messageType, 0=beacon event, 1=scanner heartbeat event
+    */
+    void doPublishProperties(messaging::Sender sndr, Beacon &beacon, BeconEventType messageType);
 
 public:
 
@@ -35,5 +46,7 @@ public:
     virtual void publish(string destinationName, Beacon &beacon);
 
     virtual void publish(vector<Beacon> events);
+
+    virtual void publishStatus(Beacon& beacon);
 };
 #endif
