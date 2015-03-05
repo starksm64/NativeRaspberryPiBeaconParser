@@ -132,6 +132,10 @@ int main(int argc, const char **argv) {
         printf("Set maxEventCount: %ld\n", maxEventCount);
     }
     parserLogic.setBatchCount(batchCount.getValue());
+    if(heartbeatUUID.isSet()) {
+        parserLogic.setScannerUUID(heartbeatUUID.getValue());
+        printf("Set heartbeatUUID: %s\n", heartbeatUUID.getValue().c_str());
+    }
     printf("Begin scanning...\n");
     parserLogic.processHCI(command);
     parserLogic.cleanup();
