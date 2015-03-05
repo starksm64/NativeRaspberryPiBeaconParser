@@ -95,8 +95,8 @@ int main(int argc, const char **argv) {
             false, "hci0", "string", cmd);
     MsgPublisherTypeConstraint pubTypeConstraint;
     TCLAP::ValueArg<std::string> pubType("P", "pubType",
-            "Specify the MsgPublisherType enum for the publisher implementation to use; default PAHO_MQTT",
-            false, "PAHO_MQTT", &pubTypeConstraint, cmd, nullptr);
+            "Specify the MsgPublisherType enum for the publisher implementation to use; default AMQP_QPID",
+            false, "AMQP_QPID", &pubTypeConstraint, cmd, nullptr);
     TCLAP::ValueArg<int> maxCount("C", "maxCount",
             "Specify a maxium number of events the scanner should process before exiting; default 0 means no limit",
             false, 0, "int", cmd);
