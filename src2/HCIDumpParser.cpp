@@ -32,7 +32,7 @@ void HCIDumpParser::beaconEvent(const beacon_info *info) {
     if(!parseCommand->isSkipPublish()) {
         if(batchCount > 0) {
             // Overwrite last event if it is a heartbeat and this is as well
-            if(isHeartbeat && events.back().getMessageType() == BeconEventType::SCANNER_HEARTBEAT)
+            if(isHeartbeat && events.size() > 0 && events.back().getMessageType() == BeconEventType::SCANNER_HEARTBEAT)
                 events.pop_back();
             events.push_back(beacon);
             if(events.size() == batchCount) {
