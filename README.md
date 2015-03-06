@@ -55,6 +55,26 @@ Perform the following instalations and downloads to enable access to the develop
 	./configure
 	make
 	make install
+	
+### Qpid proton client
+ git clone https://git-wip-us.apache.org/repos/asf/qpid-proton.git
+ yum install libuuid-devel java-1.8.0-openjdk-devel
+ mkdir build
+ cd build
+ cmake .. -DCMAKE_INSTALL_PREFIX=/opt/local
+ make
+ make install
+ 
+### Qpid cpp client
+	yum install ruby
+ git clone git://git.apache.org/qpid.git
+ cd qpid/qpid/cpp
+ mkdir build
+ cd build
+ cmake .. -DCMAKE_INSTALL_PREFIX=/opt/local
+ make
+ make install
+
 
 ### NativeRaspberryPiBeaconParser
 	git clone https://github.com/starksm64/NativeRaspberryPiBeaconParser.git
@@ -75,6 +95,14 @@ git clone https://github.com/starksm64/NativeRaspberryPiBeaconParser.git
 	cd ..
 	cmake --build Debug --target NativeScanner
 	cmake --build Debug --target NativeScannerBlueZ
+	
+## Making a debug build with print statement enabled
+	mkdir Debug
+	cd Debug
+	cmake -DPRINT_DEBUG=ON -DCMAKE_BUILD_TYPE=Debug ..
+	cd ..
+	cmake --build Debug --target NativeScannerBlueZ
+
 
 ## Making a debug build with extra printing enabled
 	mkdir Debug
@@ -120,6 +148,84 @@ Release/src/NativeScanner --scannerID test1 --brokerURL "tcp://192.168.1.107:188
 ## Running the scanner
 Below are example command lines for running the scanner. It is assumed that previously one has put the bluetooth interface into [ScanMode](#ScanMode) on the scanner host in order for the events to be available. Note that the scanner must be run either as root, or run using sudo to allow the scanner to read the events from the hci interface.
 
+### Full list of command line options
+The full list of command line options that the native scanner supports are:
+
+	USAGE: 
+	
+	   NativeScannerBlueZ  [-Q] [-A] [-S] [-B <int>] [-C <int>]
+                                    [-P <MsgPublisherTypeConstraint>] [-D
+                                    <string>] [-t <string>] [-b <string>]
+                                    [-p <string>] [-u <string>] [-c
+                                    <string>] [-d <string>] -H <string> -s
+                                    <string> [--] [--version] [-h]
+
+
+	Where: 
+
+	  -Q,  --useQueues
+	    Indicate that the destination type is a queue. If not given the
+	    default type is a topic.
+	
+	  -A,  --asyncMode
+	    Indicate that the parsed beacons should be published using async
+	    delivery mode
+	
+	  -S,  --skipPublish
+	    Indicate that the parsed beacons should not be published
+	
+	  -B <int>,  --batchCount <int>
+	    Specify a maxium number of events the scanner should combine before
+	    sending to broker; default 0 means no batching
+	
+	  -C <int>,  --maxCount <int>
+	    Specify a maxium number of events the scanner should process before
+	    exiting; default 0 means no limit
+	
+	  -P <MsgPublisherTypeConstraint>,  --pubType <MsgPublisherTypeConstraint>
+	    Specify the MsgPublisherType enum for the publisher implementation to
+	    use; default PAHO_MQTT
+	
+	  -D <string>,  --hciDev <string>
+	    Specify the name of the host controller interface to use; default hci0
+	
+	  -t <string>,  --destinationName <string>
+	    Specify the name of the queue on the MQTT broker to publish to;
+	    default beaconEvents
+	
+	  -b <string>,  --brokerURL <string>
+	    Specify the brokerURL to connect to the MQTT broker with; default
+	    tcp://localhost:1883
+	
+	  -p <string>,  --password <string>
+	    Specify the password to connect to the MQTT broker with
+	
+	  -u <string>,  --username <string>
+	    Specify the username to connect to the MQTT broker with
+	
+	  -c <string>,  --clientID <string>
+	    Specify the clientID to connect to the MQTT broker with
+	
+	  -d <string>,  --rawDumpFile <string>
+	    Specify a path to an hcidump file to parse for testing
+	
+	  -H <string>,  --heartbeatUUID <string>
+	    (required)  Specify the UUID of the beacon used to signal the scanner
+	    heartbeat event
+	
+	  -s <string>,  --scannerID <string>
+	    (required)  Specify the ID of the scanner reading the beacon events
+	
+	  --,  --ignore_rest
+	    Ignores the rest of the labeled arguments following this flag.
+	
+	  --version
+	    Displays version information and exits.
+	
+	  -h,  --help
+	    Displays usage information and exits.
+
+
 ### Run the scanner using the text output from hcidump as input
 This consumes the hcidump command output as the input for the beacon events, and publishes the beacon event messages to the MQTT server running at address tcp://192.168.1.107:1883.
 	
@@ -139,6 +245,7 @@ This command takes the beacon events coming from the hci1 bluetooth interface an
 This command takes the beacon events coming from the default hci0 bluetooth interface and simply prints them out to the console for debugging.  
 
 	Debug/src2/NativeScannerBlueZ --scannerID NativeScannerBlueZ --skipPublish
+	Debug/src2/NativeScannerBlueZ --scannerID NativeScannerBlueZ --skipPublish --heartbeatUUID DAF246CEF20111E4B116123B93F75CBA
 		
 ### Running the bluez native scanner using hci1 and async message publishing
 This command takes the beacon events coming from the hci1 bluetooth interface and publishes them to the MQTT server running at address tcp://192.168.1.107:1883 using asynchronous delivery.
@@ -151,5 +258,5 @@ NativeScannerBlueZ --scannerID NativeScannerBlueZ --pubType AMQP_QPID --brokerUR
 
 ### Running the bluez native scanner using hci0 and the AMQP QPID msg publisher using a queue type destination with default "beaconEvents" name
 
-NativeScannerBlueZ --scannerID NativeScannerBlueZ --pubType AMQP_QPID --brokerURL "192.168.1.107:5672" --useQueues
+	Debug/src2/NativeScannerBlueZ --scannerID NativeScannerBlueZ --pubType AMQP_QPID --brokerURL "192.168.1.107:5672" --useQueues
 
