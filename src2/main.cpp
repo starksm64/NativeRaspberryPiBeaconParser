@@ -62,7 +62,7 @@ int main(int argc, const char **argv) {
             true, "DEFAULT", "string", cmd);
     TCLAP::ValueArg<std::string> heartbeatUUID("H", "heartbeatUUID",
             "Specify the UUID of the beacon used to signal the scanner heartbeat event",
-            true, "DEFAULT", "string", cmd);
+            false, "DEFAULT", "string", cmd);
     TCLAP::ValueArg<std::string> rawDumpFile("d", "rawDumpFile",
             "Specify a path to an hcidump file to parse for testing",
             false, "", "string", cmd);
