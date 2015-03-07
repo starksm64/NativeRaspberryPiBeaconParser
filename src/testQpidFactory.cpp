@@ -6,8 +6,8 @@
 #include <qpid/messaging/Duration.h>
 
 // Uncomment to test the sending of message properties
-//#define MSG_PROPERTIES
-#define MSG_PROPERTIES_BATCH
+#define MSG_PROPERTIES
+//#define MSG_PROPERTIES_BATCH
 
 using namespace decaf::lang;
 
