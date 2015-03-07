@@ -39,6 +39,7 @@ extern "C" bool beacon_event_callback(const beacon_info *info) {
     if((eventCount % 1000) == 0 || elapsed > 5000) {
         lastMarkerCheckTime = info->time;
         stop = stopMarkerExists();
+        printf("beacon_event_callback, status eventCount=%d\n", eventCount);
     }
     // Check max event count limit
     if(maxEventCount > 0 && eventCount >= maxEventCount)
