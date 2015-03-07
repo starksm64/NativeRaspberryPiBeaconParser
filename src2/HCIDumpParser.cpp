@@ -17,7 +17,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     else {
         printf("Skipping publish of parsed beacons\n");
     }
-    if(batchCount > 1)
+    if(batchCount > 0)
         publisher->setUseTransactions(true);
 
     char cdev = parseCommand.getHciDev().at(parseCommand.getHciDev().size()-1);
