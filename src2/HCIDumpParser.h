@@ -3,6 +3,7 @@
 
 #include "HCIDumpCommand.h"
 #include <MsgPublisher.h>
+#include <ctime>
 #include <fstream>
 extern "C" {
 #include "hcidumpinternal.h"
@@ -21,6 +22,18 @@ private:
     vector<Beacon> events;
     /** The uuid of the beacon associated with the scanner as its heartbeat/status signal */
     string scannerUUID;
+    time_t currentTime;
+
+    inline bool shouldSendMessages() {
+        if(events.size() >= batchCount)
+            return true;
+        time_t now;
+        time(&now);
+        if((now - currentTime) > 5)
+            return true;
+        currentTime = now;
+        return false;
+    }
 
 public:
     HCIDumpParser() : publisher(nullptr), batchCount(0), scannerUUID("") {

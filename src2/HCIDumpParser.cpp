@@ -1,6 +1,8 @@
 #include <Beacon.h>
 #include "HCIDumpParser.h"
 
+
+
 void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     HCIDumpParser::parseCommand = &parseCommand;
     string clientID(parseCommand.getClientID());
@@ -37,7 +39,7 @@ void HCIDumpParser::beaconEvent(const beacon_info *info) {
             if(isHeartbeat && events.size() > 0 && events.back().getMessageType() == BeconEventType::SCANNER_HEARTBEAT)
                 events.pop_back();
             events.push_back(beacon);
-            if(events.size() == batchCount) {
+            if(shouldSendMessages()) {
                 publisher->publish(events);
                 events.clear();
             }
