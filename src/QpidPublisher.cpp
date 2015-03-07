@@ -22,7 +22,10 @@ void QpidPublisher::start(bool asyncMode) {
   connection.open();
 
   // Create session
-  session = connection.createTransactionalSession();
+  if(useTransactions)
+    session = connection.createTransactionalSession();
+  else
+    session = connection.createSession();
 
   // Create sender with default topic destination address
   string destName = isUseTopics() ? AmqTopicName(destinationName) : AmqQueueName(destinationName);

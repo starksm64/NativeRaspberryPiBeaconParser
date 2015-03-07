@@ -31,6 +31,8 @@ protected:
     string destinationName;
     /** Should the destination type be a topic(true) or a queue(false) */
     bool useTopics;
+    /** Should transacted sessions be used */
+    bool useTransactions;
 
 public:
 
@@ -40,7 +42,8 @@ public:
           userName(userName),
           password(password),
           destinationName("beaconEvents"),
-          useTopics(true) {
+          useTopics(true),
+          useTransactions(false) {
     }
 
     virtual ~MsgPublisher() {
@@ -64,7 +67,14 @@ public:
         return useTopics;
     }
 
-    // Interface methods ---
+    bool isUseTransactions() const {
+        return useTransactions;
+    }
+    void setUseTransactions(bool useTransactions) {
+        MsgPublisher::useTransactions = useTransactions;
+    }
+
+// Interface methods ---
     virtual void start(bool asyncMode) = 0;
     virtual void stop() = 0;
 
