@@ -1,7 +1,8 @@
 #include <Beacon.h>
 #include "HCIDumpParser.h"
 
-
+// Uncomment to publish the raw byte[] for the beacon, otherwise, properties are sent
+//#define SEND_BINARY_DATA
 
 void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     HCIDumpParser::parseCommand = &parseCommand;
@@ -61,7 +62,11 @@ printf("Sending heartbeat\n");
 #ifdef PRINT_DEBUG
 printf("Sending msg\n");
 #endif
+#ifdef SEND_BINARY_DATA
             publisher->publish("", MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
+#else
+            publisher->publishStatus(beacon);
+#endif
         }
     }
     else {
