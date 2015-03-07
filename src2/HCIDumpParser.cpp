@@ -40,12 +40,25 @@ void HCIDumpParser::beaconEvent(const beacon_info *info) {
                 events.pop_back();
             events.push_back(beacon);
             if(shouldSendMessages()) {
+#ifdef PRINT_DEBUG
+printf("Sending msg batch, size=%d\n", events.size());
+#endif
                 publisher->publish(events);
                 events.clear();
+            } else {
+#ifdef PRINT_DEBUG
+printf("Batched msg, size=%d\n", events.size());
+#endif
             }
         } else if(isHeartbeat) {
+#ifdef PRINT_DEBUG
+printf("Sending heartbeat\n");
+#endif
             publisher->publishStatus(beacon);
         } else {
+#ifdef PRINT_DEBUG
+printf("Sending msg\n");
+#endif
             publisher->publish("", MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
         }
     }
