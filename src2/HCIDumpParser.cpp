@@ -12,14 +12,14 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     if(!parseCommand.isSkipPublish()) {
         publisher->setUseTopics(!parseCommand.isUseQueues());
         publisher->setDestinationName(parseCommand.getDestinationName());
+        if(batchCount > 0) {
+            publisher->setUseTransactions(true);
+            printf("Enabled transactions\n");
+        }
         publisher->start(parseCommand.isAsyncMode());
     }
     else {
         printf("Skipping publish of parsed beacons\n");
-    }
-    if(batchCount > 0) {
-        publisher->setUseTransactions(true);
-        printf("Enabled transactions\n");
     }
 
     char cdev = parseCommand.getHciDev().at(parseCommand.getHciDev().size()-1);
