@@ -65,7 +65,7 @@ printf("Sending msg\n");
 #ifdef SEND_BINARY_DATA
             publisher->publish("", MqttQOS::AT_MOST_ONCE, msg.data(), msg.size());
 #else
-            publisher->publishStatus(beacon);
+            publisher->publish("", beacon);
 #endif
         }
     }
