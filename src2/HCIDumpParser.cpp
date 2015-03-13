@@ -71,7 +71,7 @@ printf("Sending msg\n");
     }
     else {
         const char *info = isHeartbeat ? "heartbeat" : "event";
-        if(isHeartbeat && !parseCommand->isSkipHeartbeat())
+        if(!isHeartbeat || (isHeartbeat && !parseCommand->isSkipHeartbeat()))
             printf("Parsed(%s): %s\n", info, beacon.toString().c_str());
     }
 }
