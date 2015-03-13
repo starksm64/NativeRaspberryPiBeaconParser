@@ -16,6 +16,7 @@ private:
     bool skipPublish;
     bool asyncMode;
     bool useQueues;
+    bool skipHeartbeat;
     MsgPublisherType pubType;
 
 public:
@@ -75,6 +76,15 @@ public:
 
     void setSkipPublish(bool skipPublish) {
         HCIDumpCommand::skipPublish = skipPublish;
+    }
+
+
+    bool isSkipHeartbeat() const {
+        return skipHeartbeat;
+    }
+
+    void setSkipHeartbeat(bool skipHeartbeat) {
+        HCIDumpCommand::skipHeartbeat = skipHeartbeat;
     }
 
     bool isAsyncMode() const {

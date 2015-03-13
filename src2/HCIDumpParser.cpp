@@ -53,7 +53,7 @@ printf("Sending msg batch, size=%d\n", events.size());
 printf("Batched msg, size=%d\n", events.size());
 #endif
             }
-        } else if(isHeartbeat) {
+        } else if(isHeartbeat && !parseCommand->isSkipHeartbeat()) {
 #ifdef PRINT_DEBUG
 printf("Sending heartbeat\n");
 #endif
@@ -71,7 +71,8 @@ printf("Sending msg\n");
     }
     else {
         const char *info = isHeartbeat ? "heartbeat" : "event";
-        printf("Parsed(%s): %s\n", info, beacon.toString().c_str());
+        if(isHeartbeat && !parseCommand->isSkipHeartbeat())
+            printf("Parsed(%s): %s\n", info, beacon.toString().c_str());
     }
 }
 void HCIDumpParser::cleanup() {
