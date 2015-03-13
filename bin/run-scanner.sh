@@ -25,5 +25,5 @@ else
 fi
 
 # Start the scanner
-${ROOT}/Debug/src2/NativeScannerBlueZ --scannerID "${SCANNER_ID:-`hostname`}" --brokerURL "${BROKER_URL:-192.168.1.107:5672}" --heartbeatUUID "${HEARTBEAT_UUID}" --useQueues
+${ROOT}/Debug/src2/NativeScannerBlueZ --scannerID "${SCANNER_ID:-`hostname`}" --brokerURL "${BROKER_URL:-192.168.1.107:5672}" --heartbeatUUID "${HEARTBEAT_UUID}" --useQueues $*
 
