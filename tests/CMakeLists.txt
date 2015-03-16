@@ -10,6 +10,10 @@ set(testTime_FILES testTime.c)
 add_executable(testTime ${testTime_FILES})
 add_test(testTime ${CMAKE_CURRENT_BINARY_DIR}/testTime)
 
+set(testMap_FILES testMap.cpp)
+add_executable(testMap ${testMap_FILES})
+add_test(testMap ${CMAKE_CURRENT_BINARY_DIR}/testMap)
+
 set(testCout_FILES testCout.cpp)
 add_executable(testCout ${testCout_FILES})
 add_test(testCout ${CMAKE_CURRENT_BINARY_DIR}/testCout)
