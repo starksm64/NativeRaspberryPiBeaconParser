@@ -65,7 +65,7 @@ printf("Batched msg, size=%d\n", events.size());
             }
         } else if(isHeartbeat) {
 #ifdef PRINT_DEBUG
-printf("Sending heartbeat, %s\n", !parseCommand->isSkipHeartbeat();
+printf("Sending heartbeat, %s\n", !parseCommand->isSkipHeartbeat());
 #endif
             if(!parseCommand->isSkipHeartbeat())
                 publisher->publishStatus(beacon);
