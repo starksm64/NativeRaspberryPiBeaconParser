@@ -5,6 +5,16 @@
 // Uncomment to publish the raw byte[] for the beacon, otherwise, properties are sent
 //#define SEND_BINARY_DATA
 
+static int64_t currentMilliseconds() {
+    timeval now;
+    gettimeofday(&now, nullptr);
+
+    int64_t nowMS = now.tv_sec;
+    nowMS *= 1000;
+    nowMS += now.tv_usec/1000;
+    return nowMS;
+}
+
 void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     HCIDumpParser::parseCommand = &parseCommand;
     string clientID(parseCommand.getClientID());
@@ -12,9 +22,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
         clientID = parseCommand.getScannerID();
     publisher = MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", "");
     if(parseCommand.isAnalyzeMode()) {
-        timeval now;
-        gettimeofday(&now, nullptr);
-        begin = now.tv_sec;
+        begin = currentMilliseconds();
         end += parseCommand.getAnalyzeWindow();
         printf("Running in analyze mode, window=%s seconds\n", parseCommand.getAnalyzeWindow());
     }
@@ -96,7 +104,7 @@ void HCIDumpParser::cleanup() {
 
 void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
 #ifdef PRINT_DEBUG
-    printf("updateBeaconCounts(begin=%d, end=%d, info.time=%d\n", begin, end, info->time);
+    printf("updateBeaconCounts(begin=%lld, end=%lld, info.time=%lld\n", begin, end, info->time);
 #endif
     if(info->time < end) {
         // Update the beacon event counts
@@ -104,7 +112,7 @@ void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
     } else {
         char timestr[256];
         struct timeval tv;
-        tv.tv_sec = begin;
+        tv.tv_sec = begin/1000;
         tv.tv_usec = 0;
         struct tm tm;
         localtime_r(&tv.tv_sec, &tm);
@@ -115,7 +123,7 @@ void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
             printf("\t%2d: %2d", iter->first, iter->second);
         }
         begin = end;
-        end += parseCommand->getAnalyzeWindow();
+        end += 1000*parseCommand->getAnalyzeWindow();
         beaconCounts.clear();
     }
 }

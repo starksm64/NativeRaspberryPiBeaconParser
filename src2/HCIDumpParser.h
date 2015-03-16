@@ -25,8 +25,9 @@ private:
     string scannerUUID;
     time_t currentTime;
     map<int32_t, int32_t> beaconCounts;
-    time_t begin;
-    time_t end;
+    // Current analyze window begin/end in milliseconds to be compatible with beacon_info.time
+    int64_t begin;
+    int64_t end;
 
     inline bool shouldSendMessages() {
         if(events.size() >= batchCount)
