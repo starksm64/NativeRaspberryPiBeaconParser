@@ -24,7 +24,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     if(parseCommand.isAnalyzeMode()) {
         begin = currentMilliseconds();
         end += parseCommand.getAnalyzeWindow();
-        printf("Running in analyze mode, window=%s seconds\n", parseCommand.getAnalyzeWindow());
+        printf("Running in analyze mode, window=%d seconds\n", parseCommand.getAnalyzeWindow());
     }
     else if(!parseCommand.isSkipPublish()) {
         publisher->setUseTopics(!parseCommand.isUseQueues());
