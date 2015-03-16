@@ -94,7 +94,7 @@ int main(int argc, const char **argv) {
     TCLAP::SwitchArg skipHeartbeat("K", "skipHeartbeat",
             "Don't publish the heartbeat messages. Useful to limit the noise when testing the scanner.",
             false);
-    TCLAP::SwitchArg analzyeMode("A", "analzyeMode",
+    TCLAP::SwitchArg analzyeMode("Z", "analzyeMode",
             "Run the scanner in a mode that simply collects beacon readings and reports unique beacons seen in a time window",
             false);
     TCLAP::ValueArg<int> analyzeWindow("W", "analyzeWindow",
