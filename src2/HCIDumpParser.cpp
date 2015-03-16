@@ -104,7 +104,7 @@ void HCIDumpParser::cleanup() {
 
 void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
 #ifdef PRINT_DEBUG
-    printf("updateBeaconCounts(begin=%lld, end=%lld, info.time=%lld\n", begin, end, info->time);
+    printf("updateBeaconCounts(%d); begin=%lld, end=%lld, info.time=%lld\n", beaconCounts.size(), begin, end, info->time);
 #endif
     if(info->time < end) {
         // Update the beacon event counts
