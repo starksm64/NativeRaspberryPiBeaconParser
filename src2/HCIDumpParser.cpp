@@ -16,6 +16,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
         gettimeofday(&now, nullptr);
         begin = now.tv_sec;
         end += parseCommand.getAnalyzeWindow();
+        printf("Running in analyze mode, window=%s seconds\n", parseCommand.getAnalyzeWindow());
     }
     else if(!parseCommand.isSkipPublish()) {
         publisher->setUseTopics(!parseCommand.isUseQueues());
@@ -94,6 +95,9 @@ void HCIDumpParser::cleanup() {
 }
 
 void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
+#ifdef PRINT_DEBUG
+    printf("updateBeaconCounts(begin=%d, end=%d, info.time=%d\n", begin, end, info->time);
+#endif
     if(info->time < end) {
         // Update the beacon event counts
         beaconCounts[info->minor] ++;
