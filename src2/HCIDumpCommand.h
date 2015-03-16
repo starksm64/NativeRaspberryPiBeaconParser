@@ -13,6 +13,10 @@ private:
     string clientID;
     string destinationName;
     string hciDev = "hci0";
+    int analyzeWindow;
+    bool analyzeMode;
+
+private:
     bool skipPublish;
     bool asyncMode;
     bool useQueues;
@@ -95,6 +99,21 @@ public:
         HCIDumpCommand::asyncMode = asyncMode;
     }
 
+    int getAnalyzeWindow() const {
+        return analyzeWindow;
+    }
+
+    void setAnalyzeWindow(int analyzeWindow) {
+        HCIDumpCommand::analyzeWindow = analyzeWindow;
+    }
+
+    bool isAnalyzeMode() const {
+        return analyzeMode;
+    }
+
+    void setAnalyzeMode(bool analyzeMode) {
+        HCIDumpCommand::analyzeMode = analyzeMode;
+    }
 
     MsgPublisherType const &getPubType() const {
         return pubType;

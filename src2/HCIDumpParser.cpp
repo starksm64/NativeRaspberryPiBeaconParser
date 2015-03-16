@@ -1,4 +1,5 @@
 #include <Beacon.h>
+#include <sys/time.h>
 #include "HCIDumpParser.h"
 
 // Uncomment to publish the raw byte[] for the beacon, otherwise, properties are sent
@@ -10,7 +11,13 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     if(clientID.empty())
         clientID = parseCommand.getScannerID();
     publisher = MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", "");
-    if(!parseCommand.isSkipPublish()) {
+    if(parseCommand.isAnalyzeMode()) {
+        timeval now;
+        gettimeofday(&now, nullptr);
+        begin = now.tv_sec;
+        end += parseCommand.getAnalyzeWindow();
+    }
+    else if(!parseCommand.isSkipPublish()) {
         publisher->setUseTopics(!parseCommand.isUseQueues());
         publisher->setDestinationName(parseCommand.getDestinationName());
         if(batchCount > 0) {
@@ -36,7 +43,10 @@ void HCIDumpParser::beaconEvent(const beacon_info *info) {
     bool isHeartbeat = scannerUUID.compare(info->uuid) == 0;
     if(isHeartbeat)
         beacon.setMessageType(BeconEventType::SCANNER_HEARTBEAT);
-    if(!parseCommand->isSkipPublish()) {
+    if(parseCommand->isAnalyzeMode()) {
+        updateBeaconCounts(info);
+    }
+    else if(!parseCommand->isSkipPublish()) {
         if(batchCount > 0) {
             // Overwrite last event if it is a heartbeat and this is as well
             if(isHeartbeat && events.size() > 0 && events.back().getMessageType() == BeconEventType::SCANNER_HEARTBEAT)
@@ -76,8 +86,32 @@ printf("Sending msg\n");
             printf("Parsed(%s): %s\n", info, beacon.toString().c_str());
     }
 }
+
 void HCIDumpParser::cleanup() {
     if(publisher != nullptr)
         publisher->stop();
     publisher = nullptr;
+}
+
+void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
+    if(info->time < end) {
+        // Update the beacon event counts
+        beaconCounts[info->minor] ++;
+    } else {
+        char timestr[256];
+        struct timeval tv;
+        tv.tv_sec = begin;
+        tv.tv_usec = 0;
+        struct tm tm;
+        localtime_r(&tv.tv_sec, &tm);
+        strftime(timestr, 128, "%r", &tm);
+        // Report the stats for this time window and then reset
+        printf("+++ Beacon counts for window(%d): %s\n", parseCommand->getAnalyzeWindow(), timestr);
+        for(map<int32_t, int32_t>::iterator iter = beaconCounts.begin(); iter != beaconCounts.end(); iter++) {
+            printf("\t%2d: %2d", iter->first, iter->second);
+        }
+        begin = end;
+        end += parseCommand->getAnalyzeWindow();
+        beaconCounts.clear();
+    }
 }
