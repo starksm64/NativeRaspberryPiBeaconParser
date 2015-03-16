@@ -23,8 +23,8 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     publisher = MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", "");
     if(parseCommand.isAnalyzeMode()) {
         begin = currentMilliseconds();
-        end += parseCommand.getAnalyzeWindow();
-        printf("Running in analyze mode, window=%d seconds\n", parseCommand.getAnalyzeWindow());
+        end = begin + parseCommand.getAnalyzeWindow();
+        printf("Running in analyze mode, window=%d seconds, begin=%lld\n", parseCommand.getAnalyzeWindow(), begin);
     }
     else if(!parseCommand.isSkipPublish()) {
         publisher->setUseTopics(!parseCommand.isUseQueues());
@@ -46,7 +46,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
 
 void HCIDumpParser::beaconEvent(const beacon_info *info) {
     Beacon beacon(parseCommand->getScannerID(), info->uuid, info->code, info->manufacturer, info->major, info->minor,
-    info->power, info->calibrated_power, info->rssi, info->time);
+            info->power, info->calibrated_power, info->rssi, info->time);
     vector<byte> msg = beacon.toByteMsg();
     // Check for heartbeat
     bool isHeartbeat = scannerUUID.compare(info->uuid) == 0;
@@ -118,9 +118,9 @@ void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
         localtime_r(&tv.tv_sec, &tm);
         strftime(timestr, 128, "%r", &tm);
         // Report the stats for this time window and then reset
-        printf("+++ Beacon counts for window(%d): %s\n", parseCommand->getAnalyzeWindow(), timestr);
+        printf("+++ Beacon counts for window(%d,%d): %s\n", beaconCounts.size(), parseCommand->getAnalyzeWindow(), timestr);
         for(map<int32_t, int32_t>::iterator iter = beaconCounts.begin(); iter != beaconCounts.end(); iter++) {
-            printf("\t%2d: %2d", iter->first, iter->second);
+            printf("\t%2d: %2d\n", iter->first, iter->second);
         }
         begin = end;
         end += 1000*parseCommand->getAnalyzeWindow();
