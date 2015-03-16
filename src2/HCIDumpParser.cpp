@@ -119,9 +119,11 @@ void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
         strftime(timestr, 128, "%r", &tm);
         // Report the stats for this time window and then reset
         printf("+++ Beacon counts for window(%d,%d): %s\n", beaconCounts.size(), parseCommand->getAnalyzeWindow(), timestr);
+        printf("\t");
         for(map<int32_t, int32_t>::iterator iter = beaconCounts.begin(); iter != beaconCounts.end(); iter++) {
-            printf("\t%2d: %2d\n", iter->first, iter->second);
+            printf("+%2d: %2d; ", iter->first, iter->second);
         }
+        printf("\n");
         begin = end;
         end += 1000*parseCommand->getAnalyzeWindow();
         beaconCounts.clear();
