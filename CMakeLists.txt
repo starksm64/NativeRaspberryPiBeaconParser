@@ -25,8 +25,12 @@ set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/lib)
 find_package(Proton REQUIRED PATHS /opt/local/lib/cmake/Proton /opt/local/lib64/cmake/Proton)
 MESSAGE(STATUS "Found Proton: ${Proton_Libraries} (version \"${Proton_VERSION}\")")
 
-find_package(Qpid REQUIRED PATHS /opt/local/lib/cmake/Qpid /opt/local/lib64/cmake/Qpid)
-MESSAGE(STATUS "Found Qpid: ${Qpid_Libraries} (version \"${Qpid_VERSION}\")")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    MESSAGE(STATUS "Skipping Qpid check for now")
+else()
+    find_package(Qpid REQUIRED PATHS /opt/local/lib/cmake/Qpid /opt/local/lib64/cmake/Qpid)
+    MESSAGE(STATUS "Found Qpid: ${Qpid_Libraries} (version \"${Qpid_VERSION}\")")
+endif()
 
 # Source directories
 add_subdirectory(src)
