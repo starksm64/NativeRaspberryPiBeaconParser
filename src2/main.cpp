@@ -91,6 +91,15 @@ int main(int argc, const char **argv) {
     TCLAP::SwitchArg useQueues("Q", "useQueues",
             "Indicate that the destination type is a queue. If not given the default type is a topic.",
             false);
+    TCLAP::SwitchArg skipHeartbeat("K", "skipHeartbeat",
+            "Don't publish the heartbeat messages. Useful to limit the noise when testing the scanner.",
+            false);
+    TCLAP::SwitchArg analzyeMode("Z", "analzyeMode",
+            "Run the scanner in a mode that simply collects beacon readings and reports unique beacons seen in a time window",
+            false);
+    TCLAP::ValueArg<int> analyzeWindow("W", "analyzeWindow",
+            "Specify the number of seconds in the analyzeMode time window",
+            false, 5, "int", cmd);
     TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
             "Specify the name of the host controller interface to use; default hci0",
             false, "hci0", "string", cmd);
@@ -109,6 +118,8 @@ int main(int argc, const char **argv) {
         cmd.add(skipPublish);
         cmd.add(asyncMode);
         cmd.add(useQueues);
+        cmd.add(skipHeartbeat);
+        cmd.add(analzyeMode);
         // Parse the argv array.
         printf("Parsing command line...\n");
         cmd.parse( argc, argv );
@@ -125,8 +136,11 @@ int main(int argc, const char **argv) {
 
     HCIDumpCommand command(scannerID.getValue(), brokerURL.getValue(), clientID.getValue(), topicName.getValue());
     command.setSkipPublish(skipPublish.getValue());
+    command.setSkipHeartbeat(skipHeartbeat.getValue());
     command.setHciDev(hciDev.getValue());
     command.setAsyncMode(asyncMode.getValue());
+    command.setAnalyzeMode(analzyeMode.getValue());
+    command.setAnalyzeWindow(analyzeWindow.getValue());
     command.setPubType(pubTypeConstraint.toType(pubType.getValue()));
     if(maxCount.getValue() > 0) {
         maxEventCount = maxCount.getValue();

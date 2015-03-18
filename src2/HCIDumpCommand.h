@@ -13,9 +13,14 @@ private:
     string clientID;
     string destinationName;
     string hciDev = "hci0";
+    int analyzeWindow;
+    bool analyzeMode;
+
+private:
     bool skipPublish;
     bool asyncMode;
     bool useQueues;
+    bool skipHeartbeat;
     MsgPublisherType pubType;
 
 public:
@@ -77,6 +82,15 @@ public:
         HCIDumpCommand::skipPublish = skipPublish;
     }
 
+
+    bool isSkipHeartbeat() const {
+        return skipHeartbeat;
+    }
+
+    void setSkipHeartbeat(bool skipHeartbeat) {
+        HCIDumpCommand::skipHeartbeat = skipHeartbeat;
+    }
+
     bool isAsyncMode() const {
         return asyncMode;
     }
@@ -85,6 +99,21 @@ public:
         HCIDumpCommand::asyncMode = asyncMode;
     }
 
+    int getAnalyzeWindow() const {
+        return analyzeWindow;
+    }
+
+    void setAnalyzeWindow(int analyzeWindow) {
+        HCIDumpCommand::analyzeWindow = analyzeWindow;
+    }
+
+    bool isAnalyzeMode() const {
+        return analyzeMode;
+    }
+
+    void setAnalyzeMode(bool analyzeMode) {
+        HCIDumpCommand::analyzeMode = analyzeMode;
+    }
 
     MsgPublisherType const &getPubType() const {
         return pubType;
