@@ -6,6 +6,10 @@ include_directories(. ../src)
 
 #set(BEACON_FILES ../src/Beacon.cpp ../src/Beacon.h)
 
+set(threadsTest_FILES threadsTest.cpp backgroundTask.cpp backgroundTask.h)
+add_executable(threadsTest ${threadsTest_FILES})
+add_test(threadsTest ${CMAKE_CURRENT_BINARY_DIR}/threadsTest)
+
 set(testTime_FILES testTime.c)
 add_executable(testTime ${testTime_FILES})
 add_test(testTime ${CMAKE_CURRENT_BINARY_DIR}/testTime)
