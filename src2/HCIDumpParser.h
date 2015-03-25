@@ -6,6 +6,7 @@
 #include <ctime>
 #include <fstream>
 #include <map>
+#include <memory>
 extern "C" {
 #include "hcidumpinternal.h"
 }

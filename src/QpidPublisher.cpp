@@ -37,9 +37,12 @@ void QpidPublisher::start(bool asyncMode) {
 }
 
 void QpidPublisher::stop() {
-  sender.close();
-  session.close();
-  connection.close();
+  if(sender)
+    sender.close();
+  if(session)
+    session.close();
+  if(connection)
+    connection.close();
   sender = messaging::Sender();
   session = messaging::Session();
   connection = messaging::Connection();

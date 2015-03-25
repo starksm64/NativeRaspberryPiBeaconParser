@@ -37,7 +37,7 @@ int main(int argc, char*argv[]) {
     printf("Creating QPID MsgPublisher, brokerUrl=%s\n", brokerUrl.c_str());
     fflush(stdout);
 
-    std::unique_ptr<MsgPublisher> qpid = MsgPublisher::create(type, brokerUrl, clientID, userName, password);
+    std::unique_ptr<MsgPublisher> qpid(MsgPublisher::create(type, brokerUrl, clientID, userName, password));
     printf("Created QPID MsgPublisher, %s\n", qpid->toString());
     qpid->setUseTopics(false);
     qpid->start(false);
@@ -45,7 +45,7 @@ int main(int argc, char*argv[]) {
     // Create a messages
     Beacon beacon = testBeacon();
     vector<Beacon> events;
-    int N = 1000;
+    int N = 100;
     struct timeval  start;
     gettimeofday(&start, nullptr);
     for (int ix = 0; ix < N; ++ix) {

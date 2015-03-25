@@ -20,7 +20,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     string clientID(parseCommand.getClientID());
     if(clientID.empty())
         clientID = parseCommand.getScannerID();
-    publisher = MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", "");
+    publisher.reset(MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", ""));
     if(parseCommand.isAnalyzeMode()) {
         begin = currentMilliseconds();
         end = begin + parseCommand.getAnalyzeWindow();
