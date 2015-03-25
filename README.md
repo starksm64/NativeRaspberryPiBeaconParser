@@ -152,78 +152,92 @@ Below are example command lines for running the scanner. It is assumed that prev
 The full list of command line options that the native scanner supports are:
 
 	USAGE: 
-	
-	   NativeScannerBlueZ  [-Q] [-A] [-S] [-B <int>] [-C <int>]
-                                    [-P <MsgPublisherTypeConstraint>] [-D
-                                    <string>] [-t <string>] [-b <string>]
-                                    [-p <string>] [-u <string>] [-c
-                                    <string>] [-d <string>] -H <string> -s
-                                    <string> [--] [--version] [-h]
-
-
-	Where: 
-
-	  -Q,  --useQueues
-	    Indicate that the destination type is a queue. If not given the
-	    default type is a topic.
-	
-	  -A,  --asyncMode
-	    Indicate that the parsed beacons should be published using async
-	    delivery mode
-	
-	  -S,  --skipPublish
-	    Indicate that the parsed beacons should not be published
-	
-	  -B <int>,  --batchCount <int>
-	    Specify a maxium number of events the scanner should combine before
-	    sending to broker; default 0 means no batching
-	
-	  -C <int>,  --maxCount <int>
-	    Specify a maxium number of events the scanner should process before
-	    exiting; default 0 means no limit
-	
-	  -P <MsgPublisherTypeConstraint>,  --pubType <MsgPublisherTypeConstraint>
-	    Specify the MsgPublisherType enum for the publisher implementation to
-	    use; default PAHO_MQTT
-	
-	  -D <string>,  --hciDev <string>
-	    Specify the name of the host controller interface to use; default hci0
-	
-	  -t <string>,  --destinationName <string>
-	    Specify the name of the queue on the MQTT broker to publish to;
-	    default beaconEvents
-	
-	  -b <string>,  --brokerURL <string>
-	    Specify the brokerURL to connect to the MQTT broker with; default
-	    tcp://localhost:1883
-	
-	  -p <string>,  --password <string>
-	    Specify the password to connect to the MQTT broker with
-	
-	  -u <string>,  --username <string>
-	    Specify the username to connect to the MQTT broker with
-	
-	  -c <string>,  --clientID <string>
-	    Specify the clientID to connect to the MQTT broker with
-	
-	  -d <string>,  --rawDumpFile <string>
-	    Specify a path to an hcidump file to parse for testing
-	
-	  -H <string>,  --heartbeatUUID <string>
-	    (required)  Specify the UUID of the beacon used to signal the scanner
-	    heartbeat event
-	
-	  -s <string>,  --scannerID <string>
-	    (required)  Specify the ID of the scanner reading the beacon events
-	
-	  --,  --ignore_rest
-	    Ignores the rest of the labeled arguments following this flag.
-	
-	  --version
-	    Displays version information and exits.
-	
-	  -h,  --help
-	    Displays usage information and exits.
+    
+       ./NativeRaspberryPiBeaconParser/Debug/src2/NativeScannerBlueZ  [-Z] [-K]
+                                            [-Q] [-A] [-S] [-B <int>] [-C
+                                            <int>] [-P
+                                            <MsgPublisherTypeConstraint>] [-D
+                                            <string>] [-W <int>] [-t <string>]
+                                            [-b <string>] [-p <string>] [-u
+                                            <string>] [-c <string>] [-d
+                                            <string>] [-H <string>] -s <string>
+                                            [--] [--version] [-h]
+    
+    
+    Where: 
+    
+       -Z,  --analzyeMode
+         Run the scanner in a mode that simply collects beacon readings and
+         reports unique beacons seen in a time window
+    
+       -K,  --skipHeartbeat
+         Don't publish the heartbeat messages. Useful to limit the noise when
+         testing the scanner.
+    
+       -Q,  --useQueues
+         Indicate that the destination type is a queue. If not given the
+         default type is a topic.
+    
+       -A,  --asyncMode
+         Indicate that the parsed beacons should be published using async
+         delivery mode
+    
+       -S,  --skipPublish
+         Indicate that the parsed beacons should not be published
+    
+       -B <int>,  --batchCount <int>
+         Specify a maxium number of events the scanner should combine before
+         sending to broker; default 0 means no batching
+    
+       -C <int>,  --maxCount <int>
+         Specify a maxium number of events the scanner should process before
+         exiting; default 0 means no limit
+    
+       -P <MsgPublisherTypeConstraint>,  --pubType <MsgPublisherTypeConstraint>
+         Specify the MsgPublisherType enum for the publisher implementation to
+         use; default AMQP_QPID
+    
+       -D <string>,  --hciDev <string>
+         Specify the name of the host controller interface to use; default hci0
+    
+       -W <int>,  --analyzeWindow <int>
+         Specify the number of seconds in the analyzeMode time window
+    
+       -t <string>,  --destinationName <string>
+         Specify the name of the queue on the MQTT broker to publish to;
+         default beaconEvents
+    
+       -b <string>,  --brokerURL <string>
+         Specify the brokerURL to connect to the MQTT broker with; default
+         tcp://localhost:1883
+    
+       -p <string>,  --password <string>
+         Specify the password to connect to the MQTT broker with
+    
+       -u <string>,  --username <string>
+         Specify the username to connect to the MQTT broker with
+    
+       -c <string>,  --clientID <string>
+         Specify the clientID to connect to the MQTT broker with
+    
+       -d <string>,  --rawDumpFile <string>
+         Specify a path to an hcidump file to parse for testing
+    
+       -H <string>,  --heartbeatUUID <string>
+         Specify the UUID of the beacon used to signal the scanner heartbeat
+         event
+    
+       -s <string>,  --scannerID <string>
+         (required)  Specify the ID of the scanner reading the beacon events
+    
+       --,  --ignore_rest
+         Ignores the rest of the labeled arguments following this flag.
+    
+       --version
+         Displays version information and exits.
+    
+       -h,  --help
+         Displays usage information and exits.
 
 
 ### Run the scanner using the text output from hcidump as input
