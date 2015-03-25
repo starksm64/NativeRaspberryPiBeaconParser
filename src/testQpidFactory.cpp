@@ -37,7 +37,7 @@ int main(int argc, char*argv[]) {
     printf("Creating QPID MsgPublisher, brokerUrl=%s\n", brokerUrl.c_str());
     fflush(stdout);
 
-    MsgPublisher *qpid = MsgPublisher::create(type, brokerUrl, clientID, userName, password);
+    std::unique_ptr<MsgPublisher> qpid = MsgPublisher::create(type, brokerUrl, clientID, userName, password);
     printf("Created QPID MsgPublisher, %s\n", qpid->toString());
     qpid->setUseTopics(false);
     qpid->start(false);
@@ -72,4 +72,11 @@ int main(int argc, char*argv[]) {
     printf("Elapsed, %d\n", end.tv_sec - start.tv_sec);
     qpid->stop();
     printf("Stopped QPID MsgPublisher\n");
+    // Test what happens if stop is called multiple times
+    qpid->stop();
+    printf("Stop#2 QPID MsgPublisher\n");
+    qpid->stop();
+    printf("Stop#3 QPID MsgPublisher\n");
+
+    printf("MsgPublisher will be deleted by ~unique_ptr\n");
 }

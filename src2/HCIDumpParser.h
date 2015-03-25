@@ -16,7 +16,7 @@ using namespace std;
 class HCIDumpParser {
 private:
     HCIDumpCommand *parseCommand;
-    MsgPublisher *publisher;
+    unique_ptr<MsgPublisher> publisher;
     /** The count of messages to send in batches if > 0 */
     int batchCount;
     /** vector of beacon events when sending events in batchCount transactions to the broker */

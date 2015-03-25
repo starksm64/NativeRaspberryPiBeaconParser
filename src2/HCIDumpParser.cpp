@@ -97,9 +97,8 @@ printf("Sending msg\n");
 }
 
 void HCIDumpParser::cleanup() {
-    if(publisher != nullptr)
+    if(publisher)
         publisher->stop();
-    publisher = nullptr;
 }
 
 void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
