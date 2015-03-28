@@ -10,13 +10,13 @@
 extern "C" {
 #include "hcidumpinternal.h"
 }
-extern "C" bool beacon_event_callback(const beacon_info *info);
+extern "C" bool beacon_event_callback(beacon_info_stack_ptr info);
 
 using namespace std;
 
 class HCIDumpParser {
 private:
-    HCIDumpCommand *parseCommand;
+    HCIDumpCommand parseCommand;
     unique_ptr<MsgPublisher> publisher;
     /** The count of messages to send in batches if > 0 */
     int batchCount;
@@ -62,9 +62,9 @@ public:
     }
 
     void processHCI(HCIDumpCommand& parseCommand);
-    void beaconEvent(const beacon_info *info);
+    void beaconEvent(const beacon_info& info);
     void cleanup();
 
-    void updateBeaconCounts(beacon_info const *pConst);
+    void updateBeaconCounts(const beacon_info& info);
 };
 #endif

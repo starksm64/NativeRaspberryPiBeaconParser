@@ -16,7 +16,7 @@ static int64_t currentMilliseconds() {
 }
 
 void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
-    HCIDumpParser::parseCommand = &parseCommand;
+    HCIDumpParser::parseCommand = parseCommand;
     string clientID(parseCommand.getClientID());
     if(clientID.empty())
         clientID = parseCommand.getScannerID();
@@ -44,18 +44,18 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     scan_frames(device,  beacon_event_callback);
 }
 
-void HCIDumpParser::beaconEvent(const beacon_info *info) {
-    Beacon beacon(parseCommand->getScannerID(), info->uuid, info->code, info->manufacturer, info->major, info->minor,
-            info->power, info->calibrated_power, info->rssi, info->time);
+void HCIDumpParser::beaconEvent(const beacon_info& info) {
+    Beacon beacon(parseCommand.getScannerID(), info.uuid, info.code, info.manufacturer, info.major, info.minor,
+            info.power, info.calibrated_power, info.rssi, info.time);
     vector<byte> msg = beacon.toByteMsg();
     // Check for heartbeat
-    bool isHeartbeat = scannerUUID.compare(info->uuid) == 0;
+    bool isHeartbeat = scannerUUID.compare(info.uuid) == 0;
     if(isHeartbeat)
         beacon.setMessageType(BeconEventType::SCANNER_HEARTBEAT);
-    if(parseCommand->isAnalyzeMode()) {
+    if(parseCommand.isAnalyzeMode()) {
         updateBeaconCounts(info);
     }
-    else if(!parseCommand->isSkipPublish()) {
+    else if(!parseCommand.isSkipPublish()) {
         if(batchCount > 0) {
             // Overwrite last event if it is a heartbeat and this is as well
             if(isHeartbeat && events.size() > 0 && events.back().getMessageType() == BeconEventType::SCANNER_HEARTBEAT)
@@ -74,9 +74,9 @@ printf("Batched msg, size=%d\n", events.size());
             }
         } else if(isHeartbeat) {
 #ifdef PRINT_DEBUG
-printf("Sending heartbeat, %s\n", !parseCommand->isSkipHeartbeat());
+printf("Sending heartbeat, %s\n", !parseCommand.isSkipHeartbeat());
 #endif
-            if(!parseCommand->isSkipHeartbeat())
+            if(!parseCommand.isSkipHeartbeat())
                 publisher->publishStatus(beacon);
         } else {
 #ifdef PRINT_DEBUG
@@ -91,7 +91,7 @@ printf("Sending msg\n");
     }
     else {
         const char *info = isHeartbeat ? "heartbeat" : "event";
-        if(!isHeartbeat || (isHeartbeat && !parseCommand->isSkipHeartbeat()))
+        if(!isHeartbeat || (isHeartbeat && !parseCommand.isSkipHeartbeat()))
             printf("Parsed(%s): %s\n", info, beacon.toString().c_str());
     }
 }
@@ -101,13 +101,13 @@ void HCIDumpParser::cleanup() {
         publisher->stop();
 }
 
-void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
+void HCIDumpParser::updateBeaconCounts(const beacon_info& info) {
 #ifdef PRINT_DEBUG
-    printf("updateBeaconCounts(%d); begin=%lld, end=%lld, info.time=%lld\n", beaconCounts.size(), begin, end, info->time);
+    printf("updateBeaconCounts(%d); begin=%lld, end=%lld, info.time=%lld\n", beaconCounts.size(), begin, end, info.time);
 #endif
-    if(info->time < end) {
+    if(info.time < end) {
         // Update the beacon event counts
-        beaconCounts[info->minor] ++;
+        beaconCounts[info.minor] ++;
     } else {
         char timestr[256];
         struct timeval tv;
@@ -117,14 +117,14 @@ void HCIDumpParser::updateBeaconCounts(beacon_info const *info) {
         localtime_r(&tv.tv_sec, &tm);
         strftime(timestr, 128, "%r", &tm);
         // Report the stats for this time window and then reset
-        printf("+++ Beacon counts for window(%d,%d): %s\n", beaconCounts.size(), parseCommand->getAnalyzeWindow(), timestr);
+        printf("+++ Beacon counts for window(%d,%d): %s\n", beaconCounts.size(), parseCommand.getAnalyzeWindow(), timestr);
         printf("\t");
         for(map<int32_t, int32_t>::iterator iter = beaconCounts.begin(); iter != beaconCounts.end(); iter++) {
             printf("+%2d: %2d; ", iter->first, iter->second);
         }
         printf("\n");
         begin = end;
-        end += 1000*parseCommand->getAnalyzeWindow();
+        end += 1000*parseCommand.getAnalyzeWindow();
         beaconCounts.clear();
     }
 }

@@ -25,6 +25,7 @@ private:
 
 public:
 
+    HCIDumpCommand(){}
     HCIDumpCommand(string scannerID, string brokerURL, string clientID, string destinationName)
             : scannerID(scannerID),
               brokerURL(brokerURL),
