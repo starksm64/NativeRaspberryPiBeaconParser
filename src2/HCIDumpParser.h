@@ -3,11 +3,15 @@
 
 #include "HCIDumpCommand.h"
 #include "EventsWindow.h"
+#include "BeaconEventConsumer.h"
+#include "EventExchanger.h"
 #include <MsgPublisher.h>
 #include <ctime>
 #include <fstream>
 #include <map>
 #include <memory>
+#include <thread>
+
 extern "C" {
 #include "hcidumpinternal.h"
 }
@@ -17,8 +21,15 @@ using namespace std;
 
 class HCIDumpParser {
 private:
+    /** Command line argument information */
     HCIDumpCommand parseCommand;
-    unique_ptr<MsgPublisher> publisher;
+    /** The interface for the messaging layer publisher */
+    shared_ptr<MsgPublisher> publisher;
+    /** The thread for the publishing beacon_info events via the MsgPublisher */
+    unique_ptr<thread> consumerThread;
+    BeaconEventConsumer eventConsumer;
+    shared_ptr<EventExchanger> eventExchanger;
+
     /** The count of messages to send in batches if > 0 */
     int batchCount;
     /** vector of beacon events when sending events in batchCount transactions to the broker */
@@ -50,6 +61,7 @@ public:
     }
     void setBatchCount(int batchCount) {
         HCIDumpParser::batchCount = batchCount;
+        eventConsumer.setBatchCount(batchCount);
     }
 
     string getScannerUUID() const {
@@ -64,6 +76,6 @@ public:
     void beaconEvent(const beacon_info& info);
     void cleanup();
 
-    void updateBeaconCounts(const beacon_info& info);
+    void printBeaconCounts(const unique_ptr<EventsBucket> &bucket);
 };
 #endif

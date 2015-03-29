@@ -21,7 +21,7 @@ int64_t EventsWindow::reset(int32_t sizeInSeconds) {
     end = begin + 1000*windowSizeSeconds;
 }
 
-unique_ptr<EventsBucket> EventsWindow::addEvent(beacon_info info) {
+unique_ptr<EventsBucket> EventsWindow::addEvent(const beacon_info& info) {
     unique_ptr<EventsBucket> window;
 #ifdef PRINT_DEBUG
     printf("addEvent(time=%lld), end=%lld, diff=%d\n", info.time, end, (end - info.time));

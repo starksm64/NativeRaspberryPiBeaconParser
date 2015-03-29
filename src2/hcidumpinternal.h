@@ -6,6 +6,7 @@
 
 typedef struct beacon_info {
     char uuid[36];
+    bool isHeartbeat;
     int32_t code;
     int32_t manufacturer;
     int32_t major;

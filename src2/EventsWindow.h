@@ -41,7 +41,7 @@ public:
     }
 
     int64_t reset(int32_t sizeInSeconds);
-    unique_ptr<EventsBucket> addEvent(beacon_info info);
+    unique_ptr<EventsBucket> addEvent(const beacon_info& info);
 };
 
 #endif //NATIVESCANNER_EVENTSWINDOW_H
