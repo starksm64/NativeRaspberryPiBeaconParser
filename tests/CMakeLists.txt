@@ -6,9 +6,14 @@ include_directories(. ../src)
 
 #set(BEACON_FILES ../src/Beacon.cpp ../src/Beacon.h)
 
-set(threadsTest_FILES threadsTest.cpp backgroundTask.cpp backgroundTask.h)
-add_executable(threadsTest ${threadsTest_FILES})
+set(threadsTest_FILES threads/threadsTest.cpp threads/backgroundTask.cpp threads/backgroundTask.h)
+add_executable(threadsTest ${threadsTest_FILES} threads/MessageExchanger.cpp threads/MessageExchanger.h)
 add_test(threadsTest ${CMAKE_CURRENT_BINARY_DIR}/threadsTest)
+
+set(testProducerConsumer_FILES threads/testProducerConsumer.cpp)
+add_executable(testProducerConsumer ${testProducerConsumer_FILES} threads/MessageExchanger.cpp threads/MessageExchanger.h)
+target_link_libraries (testProducerConsumer LINK_PUBLIC pthread)
+add_test(testProducerConsumer ${CMAKE_CURRENT_BINARY_DIR}/testProducerConsumer)
 
 set(testTime_FILES testTime.c)
 add_executable(testTime ${testTime_FILES})
