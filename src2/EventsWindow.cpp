@@ -25,7 +25,7 @@ unique_ptr<EventsBucket> EventsWindow::addEvent(beacon_info info) {
     unique_ptr<EventsBucket> window;
     if(info.time < end) {
         // Update the beacon event counts
-        beacon_info windowInfo = eventsMap[info.minor];
+        beacon_info& windowInfo = eventsMap[info.minor];
         windowInfo.rssi += info.rssi;
         windowInfo.time += info.time;
         windowInfo.count ++;
@@ -37,6 +37,8 @@ unique_ptr<EventsBucket> EventsWindow::addEvent(beacon_info info) {
         }
         // Copy the current events and return it
         window.reset(new map<int32_t, beacon_info>(eventsMap));
+        // Clear the current event map
+        eventsMap.clear();
     }
     return window;
 }

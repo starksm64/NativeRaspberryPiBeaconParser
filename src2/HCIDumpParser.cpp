@@ -96,8 +96,7 @@ void HCIDumpParser::updateBeaconCounts(const beacon_info& info) {
     printf("updateBeaconCounts(%d); begin=%lld, end=%lld, info.time=%lld\n", beaconCounts.size(), begin, end, info.time);
 #endif
     unique_ptr<EventsBucket> bucket = timeWindow.addEvent(info);
-    if(!bucket) {
-
+    if(bucket) {
         char timestr[256];
         struct timeval tv;
         tv.tv_sec = timeWindow.getBegin()/1000;
@@ -111,6 +110,7 @@ void HCIDumpParser::updateBeaconCounts(const beacon_info& info) {
         EventsBucket::iterator iter = bucket->begin();
         while(iter != bucket->end()) {
             printf("+%2d: %2d; ", iter->first, iter->second.count);
+            iter ++;
         }
         printf("\n");
     }
