@@ -2,6 +2,7 @@
 #define HCIDumpParserLogic_H
 
 #include "HCIDumpCommand.h"
+#include "EventsWindow.h"
 #include <MsgPublisher.h>
 #include <ctime>
 #include <fstream>
@@ -10,7 +11,7 @@
 extern "C" {
 #include "hcidumpinternal.h"
 }
-extern "C" bool beacon_event_callback(beacon_info_stack_ptr info);
+extern "C" bool beacon_event_callback(beacon_info * info);
 
 using namespace std;
 
@@ -25,10 +26,8 @@ private:
     /** The uuid of the beacon associated with the scanner as its heartbeat/status signal */
     string scannerUUID;
     time_t currentTime;
-    map<int32_t, int32_t> beaconCounts;
-    // Current analyze window begin/end in milliseconds to be compatible with beacon_info.time
-    int64_t begin;
-    int64_t end;
+    /** The time window of collected beacon_info events */
+    EventsWindow timeWindow;
 
     inline bool shouldSendMessages() {
         if(events.size() >= batchCount)

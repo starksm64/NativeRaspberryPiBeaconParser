@@ -1,19 +1,10 @@
 #include <Beacon.h>
-#include <sys/time.h>
 #include "HCIDumpParser.h"
 
 // Uncomment to publish the raw byte[] for the beacon, otherwise, properties are sent
 //#define SEND_BINARY_DATA
 
-static int64_t currentMilliseconds() {
-    timeval now;
-    gettimeofday(&now, nullptr);
 
-    int64_t nowMS = now.tv_sec;
-    nowMS *= 1000;
-    nowMS += now.tv_usec/1000;
-    return nowMS;
-}
 
 void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     HCIDumpParser::parseCommand = parseCommand;
@@ -21,10 +12,9 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
     if(clientID.empty())
         clientID = parseCommand.getScannerID();
     publisher.reset(MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", ""));
+    timeWindow.reset(parseCommand.getAnalyzeWindow());
     if(parseCommand.isAnalyzeMode()) {
-        begin = currentMilliseconds();
-        end = begin + parseCommand.getAnalyzeWindow();
-        printf("Running in analyze mode, window=%d seconds, begin=%lld\n", parseCommand.getAnalyzeWindow(), begin);
+        printf("Running in analyze mode, window=%d seconds, begin=%lld\n", parseCommand.getAnalyzeWindow(), timeWindow.getBegin());
     }
     else if(!parseCommand.isSkipPublish()) {
         publisher->setUseTopics(!parseCommand.isUseQueues());
@@ -105,26 +95,23 @@ void HCIDumpParser::updateBeaconCounts(const beacon_info& info) {
 #ifdef PRINT_DEBUG
     printf("updateBeaconCounts(%d); begin=%lld, end=%lld, info.time=%lld\n", beaconCounts.size(), begin, end, info.time);
 #endif
-    if(info.time < end) {
-        // Update the beacon event counts
-        beaconCounts[info.minor] ++;
-    } else {
+    unique_ptr<EventsBucket> bucket = timeWindow.addEvent(info);
+    if(!bucket) {
+
         char timestr[256];
         struct timeval tv;
-        tv.tv_sec = begin/1000;
+        tv.tv_sec = timeWindow.getBegin()/1000;
         tv.tv_usec = 0;
         struct tm tm;
         localtime_r(&tv.tv_sec, &tm);
         strftime(timestr, 128, "%r", &tm);
         // Report the stats for this time window and then reset
-        printf("+++ Beacon counts for window(%d,%d): %s\n", beaconCounts.size(), parseCommand.getAnalyzeWindow(), timestr);
+        printf("+++ Beacon counts for window(%ld,%d): %s\n", bucket->size(), parseCommand.getAnalyzeWindow(), timestr);
         printf("\t");
-        for(map<int32_t, int32_t>::iterator iter = beaconCounts.begin(); iter != beaconCounts.end(); iter++) {
-            printf("+%2d: %2d; ", iter->first, iter->second);
+        EventsBucket::iterator iter = bucket->begin();
+        while(iter != bucket->end()) {
+            printf("+%2d: %2d; ", iter->first, iter->second.count);
         }
         printf("\n");
-        begin = end;
-        end += 1000*parseCommand.getAnalyzeWindow();
-        beaconCounts.clear();
     }
 }

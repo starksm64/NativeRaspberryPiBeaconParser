@@ -28,5 +28,5 @@ set_property(TARGET BluezLibInternal PROPERTY IMPORTED_LOCATION ${BluezHome}/lib
 
 # The NativeScannerBlueZ executable depends on our local source and the tools_hcidump_SOURCES from the bluez source tree
 add_executable(NativeScannerBlueZ main.cpp HCIDumpCommand.h HCIDumpParser.h HCIDumpParser.cpp
-    hcidumpinternal.c hcidumpinternal.h ${tools_hcidump_SOURCES})
+    hcidumpinternal.c hcidumpinternal.h ${tools_hcidump_SOURCES} EventsWindow.cpp EventsWindow.h)
 target_link_libraries (NativeScannerBlueZ LINK_PUBLIC Beacon CMS pthread ssl crypto z apr-1 MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES})
