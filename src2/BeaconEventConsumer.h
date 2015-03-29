@@ -15,6 +15,7 @@ using namespace std;
 class BeaconEventConsumer {
 private:
     HCIDumpCommand parseCommand;
+    mutable bool running;
     /** The count of messages to send in batches if > 0 */
     int batchCount;
     /** vector of beacon events when sending events in batchCount transactions to the broker */
@@ -22,7 +23,18 @@ private:
     shared_ptr<MsgPublisher> publisher;
     shared_ptr<EventExchanger> exchanger;
 
+    void handleMessage(unique_ptr<beacon_info>& info);
+
 public:
+
+
+    bool isRunning() const {
+        return running;
+    }
+
+    void setRunning(bool running) {
+        BeaconEventConsumer::running = running;
+    }
 
     int getBatchCount() const {
         return batchCount;

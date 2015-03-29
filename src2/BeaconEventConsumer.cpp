@@ -8,11 +8,13 @@ bool shouldSendMessages() {
     return false;
 }
 
-void BeaconEventConsumer::publishEvents() {
-    unique_ptr<beacon_info> info = exchanger->takeEvent();
+/**
+ * Called for non-null beacon_info events by the thread loop
+ */
+void BeaconEventConsumer::handleMessage(unique_ptr<beacon_info>& info) {
     Beacon beacon(parseCommand.getScannerID(), info->uuid, info->code, info->manufacturer, info->major, info->minor,
                   info->power, info->calibrated_power, info->rssi, info->time);
-    if(info->isHeartbeat)
+    if (info->isHeartbeat)
         beacon.setMessageType(BeconEventType::SCANNER_HEARTBEAT);
 
     if (batchCount > 0) {
@@ -48,7 +50,14 @@ printf("Sending msg\n");
         publisher->publish("", beacon);
 #endif
     }
+}
 
+void BeaconEventConsumer::publishEvents() {
+    while(running) {
+        unique_ptr<beacon_info> info = exchanger->takeEvent();
+        if(info)
+            handleMessage(info);
+    }
 }
 
 void BeaconEventConsumer::init(shared_ptr<EventExchanger> exchanger, shared_ptr<MsgPublisher> &msgPublisher) {
