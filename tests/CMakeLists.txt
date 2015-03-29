@@ -10,6 +10,10 @@ set(threadsTest_FILES threads/threadsTest.cpp threads/backgroundTask.cpp threads
 add_executable(threadsTest ${threadsTest_FILES} threads/MessageExchanger.cpp threads/MessageExchanger.h)
 add_test(threadsTest ${CMAKE_CURRENT_BINARY_DIR}/threadsTest)
 
+set(testEventsWindow_FILES testEventsWindow.cpp ../src2/EventsWindow.cpp)
+add_executable(testEventsWindow ${testEventsWindow_FILES})
+add_test(testEventsWindow ${CMAKE_CURRENT_BINARY_DIR}/testEventsWindow)
+
 set(testProducerConsumer_FILES threads/testProducerConsumer.cpp)
 add_executable(testProducerConsumer ${testProducerConsumer_FILES} threads/MessageExchanger.cpp threads/MessageExchanger.h)
 target_link_libraries (testProducerConsumer LINK_PUBLIC pthread)

@@ -26,6 +26,7 @@ private:
     map<int32_t, beacon_info> eventsMap;
 public:
 
+    static int64_t currentMilliseconds();
 
     int32_t getWindowSizeSeconds() const {
         return windowSizeSeconds;

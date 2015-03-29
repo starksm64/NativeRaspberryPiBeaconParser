@@ -5,7 +5,7 @@
 #include <sys/time.h>
 #include "EventsWindow.h"
 
-static inline int64_t currentMilliseconds() {
+int64_t EventsWindow::currentMilliseconds() {
     timeval now;
     gettimeofday(&now, nullptr);
 
@@ -23,6 +23,9 @@ int64_t EventsWindow::reset(int32_t sizeInSeconds) {
 
 unique_ptr<EventsBucket> EventsWindow::addEvent(beacon_info info) {
     unique_ptr<EventsBucket> window;
+#ifdef PRINT_DEBUG
+    printf("addEvent(time=%lld), end=%lld, diff=%d\n", info.time, end, (end - info.time));
+#endif
     if(info.time < end) {
         // Update the beacon event counts
         beacon_info& windowInfo = eventsMap[info.minor];
@@ -39,6 +42,8 @@ unique_ptr<EventsBucket> EventsWindow::addEvent(beacon_info info) {
         window.reset(new map<int32_t, beacon_info>(eventsMap));
         // Clear the current event map
         eventsMap.clear();
+        begin = end;
+        end += 1000*windowSizeSeconds;
     }
     return window;
 }
