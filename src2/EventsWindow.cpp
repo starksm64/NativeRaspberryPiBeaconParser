@@ -34,12 +34,12 @@ unique_ptr<EventsBucket> EventsWindow::addEvent(const beacon_info& info) {
         windowInfo.count ++;
     } else {
         // Calculate the bucket averages
-        for(EventsBucket::iterator iter = eventsMap.begin(); iter != eventsMap.end(); iter ++) {
+        for(map<int32_t, beacon_info>::iterator iter = eventsMap.begin(); iter != eventsMap.end(); iter ++) {
             iter->second.rssi /= iter->second.count;
             iter->second.time /= iter->second.count;
         }
         // Copy the current events and return it
-        window.reset(new map<int32_t, beacon_info>(eventsMap));
+        window.reset(new EventsBucket(eventsMap, begin, end));
         // Clear the current event map
         eventsMap.clear();
         begin = end;

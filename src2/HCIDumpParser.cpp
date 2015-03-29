@@ -30,6 +30,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
         eventExchanger.reset(new EventExchanger);
         eventConsumer.init(eventExchanger, publisher);
         consumerThread.reset(new thread(&BeaconEventConsumer::publishEvents, eventConsumer));
+        printf("Started event consumer thread\n");
     }
     else {
         printf("Skipping publish of parsed beacons\n");
@@ -45,23 +46,24 @@ void HCIDumpParser::beaconEvent(const beacon_info& info) {
     bool isHeartbeat = scannerUUID.compare(info.uuid) == 0;
     // Queue the event into the
     unique_ptr<EventsBucket> bucket = timeWindow.addEvent(info);
-    // Now handle
+    // Now handle the bucket if a new one has been created
     if(bucket) {
-        if(parseCommand.isAnalyzeMode()) {
-            printBeaconCounts(bucket);
-        }
-        else if(!parseCommand.isSkipPublish()) {
+        if(!parseCommand.isSkipPublish()) {
             beacon_info* event = new beacon_info(info);
             event->isHeartbeat = isHeartbeat;
             eventExchanger->putEvent(event);
         }
-    }
-    else {
-        Beacon beacon(parseCommand.getScannerID(), info.uuid, info.code, info.manufacturer, info.major, info.minor,
-                      info.power, info.calibrated_power, info.rssi, info.time);
-        const char *info = isHeartbeat ? "heartbeat" : "event";
-        if(!isHeartbeat || (isHeartbeat && !parseCommand.isSkipHeartbeat()))
-            printf("Parsed(%s): %s\n", info, beacon.toString().c_str());
+        else {
+            if(parseCommand.isAnalyzeMode()) {
+                printBeaconCounts(bucket);
+            } else {
+                Beacon beacon(parseCommand.getScannerID(), info.uuid, info.code, info.manufacturer, info.major,
+                              info.minor, info.power, info.calibrated_power, info.rssi, info.time);
+                const char *info = isHeartbeat ? "heartbeat" : "event";
+                if (!isHeartbeat || (isHeartbeat && !parseCommand.isSkipHeartbeat()))
+                    printBeaconCounts(beacon, bucket);
+            }
+        }
     }
 }
 
@@ -70,24 +72,13 @@ void HCIDumpParser::cleanup() {
         publisher->stop();
 }
 
+void HCIDumpParser::printBeaconCounts(Beacon beacon, const unique_ptr<EventsBucket> &bucket) {
+    printf("Window: %s, parsed(%s): %s\n", beacon.toString().c_str());
+    printBeaconCounts(bucket);
+}
+
 void HCIDumpParser::printBeaconCounts(const unique_ptr<EventsBucket> &bucket) {
-#ifdef PRINT_DEBUG
-    printf("updateBeaconCounts(%d); begin=%lld, end=%lld, info.time=%lld\n", beaconCounts.size(), begin, end, info.time);
-#endif
-    char timestr[256];
-    struct timeval tv;
-    tv.tv_sec = timeWindow.getBegin()/1000;
-    tv.tv_usec = 0;
-    struct tm tm;
-    localtime_r(&tv.tv_sec, &tm);
-    strftime(timestr, 128, "%r", &tm);
-    // Report the stats for this time window and then reset
-    printf("+++ Beacon counts for window(%ld,%d): %s\n", bucket->size(), parseCommand.getAnalyzeWindow(), timestr);
-    printf("\t");
-    EventsBucket::iterator iter = bucket->begin();
-    while(iter != bucket->end()) {
-        printf("+%2d: %2d; ", iter->first, iter->second.count);
-        iter ++;
-    }
-    printf("\n");
+    vector<char> tmp;
+    bucket->toString(tmp);
+    printf("%s\n", tmp.data());
 }

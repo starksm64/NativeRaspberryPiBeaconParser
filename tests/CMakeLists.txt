@@ -31,6 +31,10 @@ set(testCout_FILES testCout.cpp)
 add_executable(testCout ${testCout_FILES})
 add_test(testCout ${CMAKE_CURRENT_BINARY_DIR}/testCout)
 
+set(testVector_FILES testVector.cpp)
+add_executable(testVector ${testVector_FILES})
+add_test(testVector ${CMAKE_CURRENT_BINARY_DIR}/testVector)
+
 set(testParseNativeHCIDump_FILES testParseNativeHCIDump.c)
 add_executable(testParseNativeHCIDump ${testParseNativeHCIDump_FILES})
 add_test(testParseNativeHCIDump ${CMAKE_CURRENT_BINARY_DIR}/testParseNativeHCIDump)

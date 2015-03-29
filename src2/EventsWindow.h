@@ -7,12 +7,13 @@
 
 #include <stdint.h>
 #include <map>
-#include <bits/unique_ptr.h>
+#include <memory>
 #include "hcidumpinternal.h"
+#include "EventsBucket.h"
 
 using namespace std;
 //
-using EventsBucket = map<int32_t, beacon_info>;
+//using EventsBucket = map<int32_t, beacon_info>;
 
 /**
  * A class that represents a collection of beacon_info events seen within a time window

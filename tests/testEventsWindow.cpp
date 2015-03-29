@@ -20,22 +20,12 @@ int main() {
         printf("n=%d\n", n);
         unique_ptr<EventsBucket> bucket = window.addEvent(info);
         if(bucket) {
-            char timestr[256];
-            struct timeval tv;
-            tv.tv_sec = window.getBegin()/1000;
-            tv.tv_usec = 0;
-            struct tm tm;
-            localtime_r(&tv.tv_sec, &tm);
-            strftime(timestr, 128, "%r", &tm);
-            // Report the stats for this time window and then reset
-            printf("+++ Beacon counts for window(%ld,%d): %s\n", bucket->size(), window.getWindowSizeSeconds(), timestr);
-            printf("\t");
-            EventsBucket::iterator iter = bucket->begin();
-            while(iter != bucket->end()) {
-                printf("+%2d: %2d; ", iter->first, iter->second.count);
-                iter ++;
-            }
-            printf("\n");
+            vector<char> tmp;
+            bucket->toTimeWindowString(tmp);
+            tmp.resize(0);
+            printf("TimeWindow: %s\n", tmp.data());
+            bucket->toString(tmp);
+            printf("%s\n", tmp.data());
         }
         sleep(1);
     }
