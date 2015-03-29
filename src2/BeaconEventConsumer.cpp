@@ -53,11 +53,14 @@ printf("Sending msg\n");
 }
 
 void BeaconEventConsumer::publishEvents() {
+    running = true;
+    printf("BeaconEventConsumer::publishEvents, starting\n");
     while(running) {
         unique_ptr<beacon_info> info = exchanger->takeEvent();
         if(info)
             handleMessage(info);
     }
+    printf("BeaconEventConsumer::publishEvents, exiting\n");
 }
 
 void BeaconEventConsumer::init(shared_ptr<EventExchanger> exchanger, shared_ptr<MsgPublisher> &msgPublisher) {

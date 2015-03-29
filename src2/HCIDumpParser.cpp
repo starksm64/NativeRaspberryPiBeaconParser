@@ -6,22 +6,41 @@
 //#define SEND_BINARY_DATA
 
 
+static void generateTestEvents(EventExchanger *exchanger) {
+    printf("generateTestEvents, starting...\n");
+    beacon_info event;
+    int count = 0;
+    try {
+        while (true) {
+            count++;
+            sprintf(event.uuid, "UUID-%.12d", count);
+            event.minor = count % 150;
+            event.rssi = -50 - count % 7;
+            exchanger->putEvent(new beacon_info(event));
+            this_thread::sleep_for(chrono::milliseconds(1000));
+        }
+    } catch(exception& e) {
+        printf("generateTestEvents failure, %s\n", e.what());
+    }
+    printf("generateTestEvents, exiting\n");
+}
 
-void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
+void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
     HCIDumpParser::parseCommand = parseCommand;
     eventConsumer.setParseCommand(parseCommand);
     string clientID(parseCommand.getClientID());
-    if(clientID.empty())
+    if (clientID.empty())
         clientID = parseCommand.getScannerID();
     publisher.reset(MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", ""));
     timeWindow.reset(parseCommand.getAnalyzeWindow());
-    if(parseCommand.isAnalyzeMode()) {
-        printf("Running in analyze mode, window=%d seconds, begin=%lld\n", parseCommand.getAnalyzeWindow(), timeWindow.getBegin());
+    if (parseCommand.isAnalyzeMode()) {
+        printf("Running in analyze mode, window=%d seconds, begin=%lld\n", parseCommand.getAnalyzeWindow(),
+               timeWindow.getBegin());
     }
-    else if(!parseCommand.isSkipPublish()) {
+    else if (!parseCommand.isSkipPublish()) {
         publisher->setUseTopics(!parseCommand.isUseQueues());
         publisher->setDestinationName(parseCommand.getDestinationName());
-        if(batchCount > 0) {
+        if (batchCount > 0) {
             publisher->setUseTransactions(true);
             printf("Enabled transactions\n");
         }
@@ -36,25 +55,29 @@ void HCIDumpParser::processHCI(HCIDumpCommand& parseCommand) {
         printf("Skipping publish of parsed beacons\n");
     }
 
-    char cdev = parseCommand.getHciDev().at(parseCommand.getHciDev().size()-1);
+    // Generate test data
+    //thread testThread(generateTestEvents, eventExchanger.get());
+
+    // Scan
+    char cdev = parseCommand.getHciDev().at(parseCommand.getHciDev().size() - 1);
     int device = cdev - '0';
-    scan_frames(device,  beacon_event_callback);
+    scan_frames(device, beacon_event_callback);
 }
 
-void HCIDumpParser::beaconEvent(const beacon_info& info) {
+void HCIDumpParser::beaconEvent(const beacon_info &info) {
     // Check for heartbeat
     bool isHeartbeat = scannerUUID.compare(info.uuid) == 0;
     // Queue the event into the
     unique_ptr<EventsBucket> bucket = timeWindow.addEvent(info);
     // Now handle the bucket if a new one has been created
-    if(bucket) {
-        if(!parseCommand.isSkipPublish()) {
-            beacon_info* event = new beacon_info(info);
+    if (bucket) {
+        if (!parseCommand.isSkipPublish()) {
+            beacon_info *event = new beacon_info(info);
             event->isHeartbeat = isHeartbeat;
             eventExchanger->putEvent(event);
         }
         else {
-            if(parseCommand.isAnalyzeMode()) {
+            if (parseCommand.isAnalyzeMode()) {
                 printBeaconCounts(bucket);
             } else {
                 Beacon beacon(parseCommand.getScannerID(), info.uuid, info.code, info.manufacturer, info.major,
@@ -68,7 +91,7 @@ void HCIDumpParser::beaconEvent(const beacon_info& info) {
 }
 
 void HCIDumpParser::cleanup() {
-    if(publisher)
+    if (publisher)
         publisher->stop();
 }
 

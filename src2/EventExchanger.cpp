@@ -4,6 +4,10 @@
 
 #include "EventExchanger.h"
 
+/**
+ * The beacon_info pointer here must be a new allocated memory whose deallocation will be controlled by the
+ * exchanger.
+ */
 void EventExchanger::putEvent(beacon_info* info) {
     std::lock_guard<mutex> guard(contentsMutex);
     events.push(info);
