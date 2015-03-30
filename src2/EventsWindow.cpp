@@ -21,6 +21,36 @@ int64_t EventsWindow::reset(int32_t sizeInSeconds) {
     end = begin + 1000*windowSizeSeconds;
 }
 
+inline void addInfo(map<int32_t, beacon_info>& eventsMap, const beacon_info& info) {
+    if(eventsMap.find(info.minor) == eventsMap.end()) {
+        // Copy the data
+        eventsMap[info.minor] = info;
+        eventsMap[info.minor].count = 1;
+    } else {
+        beacon_info &windowInfo = eventsMap[info.minor];
+        windowInfo.rssi += info.rssi;
+        windowInfo.time += info.time;
+        windowInfo.count++;
+    }
+}
+
+unique_ptr<EventsBucket> EventsWindow::getCurrentBucket() {
+    // Calculate the bucket averages
+    for(map<int32_t, beacon_info>::iterator iter = eventsMap.begin(); iter != eventsMap.end(); iter ++) {
+        beacon_info& info = eventsMap[iter->first];
+        info.rssi /= info.count;
+        info.time /= info.count;
+    }
+    // Copy the current events and return it
+    unique_ptr<EventsBucket> window(new EventsBucket(eventsMap, eventCount, begin, end));
+    // Clear the current event map
+    eventsMap.clear();
+    begin = end;
+    end += 1000*windowSizeSeconds;
+    eventCount = 0;
+    return window;
+}
+
 unique_ptr<EventsBucket> EventsWindow::addEvent(const beacon_info& info) {
     unique_ptr<EventsBucket> window;
 #ifdef PRINT_DEBUG
@@ -28,16 +58,14 @@ unique_ptr<EventsBucket> EventsWindow::addEvent(const beacon_info& info) {
 #endif
     if(info.time < end) {
         // Update the beacon event counts
-        beacon_info& windowInfo = eventsMap[info.minor];
-        windowInfo.rssi += info.rssi;
-        windowInfo.time += info.time;
-        windowInfo.count ++;
+        addInfo(eventsMap, info);
         eventCount ++;
     } else {
         // Calculate the bucket averages
         for(map<int32_t, beacon_info>::iterator iter = eventsMap.begin(); iter != eventsMap.end(); iter ++) {
-            iter->second.rssi /= iter->second.count;
-            iter->second.time /= iter->second.count;
+            beacon_info& info = eventsMap[iter->first];
+            info.rssi /= info.count;
+            info.time /= info.count;
         }
         // Copy the current events and return it
         window.reset(new EventsBucket(eventsMap, eventCount, begin, end));
@@ -46,6 +74,9 @@ unique_ptr<EventsBucket> EventsWindow::addEvent(const beacon_info& info) {
         begin = end;
         end += 1000*windowSizeSeconds;
         eventCount = 0;
+        // Add the event to the next window
+        addInfo(eventsMap, info);
+        eventCount ++;
     }
     return window;
 }

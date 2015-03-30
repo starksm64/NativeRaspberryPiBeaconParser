@@ -41,6 +41,23 @@ public:
         EventsBucket::eventCount = eventCount;
     }
 
+
+    int64_t getBucketStart() const {
+        return bucketStart;
+    }
+
+    void setBucketStart(int64_t bucketStart) {
+        EventsBucket::bucketStart = bucketStart;
+    }
+
+    int64_t getBucketEnd() const {
+        return bucketEnd;
+    }
+
+    void setBucketEnd(int64_t bucketEnd) {
+        EventsBucket::bucketEnd = bucketEnd;
+    }
+
     size_t size() {
         return bucket.size();
     }

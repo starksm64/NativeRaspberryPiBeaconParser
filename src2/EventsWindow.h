@@ -42,6 +42,15 @@ public:
         return end;
     }
 
+    map<int32_t, beacon_info> const &getEventsMap() const {
+        return eventsMap;
+    }
+
+    int32_t getEventCount() const {
+        return eventCount;
+    }
+
+    unique_ptr<EventsBucket> getCurrentBucket();
     int64_t reset(int32_t sizeInSeconds);
     unique_ptr<EventsBucket> addEvent(const beacon_info& info);
 };
