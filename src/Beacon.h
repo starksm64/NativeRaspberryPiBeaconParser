@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include <stdint-gcc.h>
 
 // Somehow
 #ifdef major
