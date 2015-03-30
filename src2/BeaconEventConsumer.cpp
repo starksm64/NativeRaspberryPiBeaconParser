@@ -2,6 +2,7 @@
 // Created by starksm on 3/28/15.
 //
 
+#include <thread>
 #include "BeaconEventConsumer.h"
 
 bool shouldSendMessages() {
@@ -66,6 +67,9 @@ void BeaconEventConsumer::publishEvents() {
         shared_ptr<EventsBucket> info = exchanger->takeEvent();
         if (info)
             handleMessage(info);
+        else {
+            this_thread::sleep_for(chrono::milliseconds(1));
+        }
     }
     printf("BeaconEventConsumer::publishEvents, exiting\n");
 }

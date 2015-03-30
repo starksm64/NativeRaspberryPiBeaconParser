@@ -61,9 +61,11 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
         printf("Skipping publish of parsed beacons\n");
     }
 
+    /*
     // Generate test data
     thread testThread(generateTestEvents, eventExchanger.get());
     testThread.detach();
+    */
 
     // Scan
     char cdev = parseCommand.getHciDev().at(parseCommand.getHciDev().size() - 1);
