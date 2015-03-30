@@ -3,6 +3,7 @@
 #include <regex>
 #include <fstream>
 #include <sys/stat.h>
+#include <unistd.h>
 // http://tclap.sourceforge.net/manual.html
 #include "tclap/CmdLine.h"
 #include "HCIDumpParser.h"
@@ -39,7 +40,7 @@ extern "C" bool beacon_event_callback(beacon_info * info) {
     if((eventCount % 1000) == 0 || elapsed > 5000) {
         lastMarkerCheckTime = info->time;
         stop = stopMarkerExists();
-        printf("beacon_event_callback, status eventCount=%d\n", eventCount);
+        printf("beacon_event_callback, status eventCount=%d, stop=%d\n", eventCount, stop);
     }
     // Check max event count limit
     if(maxEventCount > 0 && eventCount >= maxEventCount)
@@ -151,7 +152,9 @@ int main(int argc, const char **argv) {
         parserLogic.setScannerUUID(heartbeatUUID.getValue());
         printf("Set heartbeatUUID: %s\n", heartbeatUUID.getValue().c_str());
     }
-    printf("Begin scanning...\n");
+    char cwd[256];
+    getcwd(cwd, sizeof(cwd));
+    printf("Begin scanning, cwd=%s...\n", cwd);
     parserLogic.processHCI(command);
     parserLogic.cleanup();
     printf("End scanning\n");

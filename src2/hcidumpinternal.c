@@ -62,6 +62,9 @@ enum {
     AUDIO
 };
 
+// A stop flag
+bool stop_scan_frames = false;
+
 /* Default options */
 static int  snap_len = SNAP_LEN;
 
@@ -639,9 +642,13 @@ int process_frames(int dev, int sock, int fd, unsigned long flags, beacon_event 
     long frameNo = 0;
     bool stopped = false;
     while (!stopped) {
-        int i, n = poll(fds, nfds, -1);
-        if (n <= 0)
+        int i, n = poll(fds, nfds, 5000);
+
+        if (n <= 0) {
+            if(stop_scan_frames)
+                break;
             continue;
+        }
 
         for (i = 0; i < nfds; i++) {
             if (fds[i].revents & (POLLHUP | POLLERR | POLLNVAL)) {

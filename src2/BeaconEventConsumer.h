@@ -23,7 +23,7 @@ private:
     shared_ptr<MsgPublisher> publisher;
     shared_ptr<EventExchanger> exchanger;
 
-    void handleMessage(unique_ptr<beacon_info>& info);
+    void handleMessage(shared_ptr<EventsBucket>& info);
 
 public:
 

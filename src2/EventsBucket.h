@@ -16,11 +16,13 @@ class EventsBucket {
 private:
     int64_t bucketStart;
     int64_t bucketEnd;
+    int32_t eventCount;
     map<int32_t, beacon_info> bucket;
 
 public:
-    EventsBucket(map<int32_t, beacon_info> &bucket, int64_t start, int64_t end) : bucket(bucket), bucketStart(start),
-                                                                                   bucketEnd(end) { }
+    EventsBucket(map<int32_t, beacon_info> &bucket, int32_t eventCount, int64_t start, int64_t end) :
+            eventCount(eventCount), bucket(bucket), bucketStart(start), bucketEnd(end)
+    { }
 
     map<int32_t, beacon_info>::const_iterator begin() {
         return bucket.begin();
@@ -28,6 +30,15 @@ public:
 
     map<int32_t, beacon_info>::const_iterator end() {
         return bucket.end();
+    }
+
+
+    int32_t getEventCount() const {
+        return eventCount;
+    }
+
+    void setEventCount(int32_t eventCount) {
+        EventsBucket::eventCount = eventCount;
     }
 
     size_t size() {

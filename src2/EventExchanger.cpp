@@ -8,17 +8,17 @@
  * The beacon_info pointer here must be a new allocated memory whose deallocation will be controlled by the
  * exchanger.
  */
-void EventExchanger::putEvent(beacon_info* info) {
+void EventExchanger::putEvent(shared_ptr<EventsBucket> info) {
     std::lock_guard<mutex> guard(contentsMutex);
     events.push(info);
     putCount ++;
 }
 
-unique_ptr<beacon_info> EventExchanger::takeEvent() {
-    unique_ptr<beacon_info> info;
+shared_ptr<EventsBucket> EventExchanger::takeEvent() {
+    shared_ptr<EventsBucket> info;
     std::lock_guard<mutex> guard(contentsMutex);
     if(!events.empty()) {
-        info.reset(events.front());
+        info = events.front();
         events.pop();
         takeCount ++;
     }

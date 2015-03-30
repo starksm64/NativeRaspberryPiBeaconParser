@@ -76,7 +76,7 @@ public:
     void beaconEvent(const beacon_info& info);
     void cleanup();
 
-    void printBeaconCounts(Beacon beacon, const unique_ptr<EventsBucket> &bucket);
-    void printBeaconCounts(const unique_ptr<EventsBucket> &bucket);
+    void printBeaconCounts(Beacon beacon, const shared_ptr<EventsBucket> &bucket);
+    void printBeaconCounts(const shared_ptr<EventsBucket> &bucket);
 };
 #endif

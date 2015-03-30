@@ -10,6 +10,7 @@
 #include <queue>
 #include <atomic>
 #include "hcidumpinternal.h"
+#include "EventsBucket.h"
 
 using namespace std;
 
@@ -20,7 +21,7 @@ using namespace std;
 class EventExchanger {
 private:
     mutable mutex contentsMutex;
-    queue<beacon_info*> events;
+    queue<shared_ptr<EventsBucket>> events;
     atomic<int> takeCount;
     atomic<int> putCount;
 
@@ -28,8 +29,8 @@ public:
     EventExchanger() : takeCount{0}, putCount{0}
     {}
 
-    void putEvent(beacon_info *info);
-    unique_ptr<beacon_info> takeEvent();
+    void putEvent(shared_ptr<EventsBucket> info);
+    shared_ptr<EventsBucket> takeEvent();
     int getPutCount() const;
     int getTakeCount() const;
     size_t size() const;

@@ -24,6 +24,7 @@ private:
     // Current analyze window begin/end in milliseconds to be compatible with beacon_info.time
     int64_t begin;
     int64_t end;
+    int32_t eventCount;
     map<int32_t, beacon_info> eventsMap;
 public:
 
