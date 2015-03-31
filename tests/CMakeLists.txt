@@ -23,6 +23,10 @@ set(testTime_FILES testTime.c)
 add_executable(testTime ${testTime_FILES})
 add_test(testTime ${CMAKE_CURRENT_BINARY_DIR}/testTime)
 
+set(testProcStat_FILES testProcStat.cpp)
+add_executable(testProcStat ${testProcStat_FILES})
+add_test(testProcStat ${CMAKE_CURRENT_BINARY_DIR}/testProcStat)
+
 set(testMap_FILES testMap.cpp)
 add_executable(testMap ${testMap_FILES})
 add_test(testMap ${CMAKE_CURRENT_BINARY_DIR}/testMap)
