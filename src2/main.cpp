@@ -114,6 +114,13 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<int> batchCount("B", "batchCount",
             "Specify a maxium number of events the scanner should combine before sending to broker; default 0 means no batching",
             false, 0, "int", cmd);
+    TCLAP::ValueArg<int> statusInterval("I", "statusInterval",
+            "Specify the interval in seconds between health status messages, <= 0 means no messages; default 30",
+            false, 30, "int", cmd);
+    TCLAP::ValueArg<std::string> statusQueue("q", "statusQueue",
+            "Specify the name of the status health queue destination; default scannerHealth",
+             false, "scannerHealth", "string", cmd);
+
     try {
         // Add the flag arguments
         cmd.add(skipPublish);
@@ -143,6 +150,8 @@ int main(int argc, const char **argv) {
     command.setAnalyzeMode(analzyeMode.getValue());
     command.setAnalyzeWindow(analyzeWindow.getValue());
     command.setPubType(pubTypeConstraint.toType(pubType.getValue()));
+    command.setStatusInterval(statusInterval.getValue());
+    command.setStatusQueue(statusQueue.getValue());
     if(maxCount.getValue() > 0) {
         maxEventCount = maxCount.getValue();
         printf("Set maxEventCount: %ld\n", maxEventCount);

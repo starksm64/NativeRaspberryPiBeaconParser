@@ -84,8 +84,9 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
 void HCIDumpParser::beaconEvent(const beacon_info &info) {
     // Check for heartbeat
     bool isHeartbeat = scannerUUID.compare(info.uuid) == 0;
-    // Queue the event into the
+    // Merge the event into the current time window
     shared_ptr<EventsBucket> bucket = timeWindow.addEvent(info);
+    eventCounts.addEvent(info);
     // Now handle the bucket if a new one has been created
     if (bucket) {
         if (!parseCommand.isSkipPublish()) {

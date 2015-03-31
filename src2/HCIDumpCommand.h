@@ -13,6 +13,8 @@ private:
     string clientID;
     string destinationName;
     string hciDev = "hci0";
+    string statusQueue;
+    int statusInterval;
     int analyzeWindow;
     bool analyzeMode;
 
@@ -131,6 +133,23 @@ public:
 
     void setPubType(MsgPublisherType const &pubType) {
         HCIDumpCommand::pubType = pubType;
+    }
+
+
+    string &getStatusQueue() const {
+        return statusQueue;
+    }
+
+    void setStatusQueue(string &statusQueue) {
+        HCIDumpCommand::statusQueue = statusQueue;
+    }
+
+    int getStatusInterval() const {
+        return statusInterval;
+    }
+
+    void setStatusInterval(int statusInterval) {
+        HCIDumpCommand::statusInterval = statusInterval;
     }
 };
 

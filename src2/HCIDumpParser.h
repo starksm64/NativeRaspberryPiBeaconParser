@@ -4,6 +4,7 @@
 #include "HCIDumpCommand.h"
 #include "EventsWindow.h"
 #include "BeaconEventConsumer.h"
+#include "EventCounts.h"
 #include "EventExchanger.h"
 #include <MsgPublisher.h>
 #include <ctime>
@@ -39,6 +40,7 @@ private:
     time_t currentTime;
     /** The time window of collected beacon_info events */
     EventsWindow timeWindow;
+    EventCounts eventCounts;
 
     inline bool shouldSendMessages() {
         if(events.size() >= batchCount)
