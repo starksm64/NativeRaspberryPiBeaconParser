@@ -24,7 +24,9 @@ enum BeconEventType {
     /** A beacon event read by a scanner */
             SCANNER_READ,
     /** A status heartbeat from the scanner */
-            SCANNER_HEARTBEAT
+            SCANNER_HEARTBEAT,
+    /** A scanner status message */
+    SCANNER_STATUS
 };
 
 class Beacon {

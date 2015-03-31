@@ -69,7 +69,7 @@ extern "C" void onSendFailure(void* context,  MQTTAsync_failureData* response) {
     printf("delivery failed, token: %d \n", response->token);
 }
 
-void MqttPublisher::queueForPublish(string topicName, MqttQOS qos, byte *payload, size_t len) {
+void MqttPublisher::queueForPublish(string const &topicName, MqttQOS qos, byte *payload, size_t len) {
     MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
     MQTTAsync_responseOptions opts = MQTTAsync_responseOptions_initializer;
     int rc;
@@ -91,7 +91,7 @@ void MqttPublisher::queueForPublish(string topicName, MqttQOS qos, byte *payload
     }
 
 }
-void MqttPublisher::publish(string topicName, MqttQOS qos, byte *payload, size_t len) {
+void MqttPublisher::publish(string const &topicName, MqttQOS qos, byte *payload, size_t len) {
     if(asyncMode) {
         queueForPublish(topicName, qos, payload, len);
         return;
@@ -116,7 +116,12 @@ void MqttPublisher::publish(string topicName, MqttQOS qos, byte *payload, size_t
 }
 
 
-void MqttPublisher::publish(string destinationName, Beacon &beacon) {
+void MqttPublisher::publish(string const &destinationName, Beacon &beacon) {
+
+}
+
+
+void MqttPublisher::publishProperties(string const &destinationName, map<string,string> const &properties) {
 
 }
 

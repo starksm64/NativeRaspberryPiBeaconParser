@@ -48,11 +48,11 @@ void QpidPublisher::stop() {
   connection = messaging::Connection();
 }
 
-void QpidPublisher::queueForPublish(string topicName, MqttQOS qos, byte *payload, size_t len) {
+void QpidPublisher::queueForPublish(string const &topicName, MqttQOS qos, byte *payload, size_t len) {
   // HACK ALERT: tbd
 }
 
-void QpidPublisher::publish(string destName, MqttQOS qos, byte *payload, size_t len) {
+void QpidPublisher::publish(string const &destName, MqttQOS qos, byte *payload, size_t len) {
 
   // Use default destination unless a new one is specified
   messaging::Sender sndr = sender;
@@ -74,7 +74,7 @@ void QpidPublisher::publish(string destName, MqttQOS qos, byte *payload, size_t 
     sndr.close();
 }
 
-void QpidPublisher::publish(string destName, Beacon &beacon) {
+void QpidPublisher::publish(string const &destName, Beacon &beacon) {
 
   // Use default destination unless a new one is specified
   messaging::Sender sndr = sender;
@@ -114,6 +114,27 @@ void QpidPublisher::doPublishProperties(messaging::Sender sndr, Beacon &beacon, 
   message.setProperty("rssi", beacon.getRssi());
   message.setProperty("time", beacon.getTime());
   message.setProperty("messageType", messageType);
+
+  if (clientID.length() > 0)
+    message.setUserId(clientID);
+
+  // Send message
+  sndr.send(message);
+}
+
+void QpidPublisher::publishProperties(string const &destName, map<string,string> const &properties) {
+  messaging::Sender sndr = sender;
+  if (destName.length() > 0) {
+    string fullDestName = isUseTopics() ? AmqTopicName(destName) : AmqQueueName(destName);
+    sndr = session.createSender(fullDestName);
+  }
+
+  messaging::Message message;
+  for(map<string, string>::const_iterator iter = properties.begin(); iter != properties.end(); iter ++) {
+    message.setProperty(iter->first, iter->second);
+
+  }
+  message.setProperty("messageType", SCANNER_STATUS);
 
   if (clientID.length() > 0)
     message.setUserId(clientID);

@@ -32,11 +32,11 @@ void CMSPublisher::stop() {
     connection->close();
 }
 
-void CMSPublisher::queueForPublish(string topicName, MqttQOS qos, byte *payload, size_t len) {
+void CMSPublisher::queueForPublish(string const &topicName, MqttQOS qos, byte *payload, size_t len) {
 
 }
 
-void CMSPublisher::publish(string destName, MqttQOS qos, byte *payload, size_t len) {
+void CMSPublisher::publish(string const &destName, MqttQOS qos, byte *payload, size_t len) {
 
     Destination *dest = destination;
     if(destName.length() > 0) {
@@ -53,7 +53,7 @@ void CMSPublisher::publish(string destName, MqttQOS qos, byte *payload, size_t l
         delete dest;
 }
 
-void CMSPublisher::publish(string destName, Beacon &beacon) {
+void CMSPublisher::publish(string const &destName, Beacon &beacon) {
     Destination *dest = destination;
     if(destName.length() > 0) {
         if(isUseTopics())
@@ -77,4 +77,8 @@ void CMSPublisher::publish(string destName, Beacon &beacon) {
 
     if(dest != destination)
         delete dest;
+}
+
+void CMSPublisher::publishProperties(string const &destinationName, map<string,string> const &properties) {
+
 }

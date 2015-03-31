@@ -37,14 +37,16 @@ public:
 
     virtual void stop();
 
-    virtual void queueForPublish(string destinationName, MqttQOS qos, byte *payload, size_t len);
+    virtual void queueForPublish(string const &destinationName, MqttQOS qos, byte *payload, size_t len);
 
-    virtual void publish(string destinationName, MqttQOS qos, byte *payload, size_t len);
+    virtual void publish(string const &destinationName, MqttQOS qos, byte *payload, size_t len);
 
-    virtual void publish(string destinationName, Beacon &beacon);
+    virtual void publish(string const &destinationName, Beacon &beacon);
     // TODO
     virtual void publish(vector<Beacon> events) {}
     virtual void publishStatus(Beacon& beacon) {}
+
+    virtual void publishProperties(string const &destinationName, map<string,string> const &properties);
 };
 #endif
 

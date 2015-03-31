@@ -9,14 +9,18 @@ void ProtonPublisher::stop() {
 
 }
 
-void ProtonPublisher::queueForPublish(string topicName, MqttQOS qos, byte *payload, size_t len) {
+void ProtonPublisher::queueForPublish(string const &topicName, MqttQOS qos, byte *payload, size_t len) {
 
 }
 
-void ProtonPublisher::publish(string topicName, MqttQOS qos, byte *payload, size_t len) {
+void ProtonPublisher::publish(string const &topicName, MqttQOS qos, byte *payload, size_t len) {
 
 }
 
-void ProtonPublisher::publish(string destinationName, Beacon &beacon) {
+void ProtonPublisher::publish(string const &destinationName, Beacon &beacon) {
+
+}
+
+void ProtonPublisher::publishProperties(string const &destinationName, map<string,string> const &properties) {
 
 }
