@@ -96,8 +96,11 @@ int main(int argc, const char **argv) {
             "Don't publish the heartbeat messages. Useful to limit the noise when testing the scanner.",
             false);
     TCLAP::SwitchArg analzyeMode("Z", "analzyeMode",
-            "Run the scanner in a mode that simply collects beacon readings and reports unique beacons seen in a time window",
-            false);
+                                 "Run the scanner in a mode that simply collects beacon readings and reports unique beacons seen in a time window",
+                                 false);
+    TCLAP::SwitchArg generateTestData("T", "generateTestData",
+                                 "Indicate that test data should be generated",
+                                 false);
     TCLAP::ValueArg<int> analyzeWindow("W", "analyzeWindow",
             "Specify the number of seconds in the analyzeMode time window",
             false, 5, "int", cmd);
@@ -128,6 +131,7 @@ int main(int argc, const char **argv) {
         cmd.add(useQueues);
         cmd.add(skipHeartbeat);
         cmd.add(analzyeMode);
+        cmd.add(generateTestData);
         // Parse the argv array.
         printf("Parsing command line...\n");
         cmd.parse( argc, argv );
@@ -152,6 +156,7 @@ int main(int argc, const char **argv) {
     command.setPubType(pubTypeConstraint.toType(pubType.getValue()));
     command.setStatusInterval(statusInterval.getValue());
     command.setStatusQueue(statusQueue.getValue());
+    command.setGenerateTestData(generateTestData.getValue());
     if(maxCount.getValue() > 0) {
         maxEventCount = maxCount.getValue();
         printf("Set maxEventCount: %ld\n", maxEventCount);
