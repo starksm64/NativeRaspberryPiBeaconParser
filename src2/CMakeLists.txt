@@ -27,6 +27,6 @@ add_library(BluezLibInternal SHARED IMPORTED)
 set_property(TARGET BluezLibInternal PROPERTY IMPORTED_LOCATION ${BluezHome}/lib/.libs/libbluetooth-internal.a)
 
 # The NativeScannerBlueZ executable depends on our local source and the tools_hcidump_SOURCES from the bluez source tree
-add_executable(NativeScannerBlueZ main.cpp HCIDumpCommand.h HCIDumpParser.h HCIDumpParser.cpp
+add_executable(NativeScannerBlueZ main.cpp HCIDumpCommand.h HCIDumpParser.h HCIDumpParser.cpp HealthStatus.cpp
     hcidumpinternal.c hcidumpinternal.h ${tools_hcidump_SOURCES} EventsWindow.cpp EventsWindow.h EventExchanger.h EventExchanger.cpp BeaconEventConsumer.cpp BeaconEventConsumer.h EventsBucket.h)
 target_link_libraries (NativeScannerBlueZ LINK_PUBLIC Beacon CMS pthread ssl crypto z apr-1 MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES})

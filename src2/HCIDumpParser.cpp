@@ -39,6 +39,11 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
         clientID = parseCommand.getScannerID();
     publisher.reset(MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", ""));
     timeWindow.reset(parseCommand.getAnalyzeWindow());
+    // Setup the status information
+    statusInformation->setScannerID(parseCommand.getScannerID());
+    statusInformation->setStatusInterval(parseCommand.getStatusInterval());
+    statusInformation->setStatusQueue(parseCommand.getStatusQueue());
+
     if (parseCommand.isAnalyzeMode()) {
         printf("Running in analyze mode, window=%d seconds, begin=%lld\n", parseCommand.getAnalyzeWindow(),
                timeWindow.getBegin());
@@ -51,21 +56,27 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
             printf("Enabled transactions\n");
         }
         publisher->start(parseCommand.isAsyncMode());
+
         // Create a thread for the consumer
         eventExchanger.reset(new EventExchanger);
         eventConsumer.init(eventExchanger, publisher);
         consumerThread.reset(new thread(&BeaconEventConsumer::publishEvents, &eventConsumer));
         printf("Started event consumer thread\n");
+
+        // If the status interval is > 0, start the health status monitor
+        if(parseCommand.getStatusInterval() > 0) {
+            statusMonitor.start(publisher, statusInformation);
+        }
     }
     else {
         printf("Skipping publish of parsed beacons\n");
     }
 
-    /*
-    // Generate test data
-    thread testThread(generateTestEvents, eventExchanger.get());
-    testThread.detach();
-    */
+    if(parseCommand.isGenerateTestData()) {
+        // Generate test data
+        thread testThread(generateTestEvents, eventExchanger.get());
+        testThread.detach();
+    }
 
     // Scan
     char cdev = parseCommand.getHciDev().at(parseCommand.getHciDev().size() - 1);
@@ -79,6 +90,9 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
         consumerThread->join();
         printf("done\n");
     }
+
+    // Stop the status monitor
+    statusMonitor.stop();
 }
 
 void HCIDumpParser::beaconEvent(const beacon_info &info) {
@@ -86,7 +100,7 @@ void HCIDumpParser::beaconEvent(const beacon_info &info) {
     bool isHeartbeat = scannerUUID.compare(info.uuid) == 0;
     // Merge the event into the current time window
     shared_ptr<EventsBucket> bucket = timeWindow.addEvent(info);
-    eventCounts.addEvent(info);
+    statusInformation->addEvent(info);
     // Now handle the bucket if a new one has been created
     if (bucket) {
         if (!parseCommand.isSkipPublish()) {

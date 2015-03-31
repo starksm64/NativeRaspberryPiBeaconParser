@@ -17,6 +17,7 @@ private:
     int statusInterval;
     int analyzeWindow;
     bool analyzeMode;
+    bool generateTestData;
 
 private:
     bool skipPublish;
@@ -118,6 +119,15 @@ public:
         HCIDumpCommand::analyzeMode = analyzeMode;
     }
 
+
+    bool isGenerateTestData() const {
+        return generateTestData;
+    }
+
+    void setGenerateTestData(bool generateTestData) {
+        HCIDumpCommand::generateTestData = generateTestData;
+    }
+
     MsgPublisherType const &getPubType() const {
         return pubType;
     }
@@ -136,7 +146,7 @@ public:
     }
 
 
-    string &getStatusQueue() const {
+    const string& getStatusQueue() const {
         return statusQueue;
     }
 

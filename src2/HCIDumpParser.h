@@ -4,8 +4,9 @@
 #include "HCIDumpCommand.h"
 #include "EventsWindow.h"
 #include "BeaconEventConsumer.h"
-#include "EventCounts.h"
+#include "StatusInformation.h"
 #include "EventExchanger.h"
+#include "HealthStatus.h"
 #include <MsgPublisher.h>
 #include <ctime>
 #include <fstream>
@@ -28,8 +29,14 @@ private:
     shared_ptr<MsgPublisher> publisher;
     /** The thread for the publishing beacon_info events via the MsgPublisher */
     unique_ptr<thread> consumerThread;
+    /** The beacon_info event consumer class running in background */
     BeaconEventConsumer eventConsumer;
+    /** Shared queue for producer/consumer message exchange */
     shared_ptr<EventExchanger> eventExchanger;
+    /** An information class published by the HealthStatus task */
+    shared_ptr<StatusInformation> statusInformation;
+    /** A background status monitor task class */
+    HealthStatus statusMonitor;
 
     /** The count of messages to send in batches if > 0 */
     int batchCount;
@@ -40,7 +47,6 @@ private:
     time_t currentTime;
     /** The time window of collected beacon_info events */
     EventsWindow timeWindow;
-    EventCounts eventCounts;
 
     inline bool shouldSendMessages() {
         if(events.size() >= batchCount)
@@ -54,9 +60,8 @@ private:
     }
 
 public:
-    HCIDumpParser() : publisher(nullptr), batchCount(0), scannerUUID("") {
+    HCIDumpParser() : publisher(nullptr), batchCount(0), scannerUUID(""), statusInformation(new StatusInformation()) {
     }
-
 
     int getBatchCount() const {
         return batchCount;
@@ -72,6 +77,7 @@ public:
 
     void setScannerUUID(string &scannerUUID) {
         HCIDumpParser::scannerUUID = scannerUUID;
+        statusInformation->setScannerID(scannerUUID);
     }
 
     void processHCI(HCIDumpCommand& parseCommand);

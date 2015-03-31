@@ -8,9 +8,16 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include "StatusInformation.h"
 #include "../src/MsgPublisher.h"
 
 using namespace std;
+
+enum class StatusProperties {
+    LoadAverage,
+    RawEventCount,
+    N_STATUS_PROPERTIES
+};
 
 /*
  * A class that monitors and reports:
@@ -19,13 +26,16 @@ using namespace std;
  */
 class HealthStatus {
 private:
+    static const string statusPropertyNames[static_cast<unsigned int>(StatusProperties::N_STATUS_PROPERTIES)];
+
     shared_ptr<MsgPublisher> publisher;
-    string statusQueue;
-    int statusInterval;
+
+    shared_ptr<StatusInformation> statusInformation;
     unique_ptr<thread> monitorThread;
     mutable bool running;
 
     void monitorStatus();
+    void readLoadAvg(char *buffer, int size);
 
 public:
 
@@ -33,12 +43,12 @@ public:
         return publisher;
     }
 
-    string &getStatusQueue() const {
-        return statusQueue;
+    const string &getStatusQueue() const {
+        return statusInformation->getStatusQueue();
     }
 
     int getStatusInterval() const {
-        return statusInterval;
+        return statusInformation->getStatusInterval();
     }
 
     bool isRunning() const {
@@ -51,13 +61,17 @@ public:
 
     /** Begin monitoring in the background, sending status messages to the indicated queue via the publisher
     */
-    void start(shared_ptr<MsgPublisher> publisher, const string& queueName, int statusInterval);
+    void start(shared_ptr<MsgPublisher>& publisher, shared_ptr<StatusInformation>& statusInformation);
 
     /**
      * Reset any counters
      */
     void reset();
     void stop();
+
+    static const string& getStatusPropertyName(StatusProperties property) {
+        return statusPropertyNames[static_cast<unsigned int>(property)];
+    }
 };
 
 #endif //NATIVESCANNER_HEALTHSTATUS_H
