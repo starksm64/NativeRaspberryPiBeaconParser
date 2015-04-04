@@ -29,7 +29,12 @@ else
         echo lescan already running
 fi
 
-# Start the scanner
 CMD="${ROOT}/Debug/src2/NativeScannerBlueZ --scannerID "${scannerID:-`hostname`}" --brokerURL "${brokerURL:-192.168.1.107:5672}" --heartbeatUUID "${heartbeatUUID}" --useQueues $*"
-echo $CMD
+# Check for a background argument
+if [ "$1" == "-background" ]; then
+        CMD="${CMD} &"
+fi
+
+# Start the scanner
+echo "Running: $CMD"
 $CMD
