@@ -18,6 +18,7 @@ inline bool stopMarkerExists() {
     bool stop = (stat (STOP_MARKER_FILE, &buffer) == 0);
     if(stop) {
         printf("Found STOP marker file, will exit...\n");
+        fflush(stdout);
     }
     return stop;
 }
@@ -41,6 +42,7 @@ extern "C" bool beacon_event_callback(beacon_info * info) {
         lastMarkerCheckTime = info->time;
         stop = stopMarkerExists();
         printf("beacon_event_callback, status eventCount=%d, stop=%d\n", eventCount, stop);
+        fflush(stdout);
     }
     // Check max event count limit
     if(maxEventCount > 0 && eventCount >= maxEventCount)
@@ -57,6 +59,10 @@ using namespace std;
 int main(int argc, const char **argv) {
 
     printf("NativeScanner starting up...\n");
+    for(int n = 0; n < argc; n ++) {
+        printf("    argv[%d] = %s\n", n, argv[n]);
+    }
+    fflush(stdout);
     TCLAP::CmdLine cmd("NativeScanner command line options", ' ', "0.1");
     //
     TCLAP::ValueArg<std::string> scannerID("s", "scannerID",
@@ -169,8 +175,10 @@ int main(int argc, const char **argv) {
     char cwd[256];
     getcwd(cwd, sizeof(cwd));
     printf("Begin scanning, cwd=%s...\n", cwd);
+    fflush(stdout);
     parserLogic.processHCI(command);
     parserLogic.cleanup();
     printf("End scanning\n");
+    fflush(stdout);
     return 0;
 }

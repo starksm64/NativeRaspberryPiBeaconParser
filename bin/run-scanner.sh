@@ -29,14 +29,18 @@ else
         echo lescan already running
 fi
 
-CMD="${ROOT}/Debug/src2/NativeScannerBlueZ --scannerID "${scannerID:-`hostname`}" --brokerURL "${brokerURL:-192.168.1.107:5672}" --heartbeatUUID "${heartbeatUUID}" --useQueues"
+CMD="${ROOT}/Debug/src2/NativeScannerBlueZ"
+ARGS="--scannerID "${scannerID:-`hostname`}" --brokerURL "${brokerURL:-192.168.1.107:5672}" --heartbeatUUID "${heartbeatUUID}" --useQueues"
+BACKGROUND=""
 # Check for a background argument
 if [ "$1" == "-background" ]; then
-        CMD="${CMD} &"
+        BACKGROUND="&"
         shift
 fi
-CMD="${CMD} $*"
+ARGS="${ARGS} $*"
+CMD="${CMD} ${ARGS} >& /var/log/beacon-scanner.log ${BACKGROUND}"
 
 # Start the scanner
 echo "Running: $CMD"
-$CMD
+eval $CMD
+
