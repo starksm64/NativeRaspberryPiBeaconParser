@@ -13,6 +13,7 @@ const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusP
         string("Procs"),
         string("LoadAverage"),
         string("RawEventCount"),
+        string("PublishEventCount"),
         string("MemTotalMb"),
         string("MemFreeMb"),
         string("MemAvailableMb"),
@@ -29,6 +30,7 @@ void HealthStatus::monitorStatus() {
     const string& LoadAverage = getStatusPropertyName(StatusProperties::LoadAverage);
     const string& Procs = getStatusPropertyName(StatusProperties::Procs);
     const string& RawEventCount = getStatusPropertyName(StatusProperties::RawEventCount);
+    const string& PublishEventCount = getStatusPropertyName(StatusProperties::PublishEventCount);
     const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
     const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
     const string& MemAvailable = getStatusPropertyName(StatusProperties::MemAvailable);
@@ -55,6 +57,7 @@ void HealthStatus::monitorStatus() {
         // Create the status message properties
         statusProperties[LoadAverage] = tmp;
         statusProperties[RawEventCount] = to_string(statusInformation->getRawEventCount());
+        statusProperties[PublishEventCount] = to_string(statusInformation->getPublishEventCount());
 
         struct sysinfo info;
         if(sysinfo(&info)) {

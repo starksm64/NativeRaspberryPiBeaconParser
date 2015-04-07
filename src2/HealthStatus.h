@@ -20,6 +20,7 @@ enum class StatusProperties {
     Procs,
     LoadAverage,
     RawEventCount,
+    PublishEventCount,
     MemTotal,
     MemFree,
     MemAvailable,
