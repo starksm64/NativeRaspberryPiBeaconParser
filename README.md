@@ -274,3 +274,54 @@ NativeScannerBlueZ --scannerID NativeScannerBlueZ --pubType AMQP_QPID --brokerUR
 
 	Debug/src2/NativeScannerBlueZ --scannerID NativeScannerBlueZ --pubType AMQP_QPID --brokerURL "192.168.1.107:5672" --useQueues
 
+## Systemd Startup
+There are systemd services, scanner-configd.service and scannerd.service, that automate the startup of the scanner configuration service that pulls down a scanner node's beacon configuration file, and runs the NativeScannerBlueZ. The systemd configuration files are:
+
+* /usr/lib/systemd/system/scanner-configd.service
+	
+	[Unit]
+	Description=Configuration daemon to pull down the scanner configuration on startup
+	After=network-online.target
+	
+	[Service]
+	Environment="JAVA_HOME=/root/jdk1.8.0_33"
+	ExecStart=@/usr/local/bin/scanner-configd scanner-configd
+	TimeoutStartSec=30
+	Type=oneshot
+	
+	[Install]
+	WantedBy=scanner-config.service
+
+* /usr/lib/systemd/system/scannerd.service
+
+	[Unit]
+	Description=Serivce config file for the beacon scanner
+	Requires=scanner-configd.service
+	After=scanner-configd.service
+	
+	[Service]
+	Environment="JAVA_HOME=/root/jdk1.8.0_33"
+	ExecStart=/root/NativeRaspberryPiBeaconParser/bin/run-scanner.sh -background
+	Type=forking
+	
+	[Install]
+	WantedBy=multi-user.target
+
+
+Use the sytemctl command to check the service status, restart, etc.
+
+	[root@pi2-room201 ~]# sytemctl status scannerd.service
+	-bash: sytemctl: command not found
+	[root@pi2-room201 ~]# systemctl status scannerd.service
+	scannerd.service - Serivce config file for the beacon scanner
+	   Loaded: loaded (/usr/lib/systemd/system/scannerd.service; enabled)
+	   Active: active (running) since Thu 1970-01-01 00:00:37 PST; 45 years 3 months ago
+	  Process: 1067 ExecStart=/root/NativeRaspberryPiBeaconParser/bin/run-scanner.sh -background (code=exited, status=0/SUCCESS)
+	   CGroup: /system.slice/scannerd.service
+	           ├─1075 hcitool lescan --duplicates
+	           └─1076 /root/NativeRaspberryPiBeaconParser/Debug/src2/NativeScanne...
+	
+	Jan 01 00:00:37 pi2-room201 systemd[1]: Starting Serivce config file for the....
+	Jan 01 00:00:37 pi2-room201 run-scanner.sh[1067]: Running: /root/NativeRaspbe...
+	Jan 01 00:00:37 pi2-room201 systemd[1]: Started Serivce config file for the ....
+	Hint: Some lines were ellipsized, use -l to show in full.

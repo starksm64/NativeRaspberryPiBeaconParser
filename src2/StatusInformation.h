@@ -13,6 +13,7 @@ private:
     string loadAvg;
     int32_t statusInterval;
     int32_t rawEventCount;
+    int32_t publishEventCount;
 
 public:
 
@@ -52,9 +53,15 @@ public:
     int32_t getRawEventCount() const {
         return rawEventCount;
     }
-
     void addEvent(const beacon_info &info) {
         rawEventCount ++;
+    }
+
+    int32_t getPublishEventCount() const {
+        return publishEventCount;
+    }
+    int32_t updatePublishEventCount() {
+        return publishEventCount ++;
     }
 };
 #endif //NATIVESCANNER_EVENTCOUNTS_H

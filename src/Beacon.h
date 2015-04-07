@@ -34,6 +34,8 @@ class Beacon {
 private:
     string scannerID;
     string uuid;
+    /** A serial sequence number to order messages from a scanner that allows for gap detection */
+    int32_t scannerSequenceNo;
     int32_t code;
     int32_t manufacturer;
     int32_t major;
@@ -103,6 +105,14 @@ public:
 
     void setUuid(string uuid) {
         Beacon::uuid = uuid;
+    }
+
+    int32_t getScannerSequenceNo() const {
+        return scannerSequenceNo;
+    }
+
+    void setScannerSequenceNo(int32_t scannerSequenceNo) {
+        Beacon::scannerSequenceNo = scannerSequenceNo;
     }
 
     int32_t getCode() const {

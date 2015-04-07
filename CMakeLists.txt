@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.4)
+cmake_minimum_required(VERSION 2.8.9)
 project(NativeScanner)
 
 # For profiling
@@ -37,4 +37,5 @@ add_subdirectory(src)
 add_subdirectory(src2)
 add_subdirectory(proton)
 add_subdirectory(cms)
+add_subdirectory(lcd)
 add_subdirectory(tests)

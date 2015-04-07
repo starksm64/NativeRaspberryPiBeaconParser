@@ -23,6 +23,8 @@ void BeaconEventConsumer::handleMessage(shared_ptr<EventsBucket> &bucket) {
         if (info.isHeartbeat)
             beacon.setMessageType(BeconEventType::SCANNER_HEARTBEAT);
 
+        int publishID = statusInformation->updatePublishEventCount();
+        beacon.setScannerSequenceNo(publishID);
         if (batchCount > 0) {
             // Overwrite last event if it is a heartbeat and this is as well
             if (info.isHeartbeat && events.size() > 0 &&
@@ -74,7 +76,8 @@ void BeaconEventConsumer::publishEvents() {
     printf("BeaconEventConsumer::publishEvents, exiting\n");
 }
 
-void BeaconEventConsumer::init(shared_ptr<EventExchanger> exchanger, shared_ptr<MsgPublisher> &msgPublisher) {
+void BeaconEventConsumer::init(shared_ptr<EventExchanger>& exchanger, shared_ptr<MsgPublisher> &msgPublisher, shared_ptr<StatusInformation>& statusInformation) {
     this->exchanger = exchanger;
     this->publisher = msgPublisher;
+    this->statusInformation = statusInformation;
 }
