@@ -19,7 +19,7 @@ add_executable(testProducerConsumer ${testProducerConsumer_FILES} threads/Messag
 target_link_libraries (testProducerConsumer LINK_PUBLIC pthread)
 add_test(testProducerConsumer ${CMAKE_CURRENT_BINARY_DIR}/testProducerConsumer)
 
-set(testTime_FILES testTime.c)
+set(testTime_FILES testTime.cpp)
 add_executable(testTime ${testTime_FILES})
 add_test(testTime ${CMAKE_CURRENT_BINARY_DIR}/testTime)
 
@@ -38,6 +38,10 @@ add_test(testCout ${CMAKE_CURRENT_BINARY_DIR}/testCout)
 set(testVector_FILES testVector.cpp)
 add_executable(testVector ${testVector_FILES})
 add_test(testVector ${CMAKE_CURRENT_BINARY_DIR}/testVector)
+
+set(testSysinfo_FILES testSysinfo.cpp)
+add_executable(testSysinfo ${testSysinfo_FILES})
+add_test(testSysinfo ${CMAKE_CURRENT_BINARY_DIR}/testSysinfo)
 
 set(testParseNativeHCIDump_FILES testParseNativeHCIDump.c)
 add_executable(testParseNativeHCIDump ${testParseNativeHCIDump_FILES})

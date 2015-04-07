@@ -3,7 +3,10 @@
 #include <qpid/messaging/Session.h>
 #include <qpid/messaging/Sender.h>
 #include <qpid/messaging/Message.h>
+#include <chrono>
 
+
+using namespace std::chrono;
 
 // Quote and prefix the project simple topic name.
 // * The quotes pass the name to qpid messaging correctly
@@ -18,8 +21,26 @@ string AmqQueueName(const string name) {
 
 void QpidPublisher::start(bool asyncMode) {
   // Open connection
+  /* Reconnect behaviour can be controlled through the following options:
+    * - reconnect: true/false (enables/disables reconnect entirely)
+    * - reconnect_timeout: seconds (give up and report failure after specified time)
+    * - reconnect_limit: n (give up and report failure after specified number of attempts)
+    * - reconnect_interval_min: seconds (initial delay between failed reconnection attempts)
+    * - reconnect_interval_max: seconds (maximum delay between failed reconnection attempts)
+    * - reconnect_interval: shorthand for setting the same reconnect_interval_min/max
+    * - reconnect_urls: list of alternate urls to try when connecting
+    *
+    * The reconnect_interval is the time that the client waits for
+    * after a failed attempt to reconnect before retrying. It starts
+    * at the value of the min_retry_interval and is doubled every
+    * failure until the value of max_retry_interval is reached.
+  */
+  // This does not work, reconnect fails to reestablish the flow of messages
+  //connection = messaging::Connection(brokerUrl, "{protocol:amqp1.0,reconnect:true,reconnect_interval:60}");
   connection = messaging::Connection(brokerUrl, "{protocol:amqp1.0}");
   connection.open();
+  disconnectCount = 0;
+  connected = true;
 
   // Create session
   if(useTransactions) {
@@ -119,7 +140,28 @@ void QpidPublisher::doPublishProperties(messaging::Sender sndr, Beacon &beacon, 
     message.setUserId(clientID);
 
   // Send message
-  sndr.send(message);
+  try {
+    if(isConnected())
+      sndr.send(message);
+    else {
+      disconnectCount++;
+      if(disconnectCount %100)
+        fprintf(stderr, "disconnectCount=%d\n", disconnectCount);
+      if(shouldReconnect(beacon.getTime())) {
+        fprintf(stderr, "Trying to reconnect...\n");
+        try {
+          connection.reconnect();
+        } catch(messaging::MessagingException& e2) {
+          fprintf(stderr, "Failed, will retry...%s\n", e2.what());
+          calculateReconnectTime(beacon.getTime());
+        }
+      }
+    }
+  } catch(messaging::MessagingException& e) {
+    fprintf(stderr, "doPublishProperties, MessagingException: %s\n", e.what());
+    connected = false;
+    calculateReconnectTime(beacon.getTime());
+  }
 }
 
 void QpidPublisher::publishProperties(string const &destName, map<string,string> const &properties) {
@@ -141,4 +183,12 @@ void QpidPublisher::publishProperties(string const &destName, map<string,string>
 
   // Send message
   sndr.send(message);
+}
+
+void QpidPublisher::calculateReconnectTime(int64_t now) {
+  setNextReconnectTime(now + reconnectInterval*1000);
+  milliseconds ms(now);
+  seconds s = duration_cast<seconds>(ms);
+  time_t t = s.count();
+  fprintf(stderr, "Will attempt reconnect at: %s\n", ctime(&t));
 }

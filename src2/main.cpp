@@ -89,6 +89,28 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<std::string> topicName("t", "destinationName",
             "Specify the name of the queue on the MQTT broker to publish to; default beaconEvents",
             false, "beaconEvents", "string", cmd);
+    TCLAP::ValueArg<int> analyzeWindow("W", "analyzeWindow",
+                                       "Specify the number of seconds in the analyzeMode time window",
+                                       false, 5, "int", cmd);
+    TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
+                                        "Specify the name of the host controller interface to use; default hci0",
+                                        false, "hci0", "string", cmd);
+    MsgPublisherTypeConstraint pubTypeConstraint;
+    TCLAP::ValueArg<std::string> pubType("P", "pubType",
+                                         "Specify the MsgPublisherType enum for the publisher implementation to use; default AMQP_QPID",
+                                         false, "AMQP_QPID", &pubTypeConstraint, cmd, nullptr);
+    TCLAP::ValueArg<int> maxCount("C", "maxCount",
+                                  "Specify a maxium number of events the scanner should process before exiting; default 0 means no limit",
+                                  false, 0, "int", cmd);
+    TCLAP::ValueArg<int> batchCount("B", "batchCount",
+                                    "Specify a maxium number of events the scanner should combine before sending to broker; default 0 means no batching",
+                                    false, 0, "int", cmd);
+    TCLAP::ValueArg<int> statusInterval("I", "statusInterval",
+                                        "Specify the interval in seconds between health status messages, <= 0 means no messages; default 30",
+                                        false, 30, "int", cmd);
+    TCLAP::ValueArg<std::string> statusQueue("q", "statusQueue",
+                                             "Specify the name of the status health queue destination; default scannerHealth",
+                                             false, "scannerHealth", "string", cmd);
     TCLAP::SwitchArg skipPublish("S", "skipPublish",
             "Indicate that the parsed beacons should not be published",
             false);
@@ -107,28 +129,9 @@ int main(int argc, const char **argv) {
     TCLAP::SwitchArg generateTestData("T", "generateTestData",
                                  "Indicate that test data should be generated",
                                  false);
-    TCLAP::ValueArg<int> analyzeWindow("W", "analyzeWindow",
-            "Specify the number of seconds in the analyzeMode time window",
-            false, 5, "int", cmd);
-    TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
-            "Specify the name of the host controller interface to use; default hci0",
-            false, "hci0", "string", cmd);
-    MsgPublisherTypeConstraint pubTypeConstraint;
-    TCLAP::ValueArg<std::string> pubType("P", "pubType",
-            "Specify the MsgPublisherType enum for the publisher implementation to use; default AMQP_QPID",
-            false, "AMQP_QPID", &pubTypeConstraint, cmd, nullptr);
-    TCLAP::ValueArg<int> maxCount("C", "maxCount",
-            "Specify a maxium number of events the scanner should process before exiting; default 0 means no limit",
-            false, 0, "int", cmd);
-    TCLAP::ValueArg<int> batchCount("B", "batchCount",
-            "Specify a maxium number of events the scanner should combine before sending to broker; default 0 means no batching",
-            false, 0, "int", cmd);
-    TCLAP::ValueArg<int> statusInterval("I", "statusInterval",
-            "Specify the interval in seconds between health status messages, <= 0 means no messages; default 30",
-            false, 30, "int", cmd);
-    TCLAP::ValueArg<std::string> statusQueue("q", "statusQueue",
-            "Specify the name of the status health queue destination; default scannerHealth",
-             false, "scannerHealth", "string", cmd);
+    TCLAP::SwitchArg noBrokerReconnect("R", "noBrokerReconnect",
+                                      "Don't try to reconnect to the broker on failure, just exit",
+                                      false);
 
     try {
         // Add the flag arguments

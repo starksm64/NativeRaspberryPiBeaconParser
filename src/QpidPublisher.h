@@ -18,6 +18,8 @@ private:
     qpid::messaging::Connection connection;
     qpid::messaging::Session session;
     qpid::messaging::Sender sender;
+    int disconnectCount;
+    int64_t nextReconnectTime;
 
 protected:
     /**
@@ -27,6 +29,26 @@ protected:
     * @param - messageType, 0=beacon event, 1=scanner heartbeat event
     */
     void doPublishProperties(messaging::Sender sndr, Beacon &beacon, BeconEventType messageType);
+
+    int64_t getNextReconnectTime() const {
+        return nextReconnectTime;
+    }
+
+    void setNextReconnectTime(int64_t nextReconnectTime) {
+        QpidPublisher::nextReconnectTime = nextReconnectTime;
+    }
+    void calculateReconnectTime(int64_t now);
+    bool shouldReconnect(int64_t now) {
+        return now >= nextReconnectTime;
+    }
+
+    int getDisconnectCount() const {
+        return disconnectCount;
+    }
+
+    void setDisconnectCount(int disconnectCount) {
+        QpidPublisher::disconnectCount = disconnectCount;
+    }
 
 public:
 

@@ -18,6 +18,7 @@ private:
     int analyzeWindow;
     bool analyzeMode;
     bool generateTestData;
+    bool noBrokerReconnect;
 
 private:
     bool skipPublish;
@@ -127,7 +128,13 @@ public:
     void setGenerateTestData(bool generateTestData) {
         HCIDumpCommand::generateTestData = generateTestData;
     }
+    bool isNoBrokerReconnect() const {
+        return noBrokerReconnect;
+    }
 
+    void setNoBrokerReconnect(bool noBrokerReconnect) {
+        HCIDumpCommand::noBrokerReconnect = noBrokerReconnect;
+    }
     MsgPublisherType const &getPubType() const {
         return pubType;
     }
@@ -136,7 +143,6 @@ public:
     bool isUseQueues() const {
         return useQueues;
     }
-
     void setUseQueues(bool useQueues) {
         HCIDumpCommand::useQueues = useQueues;
     }
@@ -144,8 +150,6 @@ public:
     void setPubType(MsgPublisherType const &pubType) {
         HCIDumpCommand::pubType = pubType;
     }
-
-
     const string& getStatusQueue() const {
         return statusQueue;
     }
@@ -153,7 +157,6 @@ public:
     void setStatusQueue(string &statusQueue) {
         HCIDumpCommand::statusQueue = statusQueue;
     }
-
     int getStatusInterval() const {
         return statusInterval;
     }

@@ -12,10 +12,19 @@
 #include "../src/MsgPublisher.h"
 
 using namespace std;
+using Properties = map<string, string>;
 
 enum class StatusProperties {
+    SystemTime,
+    Uptime,
+    Procs,
     LoadAverage,
     RawEventCount,
+    MemTotal,
+    MemFree,
+    MemAvailable,
+    SwapTotal,
+    SwapFree,
     N_STATUS_PROPERTIES
 };
 
@@ -36,6 +45,7 @@ private:
 
     void monitorStatus();
     void readLoadAvg(char *buffer, int size);
+    void readMeminfo(Properties& properties);
 
 public:
 

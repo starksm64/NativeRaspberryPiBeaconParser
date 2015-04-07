@@ -30,6 +30,12 @@ protected:
     string password;
     /** The default message destination name */
     string destinationName;
+    /** Interval in seconds between reconnection attempts */
+    int reconnectInterval;
+    /** Should reconnection be attempted on failure */
+    bool reconnectOnFailure;
+    /** Is the publisher connected */
+    bool connected;
     /** Should the destination type be a topic(true) or a queue(false) */
     bool useTopics;
     /** Should transacted sessions be used */
@@ -57,7 +63,31 @@ public:
         return destinationName;
     }
 
-    /**
+    int getReconnectInterval() const {
+        return reconnectInterval;
+    }
+
+    void setReconnectInterval(int reconnectInterval) {
+        MsgPublisher::reconnectInterval = reconnectInterval;
+    }
+
+    bool isReconnectOnFailure() const {
+        return reconnectOnFailure;
+    }
+
+    void setReconnectOnFailure(bool reconnectOnFailure) {
+        MsgPublisher::reconnectOnFailure = reconnectOnFailure;
+    }
+
+    bool isConnected() const {
+        return connected;
+    }
+
+    void setConnected(bool connected) {
+        MsgPublisher::connected = connected;
+    }
+
+/**
     * Set whether the destinationName represents a topic.
     * @param flag - true for a topic, false for a queue
     */

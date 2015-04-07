@@ -3,28 +3,79 @@
 //
 
 #include <string.h>
+#include <sys/sysinfo.h>
+#include <sys/time.h>
 #include "HealthStatus.h"
 
 const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusProperties::N_STATUS_PROPERTIES)] = {
+        string("SystemTime"),
+        string("Uptime"),
+        string("Procs"),
         string("LoadAverage"),
-        string("RawEventCount")
+        string("RawEventCount"),
+        string("MemTotalMb"),
+        string("MemFreeMb"),
+        string("MemAvailableMb"),
+        string("SwapTotalMb"),
+        string("SwapFreeMb"),
 };
 
 void HealthStatus::monitorStatus() {
     int statusInterval = statusInformation->getStatusInterval();
     string statusQueue = statusInformation->getStatusQueue();
-    map<string, string> statusProperties;
+    Properties statusProperties;
+    const string& SystemTime = getStatusPropertyName(StatusProperties::SystemTime);
+    const string& Uptime = getStatusPropertyName(StatusProperties::Uptime);
+    const string& LoadAverage = getStatusPropertyName(StatusProperties::LoadAverage);
+    const string& Procs = getStatusPropertyName(StatusProperties::Procs);
+    const string& RawEventCount = getStatusPropertyName(StatusProperties::RawEventCount);
+    const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
+    const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
+    const string& MemAvailable = getStatusPropertyName(StatusProperties::MemAvailable);
+    const string& SwapTotal = getStatusPropertyName(StatusProperties::SwapTotal);
+    const string& SwapFree = getStatusPropertyName(StatusProperties::SwapFree);
+    struct timeval  tv;
+    struct tm *tm;
 
     while(running) {
         // Wait for statusInterval before
         this_thread::sleep_for(chrono::seconds(statusInterval));
+
+        // Time
+        gettimeofday(&tv, nullptr);
+        tm = localtime(&tv.tv_sec);
+        char timestr[256];
+        strftime(timestr, 128, "%F %T", tm);
+        statusProperties[SystemTime] = timestr;
+
         // Get the load average
-        char tmp[64];
+        char tmp[128];
         readLoadAvg(tmp, sizeof(tmp));
         statusInformation->setLoadAvg(tmp);
         // Create the status message properties
-        statusProperties[getStatusPropertyName(StatusProperties::LoadAverage)] = tmp;
-        statusProperties[getStatusPropertyName(StatusProperties::RawEventCount)] = to_string(statusInformation->getRawEventCount());
+        statusProperties[LoadAverage] = tmp;
+        statusProperties[RawEventCount] = to_string(statusInformation->getRawEventCount());
+
+        struct sysinfo info;
+        if(sysinfo(&info)) {
+            perror("Failed to read sysinfo");
+        } else {
+            int mb = 1024*1024;
+            int days = info.uptime / (24*3600);
+            int hours = (info.uptime - days * 24*3600) / 3600;
+            int minute = (info.uptime - days * 24*3600 - hours*3600) / 60;
+            sprintf(tmp, "uptime: %ld, days:%d, hrs: %d, min: %d", info.uptime, days, hours, minute);
+            statusProperties[Uptime] = tmp;
+            sprintf(tmp, "%.2f, %.2f, %.2f", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
+            statusProperties[LoadAverage] = tmp;
+            statusProperties[Procs] = to_string(info.procs);
+            statusProperties[MemTotal] = to_string(info.totalram*info.mem_unit / mb);
+            statusProperties[MemAvailable] = to_string(info.freeram*info.mem_unit / mb);
+            statusProperties[MemFree] = to_string(info.freeram*info.mem_unit / mb);
+            statusProperties[SwapFree] = to_string(info.freeswap*info.mem_unit / mb);
+            statusProperties[SwapTotal] = to_string(info.totalswap*info.mem_unit / mb);
+        }
+
         // Publish the status
         try {
             publisher->publishProperties(statusQueue, statusProperties);
@@ -68,4 +119,35 @@ void HealthStatus::readLoadAvg(char *buffer, int size) {
     // Replace trailing newline char with nil
     size_t length = strlen(buffer);
     buffer[length-1] = '\0';
+}
+
+void HealthStatus::readMeminfo(Properties& properties) {
+    FILE *meminfo = fopen ("/proc/meminfo", "r");
+    if (meminfo == NULL) {
+        perror ("Failed to open /proc/meminfo");
+    }
+
+    char buffer[64];
+    const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
+    const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
+    const string& MemAvailable = getStatusPropertyName(StatusProperties::MemAvailable);
+    const string& SwapTotal = getStatusPropertyName(StatusProperties::SwapTotal);
+    const string& SwapFree = getStatusPropertyName(StatusProperties::SwapFree);
+    while(fgets (buffer, sizeof(buffer), meminfo)){
+        // Replace trailing newline char with nil
+        size_t length = strlen(buffer);
+        buffer[length-1] = '\0';
+        if(MemTotal.compare(0, MemTotal.size(), buffer, length))
+            properties[MemTotal] = buffer;
+        else if(MemFree.compare(0, MemFree.size(), buffer, length))
+            properties[MemFree] = buffer;
+        else if(MemAvailable.compare(0, MemAvailable.size(), buffer, length))
+            properties[MemAvailable] = buffer;
+        else if(SwapTotal.compare(0, SwapTotal.size(), buffer, length))
+            properties[SwapTotal] = buffer;
+        else if(SwapFree.compare(0, SwapFree.size(), buffer, length))
+            properties[SwapFree] = buffer;
+    }
+    fclose(meminfo);
+
 }
