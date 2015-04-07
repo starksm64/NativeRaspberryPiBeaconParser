@@ -59,7 +59,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
 
         // Create a thread for the consumer
         eventExchanger.reset(new EventExchanger);
-        eventConsumer.init(eventExchanger, publisher);
+        eventConsumer.init(eventExchanger, publisher, statusInformation);
         consumerThread.reset(new thread(&BeaconEventConsumer::publishEvents, &eventConsumer));
         printf("Started event consumer thread\n");
 

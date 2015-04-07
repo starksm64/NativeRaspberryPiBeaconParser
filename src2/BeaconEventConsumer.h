@@ -9,6 +9,7 @@
 #include <MsgPublisher.h>
 #include "EventExchanger.h"
 #include "HCIDumpCommand.h"
+#include "StatusInformation.h"
 
 using namespace std;
 
@@ -22,6 +23,8 @@ private:
     vector<Beacon> events;
     shared_ptr<MsgPublisher> publisher;
     shared_ptr<EventExchanger> exchanger;
+    /** An information class task holding published event counts */
+    shared_ptr<StatusInformation> statusInformation;
 
     void handleMessage(shared_ptr<EventsBucket>& info);
 
@@ -52,7 +55,7 @@ public:
         BeaconEventConsumer::parseCommand = parseCommand;
     }
 
-    void init(shared_ptr<EventExchanger> exchanger, shared_ptr<MsgPublisher>& msgPublisher);
+    void init(shared_ptr<EventExchanger>& exchanger, shared_ptr<MsgPublisher>& msgPublisher, shared_ptr<StatusInformation>& statusInformation);
 
 };
 

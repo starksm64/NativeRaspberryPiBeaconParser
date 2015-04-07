@@ -114,6 +114,7 @@ void QpidPublisher::doPublishProperties(messaging::Sender sndr, Beacon &beacon, 
   message.setProperty("rssi", beacon.getRssi());
   message.setProperty("time", beacon.getTime());
   message.setProperty("messageType", messageType);
+  message.setProperty("scannerSeqNo", beacon.getScannerSequenceNo());
 
   if (clientID.length() > 0)
     message.setUserId(clientID);
