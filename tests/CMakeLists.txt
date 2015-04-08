@@ -39,6 +39,10 @@ set(testVector_FILES testVector.cpp)
 add_executable(testVector ${testVector_FILES})
 add_test(testVector ${CMAKE_CURRENT_BINARY_DIR}/testVector)
 
+set(testSMA_FILES testSMA.cpp)
+add_executable(testSMA ${testSMA_FILES})
+add_test(testSMA ${CMAKE_CURRENT_BINARY_DIR}/testSMA)
+
 set(testSysinfo_FILES testSysinfo.cpp)
 add_executable(testSysinfo ${testSysinfo_FILES})
 add_test(testSysinfo ${CMAKE_CURRENT_BINARY_DIR}/testSysinfo)
