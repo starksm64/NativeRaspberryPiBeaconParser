@@ -56,6 +56,7 @@ void HealthStatus::monitorStatus() {
         char timestr[256];
         strftime(timestr, 128, "%F %T", tm);
         statusProperties[SystemTime] = timestr;
+        printf("--- HealthStatus: %s\n", timestr);
 
         // Get the load average
         char tmp[128];
@@ -66,7 +67,8 @@ void HealthStatus::monitorStatus() {
         statusProperties[RawEventCount] = to_string(statusInformation->getRawEventCount());
         statusProperties[PublishEventCount] = to_string(statusInformation->getPublishEventCount());
         statusProperties[HeartbeatCount] = to_string(statusInformation->getHeartbeatCount());
-
+        printf("RawEventCount: %d, PublishEventCount: %d, HeartbeatCount: %d",  statusInformation->getRawEventCount(),
+               statusInformation->getPublishEventCount(), statusInformation->getHeartbeatCount());
         struct sysinfo info;
         if(sysinfo(&info)) {
             perror("Failed to read sysinfo");
@@ -77,15 +79,19 @@ void HealthStatus::monitorStatus() {
             int minute = (info.uptime - days * 24*3600 - hours*3600) / 60;
             sprintf(tmp, "uptime: %ld, days:%d, hrs: %d, min: %d", info.uptime, days, hours, minute);
             statusProperties[Uptime] = tmp;
+            printf("%s\n", tmp);
             sprintf(tmp, "%.2f, %.2f, %.2f", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
+            printf("loadavg: %s\n", tmp);
             statusProperties[LoadAverage] = tmp;
             statusProperties[Procs] = to_string(info.procs);
             statusProperties[MemTotal] = to_string(info.totalram*info.mem_unit / mb);
+            printf("MemTotal: %ld;  MemFree: %ld\n", info.totalram*info.mem_unit,  info.freeram*info.mem_unit);
             statusProperties[MemActive] = to_string((info.totalram - info.freeram)*info.mem_unit / mb);
             statusProperties[MemFree] = to_string(info.freeram*info.mem_unit / mb);
             statusProperties[SwapFree] = to_string(info.freeswap*info.mem_unit / mb);
             statusProperties[SwapTotal] = to_string(info.totalswap*info.mem_unit / mb);
         }
+        fflush(stdout);
 
         // Publish the status
         try {
