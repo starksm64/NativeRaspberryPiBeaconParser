@@ -14,18 +14,22 @@
 using namespace std;
 using Properties = map<string, string>;
 
+/**
+ * The names of the properties passed in the messages to the scanner status queue
+ */
 enum class StatusProperties {
-    SystemTime,
-    Uptime,
-    Procs,
-    LoadAverage,
-    RawEventCount,
-    PublishEventCount,
-    MemTotal,
-    MemFree,
-    MemAvailable,
-    SwapTotal,
-    SwapFree,
+    ScannerID,          // the name of the scanner passed in via the --scannerID argument
+    SystemTime,         // java System.currentMillis() style time on scanner
+    Uptime,             // uptime in seconds as string formatted as "uptime: %ld, days:%d, hrs: %d, min: %d"
+    Procs,              // number of procs active on the scanner
+    LoadAverage,        // load averages for the past 1, 5, and 15 minutes "load average: 0.00, 0.01, 0.05"
+    RawEventCount,      // Raw number of BLE iBeacon type of events from the bluetooth stack
+    PublishEventCount,  // The number of time windowed events pushed to the message broker
+    MemTotal,           // Total memory on scanner in MB
+    MemFree,            // Free memory on scanner in MB
+    MemActive,          // Total - Free memory on scanner in MB
+    SwapTotal,          // Total swap memory on scanner in MB
+    SwapFree,           // Free swap memory on scanner in MB
     N_STATUS_PROPERTIES
 };
 

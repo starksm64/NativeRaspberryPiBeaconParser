@@ -8,6 +8,7 @@
 #include "HealthStatus.h"
 
 const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusProperties::N_STATUS_PROPERTIES)] = {
+        string("ScannerID"),
         string("SystemTime"),
         string("Uptime"),
         string("Procs"),
@@ -23,8 +24,10 @@ const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusP
 
 void HealthStatus::monitorStatus() {
     int statusInterval = statusInformation->getStatusInterval();
-    string statusQueue = statusInformation->getStatusQueue();
+    const string& statusQueue = statusInformation->getStatusQueue();
+    const string& scannerID = statusInformation->getScannerID();
     Properties statusProperties;
+    const string& ScannerID = getStatusPropertyName(StatusProperties::ScannerID);
     const string& SystemTime = getStatusPropertyName(StatusProperties::SystemTime);
     const string& Uptime = getStatusPropertyName(StatusProperties::Uptime);
     const string& LoadAverage = getStatusPropertyName(StatusProperties::LoadAverage);
@@ -33,7 +36,7 @@ void HealthStatus::monitorStatus() {
     const string& PublishEventCount = getStatusPropertyName(StatusProperties::PublishEventCount);
     const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
     const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
-    const string& MemAvailable = getStatusPropertyName(StatusProperties::MemAvailable);
+    const string& MemActive = getStatusPropertyName(StatusProperties::MemActive);
     const string& SwapTotal = getStatusPropertyName(StatusProperties::SwapTotal);
     const string& SwapFree = getStatusPropertyName(StatusProperties::SwapFree);
     struct timeval  tv;
@@ -42,6 +45,8 @@ void HealthStatus::monitorStatus() {
     while(running) {
         // Wait for statusInterval before
         this_thread::sleep_for(chrono::seconds(statusInterval));
+
+        statusProperties[ScannerID] = scannerID;
 
         // Time
         gettimeofday(&tv, nullptr);
@@ -73,7 +78,7 @@ void HealthStatus::monitorStatus() {
             statusProperties[LoadAverage] = tmp;
             statusProperties[Procs] = to_string(info.procs);
             statusProperties[MemTotal] = to_string(info.totalram*info.mem_unit / mb);
-            statusProperties[MemAvailable] = to_string(info.freeram*info.mem_unit / mb);
+            statusProperties[MemActive] = to_string((info.totalram - info.freeram)*info.mem_unit / mb);
             statusProperties[MemFree] = to_string(info.freeram*info.mem_unit / mb);
             statusProperties[SwapFree] = to_string(info.freeswap*info.mem_unit / mb);
             statusProperties[SwapTotal] = to_string(info.totalswap*info.mem_unit / mb);
@@ -133,7 +138,7 @@ void HealthStatus::readMeminfo(Properties& properties) {
     char buffer[64];
     const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
     const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
-    const string& MemAvailable = getStatusPropertyName(StatusProperties::MemAvailable);
+    const string& MemAvailable = getStatusPropertyName(StatusProperties::MemActive);
     const string& SwapTotal = getStatusPropertyName(StatusProperties::SwapTotal);
     const string& SwapFree = getStatusPropertyName(StatusProperties::SwapFree);
     while(fgets (buffer, sizeof(buffer), meminfo)){
