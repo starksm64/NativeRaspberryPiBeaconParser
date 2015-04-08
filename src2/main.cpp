@@ -11,7 +11,7 @@
 
 static HCIDumpParser parserLogic;
 
-#define STOP_MARKER_FILE "STOP"
+#define STOP_MARKER_FILE "/var/run/scannerd.STOP"
 
 inline bool stopMarkerExists() {
     struct stat buffer;
