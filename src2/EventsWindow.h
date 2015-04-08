@@ -28,6 +28,9 @@ private:
     map<int32_t, beacon_info> eventsMap;
 public:
 
+    /**
+     * Get the milliseconds since the common 1970-1-1 epoch.
+     */
     static int64_t currentMilliseconds();
 
     int32_t getWindowSizeSeconds() const {
@@ -50,8 +53,19 @@ public:
         return eventCount;
     }
 
+    /**
+     * Get the current events bucket being accumulated
+     */
     unique_ptr<EventsBucket> getCurrentBucket();
+    /**
+     * Setup the event bucket window size and begin/end based on the currentMilliseconds, and clear
+     * any existing events.
+     */
     int64_t reset(int32_t sizeInSeconds);
+    /**
+     * Add an event to the event bucket, returning the just finished bucket if the event flows
+     * over into the next time window.
+     */
     unique_ptr<EventsBucket> addEvent(const beacon_info& info, bool isHeartbeat);
 };
 

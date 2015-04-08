@@ -15,11 +15,11 @@ static void generateTestEvents(EventExchanger *exchanger) {
         bool running = true;
         while (running) {
             count++;
-            sprintf(event.uuid, "UUID-%.12d", count);
-            event.minor = count % 150;
+            int32_t minor = count % 150;
+            sprintf(event.uuid, "UUID-%.12d", minor);
+            event.minor = minor;
             event.rssi = -50 - count % 7;
             event.time = EventsWindow::currentMilliseconds();
-            //exchanger->putEvent(new beacon_info(event));
             bool stop = beacon_event_callback(&event);
             running = !stop;
             this_thread::sleep_for(chrono::milliseconds(10));
@@ -126,7 +126,7 @@ void HCIDumpParser::cleanup() {
 }
 
 void HCIDumpParser::printBeaconCounts(Beacon beacon, const shared_ptr<EventsBucket> &bucket) {
-    printf("Window: %s, parsed(%s): %s\n", beacon.toString().c_str());
+    printf("Window: parsed(%s):\n", beacon.toString().c_str());
     printBeaconCounts(bucket);
 }
 

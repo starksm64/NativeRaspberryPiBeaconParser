@@ -16,6 +16,8 @@ const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusP
         string("RawEventCount"),
         string("PublishEventCount"),
         string("HeartbeatCount"),
+        string("HeartbeatRSSI"),
+        string("EventsWindow"),
         string("MemTotal"),
         string("MemFree"),
         string("MemAvailable"),
@@ -36,6 +38,8 @@ void HealthStatus::monitorStatus() {
     const string& RawEventCount = getStatusPropertyName(StatusProperties::RawEventCount);
     const string& PublishEventCount = getStatusPropertyName(StatusProperties::PublishEventCount);
     const string& HeartbeatCount = getStatusPropertyName(StatusProperties::HeartbeatCount);
+    const string& HeartbeatRSSI = getStatusPropertyName(StatusProperties::HeartbeatRSSI);
+    const string& EventsWindow = getStatusPropertyName(StatusProperties::EventsWindow);
     const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
     const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
     const string& MemActive = getStatusPropertyName(StatusProperties::MemActive);
@@ -61,14 +65,22 @@ void HealthStatus::monitorStatus() {
         // Get the load average
         char tmp[128];
         readLoadAvg(tmp, sizeof(tmp));
-        statusInformation->setLoadAvg(tmp);
         // Create the status message properties
         statusProperties[LoadAverage] = tmp;
         statusProperties[RawEventCount] = to_string(statusInformation->getRawEventCount());
         statusProperties[PublishEventCount] = to_string(statusInformation->getPublishEventCount());
         statusProperties[HeartbeatCount] = to_string(statusInformation->getHeartbeatCount());
-        printf("RawEventCount: %d, PublishEventCount: %d, HeartbeatCount: %d",  statusInformation->getRawEventCount(),
-               statusInformation->getPublishEventCount(), statusInformation->getHeartbeatCount());
+        statusProperties[HeartbeatRSSI] = to_string(statusInformation->getHeartbeatRSSI());
+        printf("RawEventCount: %d, PublishEventCount: %d, HeartbeatCount: %d, HeartbeatRSSI: %d\n",  statusInformation->getRawEventCount(),
+               statusInformation->getPublishEventCount(), statusInformation->getHeartbeatCount(), statusInformation->getHeartbeatRSSI());
+
+        // Events bucket info
+        shared_ptr<EventsBucket> eventsBucket(statusInformation->getStatusWindow());
+        vector<char> eventsBucketStr;
+        eventsBucket->toSimpleString(eventsBucketStr);
+        statusProperties[EventsWindow] = eventsBucketStr.data();
+
+        // System uptime, load, procs, memory info
         struct sysinfo info;
         if(sysinfo(&info)) {
             perror("Failed to read sysinfo");

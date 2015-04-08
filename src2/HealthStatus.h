@@ -26,6 +26,8 @@ enum class StatusProperties {
     RawEventCount,      // Raw number of BLE iBeacon type of events from the bluetooth stack
     PublishEventCount,  // The number of time windowed events pushed to the message broker
     HeartbeatCount,     // The number of events from the scanner's associated --heartbeatUUID beacon
+    HeartbeatRSSI,      // The average RSSI for the scanner's associated --heartbeatUUID beacon
+    EventsWindow,       // The counts of beacon events as a sequence of +{minorID}: {count}; values
     MemTotal,           // Total memory on scanner in MB
     MemFree,            // Free memory on scanner in MB
     MemActive,          // Total - Free memory on scanner in MB

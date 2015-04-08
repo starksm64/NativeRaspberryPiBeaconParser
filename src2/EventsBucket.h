@@ -80,6 +80,9 @@ public:
         output.push_back('\0');
     }
 
+    /**
+     * The beacon counts string with a leading timestamp
+     */
     void toString(vector<char> &output) {
         char timestr[256];
         char tmp[256];
@@ -95,9 +98,17 @@ public:
         int count = snprintf(tmp, sizeof(tmp), "+++ Beacon counts for window(%ld,%d): %s\n", size(), width,
                              timestr);
         output.insert(output.end(), ptr, ptr + count);
+        toSimpleString(output);
+    }
+    /**
+     * Just the beacon counts string
+     */
+    void toSimpleString(vector<char> &output) {
+        char tmp[256];
+        char *ptr = tmp;
         map<int32_t, beacon_info>::const_iterator iter = begin();
         while (iter != end()) {
-            count = snprintf(tmp, sizeof(tmp), "+%2d: %2d; ", iter->first, iter->second.count);
+            int32_t count = snprintf(tmp, sizeof(tmp), "+%2d: %2d; ", iter->first, iter->second.count);
             output.insert(output.end(), ptr, ptr + count);
             iter++;
         }
