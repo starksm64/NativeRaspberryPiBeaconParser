@@ -2,10 +2,12 @@
 // Created by starksm on 4/4/15.
 //
 
-
+#include <map>
 #include <stdio.h>
 #include <string>
 #include <sys/sysinfo.h>
+
+using namespace std;
 
 int main(int argc, char **argv) {
     struct sysinfo info;
@@ -41,8 +43,19 @@ int main(int argc, char **argv) {
     printf("TotalSwap: %ld\n", info.totalswap*info.mem_unit);
 
     printf("--- to_string:\n");
-    printf("TotalRam: %s\n", std::to_string(info.totalram*info.mem_unit / mb).c_str());
-    printf("AvailableRam: %s\n", std::to_string(info.freeram*info.mem_unit / mb).c_str());
+    printf("TotalRam: %s\n", to_string(info.totalram*info.mem_unit / mb).c_str());
+    printf("AvailableRam: %s\n", to_string(info.freeram*info.mem_unit / mb).c_str());
+
+    map<string, string> statusProperties;
+    string MemTotal("MemTotal");
+    string MemActive("MemActive");
+    string MemFree("MemFree");
+    statusProperties[MemTotal] = to_string(info.totalram*info.mem_unit / mb);
+    statusProperties[MemActive] = to_string((info.totalram - info.freeram)*info.mem_unit / mb);
+    statusProperties[MemFree] = to_string(info.freeram*info.mem_unit / mb);
+    printf("TotalRam: %s\n", statusProperties[MemTotal].c_str());
+    printf("MemActive: %s\n", statusProperties[MemActive].c_str());
+    printf("MemFree: %s\n", statusProperties[MemFree].c_str());
 
     return 0;
 }

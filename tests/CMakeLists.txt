@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(NativeScannerTests)
 
 enable_testing()
-include_directories(. ../src)
+include_directories(. ../src /usr/local/include/activemq-cpp-3.8.3/ /opt/local/include/)
 
 #set(BEACON_FILES ../src/Beacon.cpp ../src/Beacon.h)
 
@@ -75,4 +75,9 @@ set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/lib)
 set(testParserLogic_FILES testParserLogic.cpp)
 add_executable(testParserLogic ${testParserLogic_FILES})
 target_link_libraries (testParserLogic LINK_PUBLIC Beacon MqttCLib  MqttAsyncCLib)
-add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testUnserializeBeacon)
+add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testParserLogic)
+
+set(testMsgProperties_FILES testMsgProperties.cpp)
+add_executable(testMsgProperties ${testMsgProperties_FILES})
+target_link_libraries (testMsgProperties LINK_PUBLIC ${Qpid_LIBRARIES})
+add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testMsgProperties)

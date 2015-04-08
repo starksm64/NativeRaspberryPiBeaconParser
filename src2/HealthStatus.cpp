@@ -16,11 +16,11 @@ const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusP
         string("RawEventCount"),
         string("PublishEventCount"),
         string("HeartbeatCount"),
-        string("MemTotalMb"),
-        string("MemFreeMb"),
-        string("MemAvailableMb"),
-        string("SwapTotalMb"),
-        string("SwapFreeMb"),
+        string("MemTotal"),
+        string("MemFree"),
+        string("MemAvailable"),
+        string("SwapTotal"),
+        string("SwapFree"),
 };
 
 void HealthStatus::monitorStatus() {
