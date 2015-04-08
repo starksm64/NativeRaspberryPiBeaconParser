@@ -34,13 +34,12 @@ ARGS="--scannerID "${scannerID:-`hostname`}" --brokerURL "${brokerURL:-192.168.1
 BACKGROUND=""
 # Check for a background argument
 if [ "$1" == "-background" ]; then
-        BACKGROUND="&"
+        BACKGROUND=" >& /var/log/beacon-scanner.log &"
         shift
 fi
 ARGS="${ARGS} $*"
-CMD="${CMD} ${ARGS} >& /var/log/beacon-scanner.log ${BACKGROUND}"
+CMD="${CMD} ${ARGS} ${BACKGROUND}"
 
 # Start the scanner
 echo "Running: $CMD"
 eval $CMD
-
