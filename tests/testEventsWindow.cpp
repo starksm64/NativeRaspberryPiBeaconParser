@@ -77,7 +77,7 @@ int main() {
         info.minor = id;
         info.time = nowMS;
         printf("n=%d, nowMS=%lld\n", n, nowMS);
-        unique_ptr<EventsBucket> bucket = window.addEvent(info);
+        unique_ptr<EventsBucket> bucket = window.addEvent(info, false);
         if (bucket) {
             vector<char> tmp;
             toString(tmp, bucket);
