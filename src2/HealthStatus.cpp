@@ -76,9 +76,11 @@ void HealthStatus::monitorStatus() {
 
         // Events bucket info
         shared_ptr<EventsBucket> eventsBucket(statusInformation->getStatusWindow());
-        vector<char> eventsBucketStr;
-        eventsBucket->toSimpleString(eventsBucketStr);
-        statusProperties[EventsWindow] = eventsBucketStr.data();
+        if(eventsBucket) {
+            vector<char> eventsBucketStr;
+            eventsBucket->toSimpleString(eventsBucketStr);
+            statusProperties[EventsWindow] = eventsBucketStr.data();
+        }
 
         // System uptime, load, procs, memory info
         struct sysinfo info;
