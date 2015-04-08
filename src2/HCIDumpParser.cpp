@@ -99,8 +99,8 @@ void HCIDumpParser::beaconEvent(const beacon_info &info) {
     // Check for heartbeat
     bool isHeartbeat = scannerUUID.compare(info.uuid) == 0;
     // Merge the event into the current time window
-    shared_ptr<EventsBucket> bucket = timeWindow.addEvent(info);
-    statusInformation->addEvent(info);
+    shared_ptr<EventsBucket> bucket = timeWindow.addEvent(info, isHeartbeat);
+    statusInformation->addEvent(info, isHeartbeat);
     // Now handle the bucket if a new one has been created
     if (bucket) {
         if (!parseCommand.isSkipPublish()) {

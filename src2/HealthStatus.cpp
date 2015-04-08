@@ -15,6 +15,7 @@ const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusP
         string("LoadAverage"),
         string("RawEventCount"),
         string("PublishEventCount"),
+        string("HeartbeatCount"),
         string("MemTotalMb"),
         string("MemFreeMb"),
         string("MemAvailableMb"),
@@ -34,6 +35,7 @@ void HealthStatus::monitorStatus() {
     const string& Procs = getStatusPropertyName(StatusProperties::Procs);
     const string& RawEventCount = getStatusPropertyName(StatusProperties::RawEventCount);
     const string& PublishEventCount = getStatusPropertyName(StatusProperties::PublishEventCount);
+    const string& HeartbeatCount = getStatusPropertyName(StatusProperties::HeartbeatCount);
     const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
     const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
     const string& MemActive = getStatusPropertyName(StatusProperties::MemActive);

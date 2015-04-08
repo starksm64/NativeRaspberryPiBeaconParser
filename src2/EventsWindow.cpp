@@ -21,11 +21,12 @@ int64_t EventsWindow::reset(int32_t sizeInSeconds) {
     end = begin + 1000*windowSizeSeconds;
 }
 
-inline void addInfo(map<int32_t, beacon_info>& eventsMap, const beacon_info& info) {
+inline void addInfo(map<int32_t, beacon_info>& eventsMap, const beacon_info& info, bool isHeartbeat) {
     if(eventsMap.find(info.minor) == eventsMap.end()) {
         // Copy the data
         eventsMap[info.minor] = info;
         eventsMap[info.minor].count = 1;
+        eventsMap[info.minor].isHeartbeat = isHeartbeat;
     } else {
         beacon_info &windowInfo = eventsMap[info.minor];
         windowInfo.rssi += info.rssi;
@@ -51,14 +52,14 @@ unique_ptr<EventsBucket> EventsWindow::getCurrentBucket() {
     return window;
 }
 
-unique_ptr<EventsBucket> EventsWindow::addEvent(const beacon_info& info) {
+unique_ptr<EventsBucket> EventsWindow::addEvent(const beacon_info& info, bool isHeartbeat) {
     unique_ptr<EventsBucket> window;
 #ifdef PRINT_DEBUG
     printf("addEvent(time=%lld), end=%lld, diff=%d\n", info.time, end, (end - info.time));
 #endif
     if(info.time < end) {
         // Update the beacon event counts
-        addInfo(eventsMap, info);
+        addInfo(eventsMap, info, isHeartbeat);
         eventCount ++;
     } else {
         // Calculate the bucket averages
@@ -75,7 +76,7 @@ unique_ptr<EventsBucket> EventsWindow::addEvent(const beacon_info& info) {
         end += 1000*windowSizeSeconds;
         eventCount = 0;
         // Add the event to the next window
-        addInfo(eventsMap, info);
+        addInfo(eventsMap, info, isHeartbeat);
         eventCount ++;
     }
     return window;

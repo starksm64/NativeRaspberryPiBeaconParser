@@ -25,6 +25,7 @@ enum class StatusProperties {
     LoadAverage,        // load averages for the past 1, 5, and 15 minutes "load average: 0.00, 0.01, 0.05"
     RawEventCount,      // Raw number of BLE iBeacon type of events from the bluetooth stack
     PublishEventCount,  // The number of time windowed events pushed to the message broker
+    HeartbeatCount,     // The number of events from the scanner's associated --heartbeatUUID beacon
     MemTotal,           // Total memory on scanner in MB
     MemFree,            // Free memory on scanner in MB
     MemActive,          // Total - Free memory on scanner in MB

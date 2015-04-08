@@ -52,7 +52,7 @@ public:
 
     unique_ptr<EventsBucket> getCurrentBucket();
     int64_t reset(int32_t sizeInSeconds);
-    unique_ptr<EventsBucket> addEvent(const beacon_info& info);
+    unique_ptr<EventsBucket> addEvent(const beacon_info& info, bool isHeartbeat);
 };
 
 #endif //NATIVESCANNER_EVENTSWINDOW_H

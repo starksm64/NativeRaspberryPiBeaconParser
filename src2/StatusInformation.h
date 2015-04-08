@@ -14,6 +14,7 @@ private:
     int32_t statusInterval;
     int32_t rawEventCount;
     int32_t publishEventCount;
+    int32_t heartbeatCount;
 
 public:
 
@@ -53,8 +54,10 @@ public:
     int32_t getRawEventCount() const {
         return rawEventCount;
     }
-    void addEvent(const beacon_info &info) {
+    void addEvent(const beacon_info &info, bool isHeartbeat) {
         rawEventCount ++;
+        if(isHeartbeat)
+            updateHeartbeatCount();
     }
 
     int32_t getPublishEventCount() const {
@@ -62,6 +65,14 @@ public:
     }
     int32_t updatePublishEventCount() {
         return publishEventCount ++;
+    }
+
+
+    int32_t getHeartbeatCount() const {
+        return heartbeatCount;
+    }
+    int32_t updateHeartbeatCount() {
+        return heartbeatCount ++;
     }
 };
 #endif //NATIVESCANNER_EVENTCOUNTS_H
