@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
     printf("%s\n", uptime);
     printf("load average: %.2f, %.2f, %.2f\n", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
     printf("mem_unit=%d\n", info.mem_unit);
+    printf("Procs: %d\n", info.procs);
     printf("TotalRam: %ldMb\n", info.totalram*info.mem_unit / mb);
     printf("AvailableRam: %ldMb\n", info.freeram*info.mem_unit / mb);
     printf("FreeHigh: %ldMb\n", info.freehigh*info.mem_unit / mb);
@@ -28,7 +29,14 @@ int main(int argc, char **argv) {
     printf("SharedRam: %ldMb\n", info.sharedram*info.mem_unit / mb);
     printf("FreeSwap: %ldMb\n", info.freeswap*info.mem_unit / mb);
     printf("TotalSwap: %ldMb\n", info.totalswap*info.mem_unit / mb);
-    printf("Procs: %d\n", info.procs);
+    printf("--- Unscaled:\n");
+    printf("TotalRam: %ld\n", info.totalram*info.mem_unit);
+    printf("AvailableRam: %ld\n", info.freeram*info.mem_unit);
+    printf("FreeHigh: %ld\n", info.freehigh*info.mem_unit);
+    printf("TotalHigh: %ld\n", info.totalhigh*info.mem_unit);
+    printf("SharedRam: %ld\n", info.sharedram*info.mem_unit);
+    printf("FreeSwap: %ld\n", info.freeswap*info.mem_unit);
+    printf("TotalSwap: %ld\n", info.totalswap*info.mem_unit);
 
     return 0;
 }
