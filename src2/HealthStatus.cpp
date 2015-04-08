@@ -80,6 +80,7 @@ void HealthStatus::monitorStatus() {
             vector<char> eventsBucketStr;
             eventsBucket->toSimpleString(eventsBucketStr);
             statusProperties[EventsWindow] = eventsBucketStr.data();
+            printf("EventsBucket: %s\n", eventsBucketStr.data());
         }
 
         // System uptime, load, procs, memory info
