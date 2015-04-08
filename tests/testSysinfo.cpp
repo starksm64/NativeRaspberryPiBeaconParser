@@ -4,6 +4,7 @@
 
 
 #include <stdio.h>
+#include <string>
 #include <sys/sysinfo.h>
 
 int main(int argc, char **argv) {
@@ -29,6 +30,7 @@ int main(int argc, char **argv) {
     printf("SharedRam: %ldMb\n", info.sharedram*info.mem_unit / mb);
     printf("FreeSwap: %ldMb\n", info.freeswap*info.mem_unit / mb);
     printf("TotalSwap: %ldMb\n", info.totalswap*info.mem_unit / mb);
+
     printf("--- Unscaled:\n");
     printf("TotalRam: %ld\n", info.totalram*info.mem_unit);
     printf("AvailableRam: %ld\n", info.freeram*info.mem_unit);
@@ -37,6 +39,10 @@ int main(int argc, char **argv) {
     printf("SharedRam: %ld\n", info.sharedram*info.mem_unit);
     printf("FreeSwap: %ld\n", info.freeswap*info.mem_unit);
     printf("TotalSwap: %ld\n", info.totalswap*info.mem_unit);
+
+    printf("--- to_string:\n");
+    printf("TotalRam: %s\n", std::to_string(info.totalram*info.mem_unit / mb).c_str());
+    printf("AvailableRam: %s\n", std::to_string(info.freeram*info.mem_unit / mb).c_str());
 
     return 0;
 }
