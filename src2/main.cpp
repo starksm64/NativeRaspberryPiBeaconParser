@@ -91,7 +91,7 @@ int main(int argc, const char **argv) {
             false, "beaconEvents", "string", cmd);
     TCLAP::ValueArg<int> analyzeWindow("W", "analyzeWindow",
                                        "Specify the number of seconds in the analyzeMode time window",
-                                       false, 5, "int", cmd);
+                                       false, 1, "int", cmd);
     TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
                                         "Specify the name of the host controller interface to use; default hci0",
                                         false, "hci0", "string", cmd);
