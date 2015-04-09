@@ -19,9 +19,15 @@ void LcdDisplay::displayBeacon(const Beacon &beacon) {
 void LcdDisplay::displayText(const string &text, int col, int row) {
     lcdPosition(lcdHandle, row, col);
     lcdPuts(lcdHandle, text.c_str());
+    // Clear the rest of the line
+    size_t length = text.size();
+    for(int c = length; c < nCols; c++) {
+        lcdPutchar(lcdHandle, '\0');
+    }
 }
 
 int LcdDisplay::init(int rows, int cols) {
+    nCols = cols;
     wiringPiSetup () ;
 
     lcdHandle = lcdInit (rows, cols, 4, 11,10, 4,5,6,7,0,0,0,0) ;
@@ -31,4 +37,8 @@ int LcdDisplay::init(int rows, int cols) {
         return -1 ;
     }
     return 0;
+}
+
+void LcdDisplay::clear() {
+    lcdClear(lcdHandle);
 }
