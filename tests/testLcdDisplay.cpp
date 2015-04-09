@@ -13,4 +13,5 @@ int main() {
         lcd.displayText(line.c_str(), 0, 1);
         cout << "Enter text to display: ";
     }
+    lcd.clear();
 }

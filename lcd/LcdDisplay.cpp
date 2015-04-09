@@ -17,12 +17,12 @@ void LcdDisplay::displayBeacon(const Beacon &beacon) {
 }
 
 void LcdDisplay::displayText(const string &text, int col, int row) {
-    lcdPosition(lcdHandle, row, col);
+    lcdPosition(lcdHandle, col, row);
     lcdPuts(lcdHandle, text.c_str());
     // Clear the rest of the line
     size_t length = text.size();
     for(int c = length; c < nCols; c++) {
-        lcdPutchar(lcdHandle, '\0');
+        lcdPutchar(lcdHandle, ' ');
     }
 }
 
