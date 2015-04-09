@@ -16,7 +16,7 @@ void LcdDisplay::displayBeacon(const Beacon &beacon) {
     lcdPuts(lcdHandle, tmp) ;
 }
 
-void LcdDisplay::displayText(const string &text, int row, int col) {
+void LcdDisplay::displayText(const string &text, int col, int row) {
     lcdPosition(lcdHandle, row, col);
     lcdPuts(lcdHandle, text.c_str());
 }

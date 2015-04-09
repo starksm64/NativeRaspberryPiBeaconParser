@@ -15,7 +15,7 @@ private:
 public:
     int init(int rows, int cols);
     void displayBeacon(const Beacon& beacon);
-    void displayText(const string& text, int row, int col);
+    void displayText(const string& text, int col, int row);
 };
 
 
