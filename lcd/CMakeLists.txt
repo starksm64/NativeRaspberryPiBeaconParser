@@ -1,13 +1,16 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(NativeScanner)
 
+include_directories(/usr/local/include)
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     MESSAGE(STATUS "Skipping wiringPi check on Darwin")
     set(WIRING_PI_HOME /Users/starksm/Dev/IoT/wiringPi)
     include_directories(${WIRING_PI_HOME}/wiringPi ${WIRING_PI_HOME}/devLib)
 else()
-    find_package(Qpid REQUIRED PATHS /usr/local/lib)
-    MESSAGE(STATUS "Found Qpid: ${Qpid_Libraries} (version \"${Qpid_VERSION}\")")
 endif()
 
 add_library (lcdDisplayObjs OBJECT LcdDisplay.cpp lcd.c)
