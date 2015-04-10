@@ -130,10 +130,12 @@ void HCIDumpParser::beaconEvent(const beacon_info &info) {
                 }
                 iter++;
             }
-            Beacon closestBeacon(parseCommand.getScannerID(), closest->uuid, closest->code, closest->manufacturer,
-                                 closest->major, closest->minor, closest->power, closest->calibrated_power,
-                                 closest->rssi, closest->time);
-            beaconViewer->displayBeacon(closestBeacon);
+            if(closest != nullptr) {
+                Beacon closestBeacon(parseCommand.getScannerID(), closest->uuid, closest->code, closest->manufacturer,
+                                     closest->major, closest->minor, closest->power, closest->calibrated_power,
+                                     closest->rssi, closest->time);
+                beaconViewer->displayBeacon(closestBeacon);
+            }
         }
     }
 }
