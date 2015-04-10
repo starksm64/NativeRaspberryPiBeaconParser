@@ -21,7 +21,7 @@ void toString(vector<char> &output, const unique_ptr<EventsBucket> &bucket) {
     strftime(timestr, 128, "%r", &tm);
     // Report the stats for this time window and then reset
     int64_t width = bucketEnd - bucketStart;
-    int count = snprintf(tmp, sizeof(tmp), "+++ Beacon counts for window(%ld): %s\n", width, timestr);
+    int count = snprintf(tmp, sizeof(tmp), "+++ Beacon counts for window(%lld): %s\n", width, timestr);
     output.insert(output.end(), ptr, ptr + count);
     map<int32_t, beacon_info>::const_iterator iter = bucket->begin();
     while (iter != bucket->end()) {
@@ -69,6 +69,13 @@ int main() {
     info.code = 0xbeef;
     info.calibrated_power = -40;
     info.time = EventsWindow::currentMilliseconds();
+
+    // Test printing an empty bucket
+    unique_ptr<EventsBucket> empty = window.getCurrentBucket();
+    vector<char> tmp;
+    empty->toString(tmp);
+    printf("bucket.toString(): %s\n", tmp.data());
+
     for (int n = 0; n < 60; n++) {
         int id = n % 5;
         int64_t nowMS = EventsWindow::currentMilliseconds();
@@ -79,10 +86,11 @@ int main() {
         printf("n=%d, nowMS=%lld\n", n, nowMS);
         unique_ptr<EventsBucket> bucket = window.addEvent(info, false);
         if (bucket) {
-            vector<char> tmp;
             toString(tmp, bucket);
             printf("%s\n", tmp.data());
             fullDump(bucket);
+            bucket->toString(tmp);
+            printf("bucket.toString(): %s\n", tmp.data());
         }
         sleep(1);
     }
