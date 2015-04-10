@@ -364,8 +364,11 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
                     if (!isprint(str[i]))
                         str[i] = '.';
                 p_indent(level, frm);
-                printf("%s local name: \'%s\'\n",
+                printf("%s local name: \'%s\'",
                         type == 0x08 ? "Shortened" : "Complete", str);
+                for (i = 0; i < len; i++)
+                    printf(" 0x%2.2x", data[i]);
+                printf("\n");
                 free(str);
             }
 #endif
