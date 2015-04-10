@@ -7,11 +7,12 @@
 
 
 #include "../src/Beacon.h"
+#include "../src/BeaconViewer.h"
 
 /**
  * A class that configures the wiringPi lcd api to work with a 4x20 lcd display.
  */
-class LcdDisplay {
+class LcdDisplay : public BeaconViewer {
 private:
     int nCols;
     int lcdHandle ;
@@ -19,8 +20,9 @@ private:
 public:
     int init(int rows=4, int cols=20);
     void clear();
-    void displayBeacon(const Beacon& beacon);
     void displayText(const string& text, int col, int row);
+
+    virtual void displayBeacon(const Beacon& beacon);
 };
 
 

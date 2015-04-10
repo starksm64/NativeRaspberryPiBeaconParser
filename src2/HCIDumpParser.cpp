@@ -117,6 +117,24 @@ void HCIDumpParser::beaconEvent(const beacon_info &info) {
                     printBeaconCounts(beacon, bucket);
             }
         }
+        // Display the closest beacon
+        if(beaconViewer) {
+            map<int32_t, beacon_info>::const_iterator iter = bucket->begin();
+            int32_t maxRSSI = -100;
+            const beacon_info *closest = nullptr;
+            while (iter != bucket->end()) {
+                // Skip the heartbeast beacon...
+                if(iter->second.rssi > maxRSSI) {
+                    maxRSSI = iter->second.rssi;
+                    closest = &iter->second;
+                }
+                iter++;
+            }
+            Beacon closestBeacon(parseCommand.getScannerID(), closest->uuid, closest->code, closest->manufacturer,
+                                 closest->major, closest->minor, closest->power, closest->calibrated_power,
+                                 closest->rssi, closest->time);
+            beaconViewer->displayBeacon(closestBeacon);
+        }
     }
 }
 
