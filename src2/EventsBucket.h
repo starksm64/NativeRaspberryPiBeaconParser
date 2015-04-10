@@ -94,7 +94,7 @@ public:
         localtime_r(&tv.tv_sec, &tm);
         strftime(timestr, 128, "%r", &tm);
         // Report the stats for this time window and then reset
-        int64_t width = bucketEnd - bucketStart;
+        int width = bucketEnd - bucketStart;
         int count = snprintf(tmp, sizeof(tmp), "+++ Beacon counts for window(%ld,%d): %s\n", size(), width,
                              timestr);
         output.insert(output.end(), ptr, ptr + count);
