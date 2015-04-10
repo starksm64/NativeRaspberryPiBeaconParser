@@ -353,6 +353,7 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
                 printf(" 0x%4.4x", get_le16(data + i * 2));
             printf("\n");
 #endif
+            break;
 
         case 0x08:
         case 0x09:
