@@ -41,8 +41,10 @@ void LcdDisplay::displayText(const string &text, int col, int row) {
 
     // Clear the rest of the line
     size_t spaces = nCols - text.size() - col;
-    for(int c = 0; c < spaces; c++) {
-        lcdPutchar(lcdHandle, ' ');
+    if(spaces > 0) {
+        for (int c = 0; c < spaces; c++) {
+            lcdPutchar(lcdHandle, ' ');
+        }
     }
 }
 
@@ -55,7 +57,7 @@ void LcdDisplay::displayTime(int64_t timeInMS, int col, int row) {
     tv.tv_usec = timeInMS * 1000 - tv.tv_sec * 1000000;
     tm = localtime(&tv.tv_sec);
 
-    size_t length = strftime(timestr, 128, "%F %T", tm);
+    size_t length = strftime(timestr, 128, "%T", tm);
     snprintf(timestr+length, 128-length, ".%ld", tv.tv_usec/1000);
     displayText(timestr, col, row);
 }
