@@ -53,7 +53,8 @@ static volatile int globalCounter = 0 ;
 void fallingEdge(void)
 {
     ++globalCounter ;
-    printf("fallingEdge, %d\n", globalCounter);
+    int pinState = digitalRead(BUTTON_PIN);
+    printf("fallingEdge, gc=%d, state=%d\n", globalCounter, pinState);
 }
 
 
