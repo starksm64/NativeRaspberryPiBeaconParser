@@ -8,14 +8,17 @@
 
 void LcdDisplay::displayBeacon(const Beacon &beacon) {
     char tmp[80];
-    sprintf(tmp, "Beacon(%d):, rssi=%d", beacon.getMinor(), beacon.getRssi());
+    sprintf(tmp, "Beacon(%d):", beacon.getMinor());
     lcdPosition(lcdHandle, 0, 0) ;
     lcdPuts(lcdHandle, tmp);
-    sprintf(tmp, "rssi=%d, time=%d", beacon.getRssi(), beacon.getTime());
+    sprintf(tmp, "rssi=%d", beacon.getRssi());
     lcdPosition(lcdHandle, 2, 1) ;
     lcdPuts(lcdHandle, tmp) ;
-    sprintf(tmp, "Hello Scott");
+    sprintf(tmp, "time=%lld", beacon.getTime());
     lcdPosition(lcdHandle, 2, 2) ;
+    lcdPuts(lcdHandle, tmp) ;
+    sprintf(tmp, "Hello Scott");
+    lcdPosition(lcdHandle, 2, 3) ;
     lcdPuts(lcdHandle, tmp) ;
 }
 
