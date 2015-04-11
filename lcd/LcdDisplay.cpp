@@ -19,10 +19,18 @@ void LcdDisplay::displayBeacon(const Beacon &beacon) {
 }
 
 void LcdDisplay::displayText(const string &text, int col, int row) {
+    // Clear the prefix
+    lcdPosition(lcdHandle, 0, row);
+    for(int c = 0; c < col; c++) {
+        lcdPutchar(lcdHandle, ' ');
+    }
+
+    // Output the text
     lcdPosition(lcdHandle, col, row);
     lcdPuts(lcdHandle, text.c_str());
+
     // Clear the rest of the line
-    size_t length = text.size();
+    size_t length = text.size() - col;
     for(int c = length; c < nCols; c++) {
         lcdPutchar(lcdHandle, ' ');
     }
