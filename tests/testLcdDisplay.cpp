@@ -16,7 +16,7 @@ int main() {
         int row = count % 3 + 1;
         if(count % 2)
             col = 2;
-        lcd.displayText(line.c_str(), col, 1);
+        lcd.displayText(line.c_str(), col, row);
         cout << "Enter text to display: ";
     }
     lcd.clear();
