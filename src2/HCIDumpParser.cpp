@@ -142,7 +142,10 @@ void HCIDumpParser::beaconEvent(const beacon_info &info) {
                 beaconViewer->displayBeacon(closestBeacon);
             } else if(heartbeat != nullptr) {
                 // The only beacon seen was the heartbeat beacon, so display it
-
+                Beacon heartbeatBeacon(parseCommand.getScannerID(), heartbeat->uuid, heartbeat->code, heartbeat->manufacturer,
+                                       heartbeat->major, heartbeat->minor, heartbeat->power, heartbeat->calibrated_power,
+                                       heartbeat->rssi, heartbeat->time);
+                beaconViewer->displayHeartbeat(heartbeatBeacon);
             }
         }
     }
