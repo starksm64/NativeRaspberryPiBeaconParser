@@ -53,7 +53,7 @@ static volatile int globalCounter = 0 ;
 void fallingEdge(void)
 {
     ++globalCounter ;
-    fprintf("fallingEdge, %d\n", globalCounter);
+    printf("fallingEdge, %d\n", globalCounter);
 }
 
 

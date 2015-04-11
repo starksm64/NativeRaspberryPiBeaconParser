@@ -86,6 +86,10 @@ add_executable(testLcdDisplay ${testLcdDisplay_FILES})
 target_link_libraries (testLcdDisplay LINK_PUBLIC Beacon lcdDisplay wiringPiDev wiringPi)
 add_test(testLcdDisplay ${CMAKE_CURRENT_BINARY_DIR}/testLcdDisplay)
 
+add_executable(testButtonInterrupt testButtonInterrupt.cpp)
+target_link_libraries (testButtonInterrupt LINK_PUBLIC wiringPi)
+add_test(testButtonInterrupt ${CMAKE_CURRENT_BINARY_DIR}/testButtonInterrupt)
+
 set(testMsgProperties_FILES testMsgProperties.cpp)
 add_executable(testMsgProperties ${testMsgProperties_FILES})
 target_link_libraries (testMsgProperties LINK_PUBLIC ${Qpid_LIBRARIES})
