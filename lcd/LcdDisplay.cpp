@@ -12,8 +12,7 @@ void LcdDisplay::displayBeacon(const Beacon &beacon) {
     displayText(tmp, 0, 0);
     sprintf(tmp, "rssi=%d", beacon.getRssi());
     displayText(tmp, 2, 1);
-    sprintf(tmp, "time=%lld", beacon.getTime());
-    displayText(tmp, 2, 2);
+    displayTime(beacon.getTime(), 2, 2);
     sprintf(tmp, "Hello Scott");
     displayText(tmp, 2, 3);
 }
@@ -24,8 +23,7 @@ void LcdDisplay::displayHeartbeat(const Beacon &beacon) {
     displayText(tmp, 0, 0);
     sprintf(tmp, "rssi=%d", beacon.getRssi());
     displayText(tmp, 2, 1);
-    sprintf(tmp, "time=%lld", beacon.getTime());
-    displayText(tmp, 2, 2);
+    displayTime(beacon.getTime(), 2, 2);
     sprintf(tmp, "No other in range");
     displayText(tmp, 2, 3);
 }
@@ -46,6 +44,20 @@ void LcdDisplay::displayText(const string &text, int col, int row) {
     for(int c = 0; c < spaces; c++) {
         lcdPutchar(lcdHandle, ' ');
     }
+}
+
+void LcdDisplay::displayTime(int64_t timeInMS, int col, int row) {
+    char timestr[256];
+    struct timeval  tv;
+    struct tm      *tm;
+
+    tv.tv_sec = timeInMS / 1000;
+    tv.tv_usec = timeInMS * 1000 - tv.tv_sec * 1000000;
+    tm = localtime(&tv.tv_sec);
+
+    size_t length = strftime(timestr, 128, "%F %T", tm);
+    snprintf(timestr+length, 128-length, ".%ld", tv.tv_usec/1000);
+    displayText(timestr, col, row);
 }
 
 int LcdDisplay::init(int rows, int cols) {

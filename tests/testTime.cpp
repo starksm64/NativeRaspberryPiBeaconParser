@@ -33,7 +33,11 @@ int main(int argc, char **argv) {
     char timestr[256];
     size_t length = strftime(timestr, 128, "%F %T", tm);
     snprintf(timestr+length, 128-length, ".%ld", tv.tv_usec/1000);
-    printf("Time string: %s\n", timestr);
+    printf("Time string(%%F %%T): %s\n", timestr);
+    length = strftime(timestr, 128, "%T", tm);
+    snprintf(timestr+length, 128-length, ".%ld", tv.tv_usec/1000);
+    length = strlen(timestr);
+    printf("Time string(%%T.ms): length:%d, %s\n", length, timestr);
 
     printf("Sizeof(time_t) = %ld\n", sizeof(time_t));
     printf("Sizeof(tv.tv_sec) = %ld\n", sizeof(tv.tv_sec));

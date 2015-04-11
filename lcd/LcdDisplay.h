@@ -21,6 +21,7 @@ public:
     int init(int rows=4, int cols=20);
     void clear();
     void displayText(const string& text, int col, int row);
+    void displayTime(int64_t timeInMS, int col, int row);
 
     virtual void displayBeacon(const Beacon& beacon);
     virtual void displayHeartbeat(const Beacon& beacon);
