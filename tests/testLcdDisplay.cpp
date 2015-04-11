@@ -9,7 +9,12 @@ int main() {
     lcd.init();
     lcd.displayText("Text to display:", 0, 0);
     cout << "Enter text to display: ";
+    int count = 0;
     for (std::string line; std::getline(std::cin, line);) {
+        count ++;
+        int col = 0;
+        if(count % 2)
+            col = 2;
         lcd.displayText(line.c_str(), 0, 1);
         cout << "Enter text to display: ";
     }
