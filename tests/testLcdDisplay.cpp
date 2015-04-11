@@ -13,9 +13,10 @@ int main() {
     for (std::string line; std::getline(std::cin, line);) {
         count ++;
         int col = 0;
+        int row = count % 3 + 1;
         if(count % 2)
             col = 2;
-        lcd.displayText(line.c_str(), 0, 1);
+        lcd.displayText(line.c_str(), col, 1);
         cout << "Enter text to display: ";
     }
     lcd.clear();
