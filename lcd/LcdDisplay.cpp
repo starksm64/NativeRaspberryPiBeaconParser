@@ -30,8 +30,8 @@ void LcdDisplay::displayText(const string &text, int col, int row) {
     lcdPuts(lcdHandle, text.c_str());
 
     // Clear the rest of the line
-    size_t length = text.size() - col;
-    for(int c = length; c < nCols; c++) {
+    size_t spaces = nCols - text.size() - col;
+    for(int c = 0; c < spaces; c++) {
         lcdPutchar(lcdHandle, ' ');
     }
 }
