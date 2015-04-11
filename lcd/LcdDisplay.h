@@ -23,6 +23,7 @@ public:
     void displayText(const string& text, int col, int row);
 
     virtual void displayBeacon(const Beacon& beacon);
+    virtual void displayHeartbeat(const Beacon& beacon);
 };
 
 

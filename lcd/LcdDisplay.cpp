@@ -18,6 +18,18 @@ void LcdDisplay::displayBeacon(const Beacon &beacon) {
     displayText(tmp, 2, 3);
 }
 
+void LcdDisplay::displayHeartbeat(const Beacon &beacon) {
+    char tmp[80];
+    sprintf(tmp, "Heartbeat(%d)*:", beacon.getMinor());
+    displayText(tmp, 0, 0);
+    sprintf(tmp, "rssi=%d", beacon.getRssi());
+    displayText(tmp, 2, 1);
+    sprintf(tmp, "time=%lld", beacon.getTime());
+    displayText(tmp, 2, 2);
+    sprintf(tmp, "No other in range");
+    displayText(tmp, 2, 3);
+}
+
 void LcdDisplay::displayText(const string &text, int col, int row) {
     // Clear the prefix
     lcdPosition(lcdHandle, 0, row);

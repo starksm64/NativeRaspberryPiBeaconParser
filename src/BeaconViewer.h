@@ -10,5 +10,6 @@
 class BeaconViewer {
 public:
     virtual void displayBeacon(const Beacon& beacon) = 0;
+    virtual void displayHeartbeat(const Beacon& beacon) = 0;
 };
 #endif //NATIVESCANNER_BEACONVIEWER_H

@@ -122,11 +122,16 @@ void HCIDumpParser::beaconEvent(const beacon_info &info) {
             map<int32_t, beacon_info>::const_iterator iter = bucket->begin();
             int32_t maxRSSI = -100;
             const beacon_info *closest = nullptr;
+            const beacon_info *heartbeat = nullptr;
             while (iter != bucket->end()) {
                 // Skip the heartbeast beacon...
                 if(iter->second.rssi > maxRSSI) {
-                    maxRSSI = iter->second.rssi;
-                    closest = &iter->second;
+                    if(scannerUUID.compare(iter->second.uuid) == 0)
+                        heartbeat = &iter->second;
+                    else {
+                        maxRSSI = iter->second.rssi;
+                        closest = &iter->second;
+                    }
                 }
                 iter++;
             }
@@ -135,6 +140,9 @@ void HCIDumpParser::beaconEvent(const beacon_info &info) {
                                      closest->major, closest->minor, closest->power, closest->calibrated_power,
                                      closest->rssi, closest->time);
                 beaconViewer->displayBeacon(closestBeacon);
+            } else if(heartbeat != nullptr) {
+                // The only beacon seen was the heartbeat beacon, so display it
+
             }
         }
     }
