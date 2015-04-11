@@ -89,6 +89,7 @@ int main() {
             toString(tmp, bucket);
             printf("%s\n", tmp.data());
             fullDump(bucket);
+            tmp.clear();
             bucket->toString(tmp);
             printf("bucket.toString(): %s\n", tmp.data());
         }
