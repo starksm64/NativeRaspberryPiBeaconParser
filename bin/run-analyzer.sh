@@ -17,6 +17,7 @@ ROOT=`dirname $BIN`
 
 # Aliases for backward compatibility to previous variables used from scanner.conf
 scannerID=${scannerID:=$SCANNER_ID}
+heartbeatUUID=${HEARTBEAT_UUID:=$heartbeatUUID}
 
 # Bring up bluetooth interface
 hciconfig hci0 up
@@ -33,4 +34,4 @@ fi
 # Start the scanner
 SCANNER_ID="`hostname`"
 echo "Running in anylyze mode(--analyzeMode), specify a non-default time window using --analyzeWindow"
-${ROOT}/Debug/src2/NativeScannerBlueZ --scannerID "${scannerID}" --analzyeMode --skipPublish $*
+${ROOT}/Debug/src2/NativeScannerBlueZ --scannerID "${scannerID}" --heartbeatUUID "${heartbeatUUID}" --analzyeMode --skipPublish $*
