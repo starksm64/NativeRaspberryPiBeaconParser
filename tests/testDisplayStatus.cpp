@@ -8,13 +8,23 @@
 using namespace std;
 using namespace std::chrono;
 
+static inline void truncateName(string& name) {
+    size_t length = name.length();
+    if(length > 7) {
+        int middle = length/2;
+        size_t count = length - 7;
+        middle -= count / 2;
+        name.erase(middle, count);
+    }
+}
+
 int main() {
     unique_ptr<LcdDisplay> lcd(LcdDisplay::getLcdDisplayInstance());
     lcd->init();
     StatusInformation status;
     beacon_info beacon;
     memset(&beacon, sizeof(beacon), 0);
-    status.setScannerID("Room206");
+    status.setScannerID("LCDScanner");
 
     // Add some events
     sprintf(beacon.uuid, "UUID-%.10d", 66);
@@ -62,7 +72,9 @@ int main() {
     std::getline(std::cin, line);
     lcd->clear();
 
-    snprintf(tmp, sizeof(tmp), "%s:%.5d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
+    string name(status.getScannerID());
+    truncateName(name);
+    snprintf(tmp, sizeof(tmp), "%s:%.7d;%d", name.c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     lcd->displayText(tmp, 0, 0);
     string uptime = statusProps["Uptime"];
     const char *uptimeStr = uptime.c_str();
