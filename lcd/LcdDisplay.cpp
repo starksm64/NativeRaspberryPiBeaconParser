@@ -80,6 +80,14 @@ void LcdDisplay::displayStatus(const StatusInformation& status){
     snprintf(tmp, sizeof(tmp), "%s:%.7d;%d", name.c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     displayText(tmp, 0, 0);
     Properties statusProps = status.getLastStatus();
+#if 1
+    printf("StatusProps dump:\n");
+    for(Properties::const_iterator iter = statusProps.begin(); iter != statusProps.end(); iter ++) {
+        printf("%s = %s\n", iter->first.c_str(), iter->second.c_str());
+    }
+    printf("+++ End dump\n\n");
+#endif
+
     string uptime = statusProps["Uptime"];
     int days=0, hrs=0, mins=0;
     int count = sscanf (uptime.c_str(), "uptime: %*d, days:%d, hrs:%d, min:%d", &days, &hrs, &mins);
