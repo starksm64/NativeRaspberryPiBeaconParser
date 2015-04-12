@@ -63,7 +63,7 @@ int main() {
     snprintf(tmp, 20, "Events: %d; Msgs: %d", status.getRawEventCount(), status.getPublishEventCount());
     lcd->displayText(tmp, 0, 3);
 
-    cout << "Enter any key to exit: ";
+    cout << "\nEnter any key to exit: ";
     std::string line; std::getline(std::cin, line);
     lcd->clear();
 }
