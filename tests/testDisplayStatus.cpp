@@ -54,12 +54,11 @@ int main() {
 
     char tmp[21];
 
-    std::string line;
-    std::getline(std::cin, line);
     snprintf(tmp, sizeof(tmp), "01234567890123456789");
     lcd->displayText(tmp, 0, 0);
 
     cout << "\nEnter any key to test local layout: ";
+    std::string line;
     std::getline(std::cin, line);
     lcd->clear();
 
