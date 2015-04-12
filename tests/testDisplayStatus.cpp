@@ -53,6 +53,7 @@ int main() {
     printf("%s; length=%d\n", uptime.c_str(), uptime.size());
     int secs, days, hrs, mins;
     sscanf (uptime.c_str(), "uptime: %d, days:%d, hrs:%d, min:%d", &secs, &days, &hrs, &mins);
+    printf("UP D:%d H:%d M:%d", days, hrs, mins);
     snprintf(tmp, 20, "UP D:%d H:%d M:%d", days, hrs, mins);
     lcd->displayText(tmp, 0, 1);
     const char *load = statusProps["LoadAverage"].c_str();
