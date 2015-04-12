@@ -48,7 +48,6 @@ private:
     shared_ptr<MsgPublisher> publisher;
     shared_ptr<StatusInformation> statusInformation;
     unique_ptr<thread> monitorThread;
-    Properties lastStatus;
     mutable bool running;
 
     void monitorStatus();
@@ -80,10 +79,6 @@ public:
     /** Begin monitoring in the background, sending status messages to the indicated queue via the publisher
     */
     void start(shared_ptr<MsgPublisher>& publisher, shared_ptr<StatusInformation>& statusInformation);
-
-    Properties  getLastStatus() const {
-        return lastStatus;
-    }
 
     /**
      * Reset any counters

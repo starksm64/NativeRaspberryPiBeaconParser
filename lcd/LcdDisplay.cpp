@@ -66,7 +66,18 @@ void LcdDisplay::displayHeartbeat(const Beacon &beacon) {
 }
 
 void LcdDisplay::displayStatus(const StatusInformation& status){
-
+    char tmp[20];
+    snprintf(tmp, 20, "%s:%.5d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
+    displayText(tmp, 0, 0);
+    Properties statusProps = status.getLastStatus();
+    string uptime = statusProps["Uptime"];
+    printf("%s; length=%d\n", uptime.c_str(), uptime.size());
+    snprintf(tmp, 20, "UP D:dd H:hh M:mm");
+    displayText(tmp, 0, 1);
+    const char *load = statusProps["LoadAverage"].c_str();
+    displayText(load, 0, 2);
+    snprintf(tmp, 20, "Events: %d; Msgs: %d", status.getRawEventCount(), status.getPublishEventCount());
+    displayText(tmp, 0, 3);
 }
 
 void LcdDisplay::displayText(const string &text, int col, int row) {

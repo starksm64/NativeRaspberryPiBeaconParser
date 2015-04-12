@@ -92,7 +92,7 @@ void HealthStatus::monitorStatus() {
             int days = info.uptime / (24*3600);
             int hours = (info.uptime - days * 24*3600) / 3600;
             int minute = (info.uptime - days * 24*3600 - hours*3600) / 60;
-            sprintf(tmp, "uptime: %ld, days:%d, hrs: %d, min: %d", info.uptime, days, hours, minute);
+            sprintf(tmp, "uptime: %ld, days:%d, hrs:%d, min:%d", info.uptime, days, hours, minute);
             statusProperties[Uptime] = tmp;
             printf("%s\n", tmp);
             sprintf(tmp, "%.2f, %.2f, %.2f", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
@@ -111,7 +111,7 @@ void HealthStatus::monitorStatus() {
         // Publish the status
         try {
             publisher->publishProperties(statusQueue, statusProperties);
-            lastStatus = statusProperties;
+            statusInformation->setLastStatus(statusProperties);
         } catch(exception& e) {
             fprintf(stderr, "Failed to send status, %s\n", e.what());
         }
@@ -184,9 +184,6 @@ void HealthStatus::calculateStatus(const StatusInformation& statusInformation) {
         statusProperties[SwapFree] = to_string(info.freeswap*info.mem_unit / mb);
         statusProperties[SwapTotal] = to_string(info.totalswap*info.mem_unit / mb);
     }
-
-    // Publish the status
-    lastStatus = statusProperties;
 }
 
 /** Begin monitoring in the background, sending status messages to the indicated queue via the publisher

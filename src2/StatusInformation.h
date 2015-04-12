@@ -1,12 +1,14 @@
 #ifndef NATIVESCANNER_EVENTCOUNTS_H
 #define NATIVESCANNER_EVENTCOUNTS_H
 
+#include <map>
 #include <string>
 #include "EventsWindow.h"
 #include "hcidumpinternal.h"
 #include "SMA.h"
 
 using namespace std;
+using Properties = map<string, string>;
 
 class StatusInformation {
 private:
@@ -19,6 +21,7 @@ private:
     EventsWindow statusWindow;
     shared_ptr<EventsBucket> lastWindow;
     SMA heartbeatRSSI;
+    Properties lastStatus;
 
 public:
 
@@ -87,5 +90,11 @@ public:
         return lastWindow;
     }
 
+    const Properties &getLastStatus() const {
+        return lastStatus;
+    }
+    void setLastStatus(Properties &lastStatus) {
+        StatusInformation::lastStatus = lastStatus;
+    }
 };
 #endif //NATIVESCANNER_EVENTCOUNTS_H
