@@ -66,7 +66,7 @@ void LcdDisplay::displayHeartbeat(const Beacon &beacon) {
 }
 
 void LcdDisplay::displayStatus(const StatusInformation& status){
-    char tmp[20];
+    char tmp[21];
     snprintf(tmp, sizeof(tmp), "%s: %.7d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     displayText(tmp, 0, 0);
     Properties statusProps = status.getLastStatus();
