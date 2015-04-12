@@ -52,8 +52,18 @@ int main() {
     }
     printf("+++ End dump\n\n");
 
-    char tmp[20];
-    snprintf(tmp, 20, "%s:%.5d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
+    char tmp[21];
+
+    std::string line;
+    std::getline(std::cin, line);
+    snprintf(tmp, sizeof(tmp), "01234567890123456789");
+    lcd->displayText(tmp, 0, 0);
+
+    cout << "\nEnter any key to test local layout: ";
+    std::getline(std::cin, line);
+    lcd->clear();
+
+    snprintf(tmp, sizeof(tmp), "%s:%.5d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     lcd->displayText(tmp, 0, 0);
     string uptime = statusProps["Uptime"];
     const char *uptimeStr = uptime.c_str();
@@ -61,16 +71,15 @@ int main() {
     int days=0, hrs=0, mins=0;
     int count = sscanf (uptimeStr, "uptime: %*d, days:%d, hrs:%d, min:%d", &days, &hrs, &mins);
     printf("matched:%d, UP D:%d H:%d M:%d\n", count, days, hrs, mins);
-    snprintf(tmp, 20, "UP D:%d H:%d M:%d", days, hrs, mins);
+    snprintf(tmp, sizeof(tmp), "UP D:%d H:%d M:%d", days, hrs, mins);
     lcd->displayText(tmp, 0, 1);
     const char *load = statusProps["LoadAverage"].c_str();
     printf("Load: %s\n", load);
     lcd->displayText(load, 0, 2);
-    snprintf(tmp, 20, "Events: %d; Msgs: %d", status.getRawEventCount(), status.getPublishEventCount());
+    snprintf(tmp, sizeof(tmp), "Events: %d; Msgs: %d", status.getRawEventCount(), status.getPublishEventCount());
     lcd->displayText(tmp, 0, 3);
 
     cout << "\nEnter any key to call displayStatus: ";
-    std::string line;
     std::getline(std::cin, line);
     lcd->clear();
     lcd->displayStatus(status);

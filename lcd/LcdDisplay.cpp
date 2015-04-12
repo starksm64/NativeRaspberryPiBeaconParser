@@ -67,17 +67,17 @@ void LcdDisplay::displayHeartbeat(const Beacon &beacon) {
 
 void LcdDisplay::displayStatus(const StatusInformation& status){
     char tmp[20];
-    snprintf(tmp, 20, "%s: %.7d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
+    snprintf(tmp, sizeof(tmp), "%s: %.7d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     displayText(tmp, 0, 0);
     Properties statusProps = status.getLastStatus();
     string uptime = statusProps["Uptime"];
     int days=0, hrs=0, mins=0;
     int count = sscanf (uptime.c_str(), "uptime: %*d, days:%d, hrs:%d, min:%d", &days, &hrs, &mins);
-    snprintf(tmp, 20, "UP D:%d H:%d M:%d", days, hrs, mins);
+    snprintf(tmp, sizeof(tmp), "UP D:%d H:%d M:%d", days, hrs, mins);
     displayText(tmp, 0, 1);
     const char *load = statusProps["LoadAverage"].c_str();
     displayText(load, 0, 2);
-    snprintf(tmp, 20, "S: %.7d; M: %.7d", status.getRawEventCount(), status.getPublishEventCount());
+    snprintf(tmp, sizeof(tmp), "S: %.7d; M: %.7d", status.getRawEventCount(), status.getPublishEventCount());
     displayText(tmp, 0, 3);
 }
 
