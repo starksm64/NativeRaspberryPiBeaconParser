@@ -69,7 +69,13 @@ int main() {
     snprintf(tmp, 20, "Events: %d; Msgs: %d", status.getRawEventCount(), status.getPublishEventCount());
     lcd->displayText(tmp, 0, 3);
 
-    cout << "\nEnter any key to exit: ";
-    std::string line; std::getline(std::cin, line);
+    cout << "\nEnter any key to call displayStatus: ";
+    std::string line;
+    std::getline(std::cin, line);
+    lcd->clear();
+    lcd->displayStatus(status);
+
+    cout << "\nEnter any key to call exit: ";
+    std::getline(std::cin, line);
     lcd->clear();
 }

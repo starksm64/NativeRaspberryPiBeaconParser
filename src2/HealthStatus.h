@@ -87,7 +87,7 @@ public:
     void stop();
 
     /**
-     * Run through the status property calculations
+     * Run through the status property calculations for debugging
      */
     void calculateStatus(StatusInformation& statusInformation);
 
