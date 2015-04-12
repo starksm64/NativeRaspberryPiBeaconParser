@@ -12,8 +12,8 @@
  */
 #define	BUTTON_PIN	0
 
-//
-#define	DEBOUNCE_TIME	100
+// Gap to wait for a button press callbacks to indicate state changes
+#define	DEBOUNCE_TIME	1000
 static volatile int debounceTime = 0;
 
 /**
