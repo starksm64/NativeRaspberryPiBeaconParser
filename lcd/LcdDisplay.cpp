@@ -89,9 +89,9 @@ void LcdDisplay::displayStatus(const StatusInformation& status){
 #endif
 
     string uptime = statusProps["Uptime"];
-    int days=0, hrs=0, mins=0;
-    int count = sscanf (uptime.c_str(), "uptime: %*d, days:%d, hrs:%d, min:%d", &days, &hrs, &mins);
-    snprintf(tmp, sizeof(tmp), "UP D:%d H:%d M:%d", days, hrs, mins);
+    int days=0, hrs=0, mins=0, secs=0;
+    int count = sscanf (uptime.c_str(), "uptime: %*d, days:%d, hrs:%d, min:%d, sec:%d", &days, &hrs, &mins, &secs);
+    snprintf(tmp, sizeof(tmp), "UP D:%d H:%d M:%d S:%d", days, hrs, mins, secs);
     displayText(tmp, 0, 1);
     const char *load = statusProps["LoadAverage"].c_str();
     displayText(load, 0, 2);
