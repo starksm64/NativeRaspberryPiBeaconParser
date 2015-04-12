@@ -77,7 +77,7 @@ void LcdDisplay::displayStatus(const StatusInformation& status){
     displayText(tmp, 0, 1);
     const char *load = statusProps["LoadAverage"].c_str();
     displayText(load, 0, 2);
-    snprintf(tmp, sizeof(tmp), "S:%.8d;M:%.8d", status.getRawEventCount(), status.getPublishEventCount());
+    snprintf(tmp, sizeof(tmp), "S:%.8d;M:%.7d", status.getRawEventCount(), status.getPublishEventCount());
     displayText(tmp, 0, 3);
 }
 
