@@ -55,6 +55,9 @@ set(testRE1_FILES testRE1.cpp)
 add_executable(testRE1 ${testRE1_FILES})
 add_test(testRE1 ${CMAKE_CURRENT_BINARY_DIR}/testRE1)
 
+add_executable(testSscanf testSscanf.cpp)
+add_test(testSscanf ${CMAKE_CURRENT_BINARY_DIR}/testSscanf)
+
 set(testParse_FILES testParse.cpp)
 add_executable(testParse ${testParse_FILES})
 target_link_libraries (testParse LINK_PUBLIC Beacon)
