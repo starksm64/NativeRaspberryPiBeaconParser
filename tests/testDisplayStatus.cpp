@@ -45,13 +45,15 @@ int main() {
 
     HealthStatus healthStatus;
     healthStatus.calculateStatus(status);
-    Properties statusProps = healthStatus.getLastStatus();
+    Properties statusProps = status.getLastStatus();
     char tmp[20];
     snprintf(tmp, 20, "%s:%.5d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     lcd->displayText(tmp, 0, 0);
     string uptime = statusProps["Uptime"];
     printf("%s; length=%d\n", uptime.c_str(), uptime.size());
-    snprintf(tmp, 20, "UP D:dd H:hh M:mm");
+    int secs, days, hrs, mins;
+    sscanf (uptime.c_str(), "uptime: %d, days:%d, hrs:%d, min:%d", &secs, &days, &hrs, &mins);
+    snprintf(tmp, 20, "UP D:%d H:%d M:%d", days, hrs, mins);
     lcd->displayText(tmp, 0, 1);
     const char *load = statusProps["LoadAverage"].c_str();
     lcd->displayText(load, 0, 2);
