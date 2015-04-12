@@ -19,6 +19,7 @@ int64_t EventsWindow::reset(int32_t sizeInSeconds) {
     windowSizeSeconds = sizeInSeconds;
     begin = currentMilliseconds();
     end = begin + 1000*windowSizeSeconds;
+    eventsMap.clear();
 }
 
 inline void addInfo(map<int32_t, beacon_info>& eventsMap, const beacon_info& info, bool isHeartbeat) {

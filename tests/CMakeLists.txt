@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(NativeScannerTests)
 
 enable_testing()
-include_directories(. ../src)
+include_directories(. ../src /usr/local/include/activemq-cpp-3.8.3/ /opt/local/include/)
 
 #set(BEACON_FILES ../src/Beacon.cpp ../src/Beacon.h)
 
@@ -39,6 +39,10 @@ set(testVector_FILES testVector.cpp)
 add_executable(testVector ${testVector_FILES})
 add_test(testVector ${CMAKE_CURRENT_BINARY_DIR}/testVector)
 
+set(testSMA_FILES testSMA.cpp)
+add_executable(testSMA ${testSMA_FILES})
+add_test(testSMA ${CMAKE_CURRENT_BINARY_DIR}/testSMA)
+
 set(testSysinfo_FILES testSysinfo.cpp)
 add_executable(testSysinfo ${testSysinfo_FILES})
 add_test(testSysinfo ${CMAKE_CURRENT_BINARY_DIR}/testSysinfo)
@@ -50,6 +54,9 @@ add_test(testParseNativeHCIDump ${CMAKE_CURRENT_BINARY_DIR}/testParseNativeHCIDu
 set(testRE1_FILES testRE1.cpp)
 add_executable(testRE1 ${testRE1_FILES})
 add_test(testRE1 ${CMAKE_CURRENT_BINARY_DIR}/testRE1)
+
+add_executable(testSscanf testSscanf.cpp)
+add_test(testSscanf ${CMAKE_CURRENT_BINARY_DIR}/testSscanf)
 
 set(testParse_FILES testParse.cpp)
 add_executable(testParse ${testParse_FILES})
@@ -75,4 +82,23 @@ set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/lib)
 set(testParserLogic_FILES testParserLogic.cpp)
 add_executable(testParserLogic ${testParserLogic_FILES})
 target_link_libraries (testParserLogic LINK_PUBLIC Beacon MqttCLib  MqttAsyncCLib)
-add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testUnserializeBeacon)
+add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testParserLogic)
+
+set(testLcdDisplay_FILES testLcdDisplay.cpp)
+add_executable(testLcdDisplay ${testLcdDisplay_FILES})
+target_link_libraries (testLcdDisplay LINK_PUBLIC Beacon lcdDisplay wiringPiDev wiringPi)
+add_test(testLcdDisplay ${CMAKE_CURRENT_BINARY_DIR}/testLcdDisplay)
+
+add_executable(testButtonInterrupt testButtonInterrupt.cpp)
+target_link_libraries (testButtonInterrupt LINK_PUBLIC wiringPi)
+add_test(testButtonInterrupt ${CMAKE_CURRENT_BINARY_DIR}/testButtonInterrupt)
+
+set(testDisplayStatus_FILES testDisplayStatus.cpp ../src2/EventsWindow.cpp ../src2/HealthStatus.cpp)
+add_executable(testDisplayStatus ${testDisplayStatus_FILES})
+target_link_libraries (testDisplayStatus LINK_PUBLIC Beacon lcdDisplay wiringPiDev wiringPi)
+add_test(testDisplayStatus ${CMAKE_CURRENT_BINARY_DIR}/testDisplayStatus)
+
+set(testMsgProperties_FILES testMsgProperties.cpp)
+add_executable(testMsgProperties ${testMsgProperties_FILES})
+target_link_libraries (testMsgProperties LINK_PUBLIC ${Qpid_LIBRARIES})
+add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testMsgProperties)

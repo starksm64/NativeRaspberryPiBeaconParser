@@ -15,11 +15,11 @@ static void generateTestEvents(EventExchanger *exchanger) {
         bool running = true;
         while (running) {
             count++;
-            sprintf(event.uuid, "UUID-%.12d", count);
-            event.minor = count % 150;
+            int32_t minor = count % 150;
+            sprintf(event.uuid, "UUID-%.12d", minor);
+            event.minor = minor;
             event.rssi = -50 - count % 7;
             event.time = EventsWindow::currentMilliseconds();
-            //exchanger->putEvent(new beacon_info(event));
             bool stop = beacon_event_callback(&event);
             running = !stop;
             this_thread::sleep_for(chrono::milliseconds(10));
@@ -37,7 +37,6 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
     string clientID(parseCommand.getClientID());
     if (clientID.empty())
         clientID = parseCommand.getScannerID();
-    publisher.reset(MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", ""));
     timeWindow.reset(parseCommand.getAnalyzeWindow());
     // Setup the status information
     statusInformation->setScannerID(parseCommand.getScannerID());
@@ -49,6 +48,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
                timeWindow.getBegin());
     }
     else if (!parseCommand.isSkipPublish()) {
+        publisher.reset(MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", ""));
         publisher->setUseTopics(!parseCommand.isUseQueues());
         publisher->setDestinationName(parseCommand.getDestinationName());
         if (batchCount > 0) {
@@ -62,14 +62,14 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
         eventConsumer.init(eventExchanger, publisher, statusInformation);
         consumerThread.reset(new thread(&BeaconEventConsumer::publishEvents, &eventConsumer));
         printf("Started event consumer thread\n");
-
-        // If the status interval is > 0, start the health status monitor
-        if(parseCommand.getStatusInterval() > 0) {
-            statusMonitor.start(publisher, statusInformation);
-        }
     }
     else {
         printf("Skipping publish of parsed beacons\n");
+    }
+
+    // If the status interval is > 0, start the health status monitor
+    if(parseCommand.getStatusInterval() > 0) {
+        statusMonitor.start(publisher, statusInformation);
     }
 
     if(parseCommand.isGenerateTestData()) {
@@ -117,6 +117,13 @@ void HCIDumpParser::beaconEvent(const beacon_info &info) {
                     printBeaconCounts(beacon, bucket);
             }
         }
+        // Display either the closest beacon or status
+        if(scannerView) {
+            if(scannerView->isDisplayBeaconsMode())
+                displayClosestBeacon(bucket);
+            else
+                displayStatus();
+        }
     }
 }
 
@@ -126,7 +133,7 @@ void HCIDumpParser::cleanup() {
 }
 
 void HCIDumpParser::printBeaconCounts(Beacon beacon, const shared_ptr<EventsBucket> &bucket) {
-    printf("Window: %s, parsed(%s): %s\n", beacon.toString().c_str());
+    printf("Window: parsed(%s):\n", beacon.toString().c_str());
     printBeaconCounts(bucket);
 }
 
@@ -134,4 +141,40 @@ void HCIDumpParser::printBeaconCounts(const shared_ptr<EventsBucket> &bucket) {
     vector<char> tmp;
     bucket->toString(tmp);
     printf("%s\n", tmp.data());
+}
+
+void HCIDumpParser::displayClosestBeacon(const shared_ptr<EventsBucket>& bucket) {
+    map<int32_t, beacon_info>::const_iterator iter = bucket->begin();
+    int32_t maxRSSI = -100;
+    const beacon_info *closest = nullptr;
+    const beacon_info *heartbeat = nullptr;
+    while (iter != bucket->end()) {
+        // Skip the heartbeast beacon...
+        if(iter->second.rssi > maxRSSI) {
+            if(scannerUUID.compare(iter->second.uuid) == 0)
+                heartbeat = &iter->second;
+            else {
+                maxRSSI = iter->second.rssi;
+                closest = &iter->second;
+            }
+        }
+        iter++;
+    }
+    if(closest != nullptr) {
+        Beacon closestBeacon(parseCommand.getScannerID(), closest->uuid, closest->code, closest->manufacturer,
+                             closest->major, closest->minor, closest->power, closest->calibrated_power,
+                             closest->rssi, closest->time);
+        scannerView->displayBeacon(closestBeacon);
+    } else if(heartbeat != nullptr) {
+        // The only beacon seen was the heartbeat beacon, so display it
+        Beacon heartbeatBeacon(parseCommand.getScannerID(), heartbeat->uuid, heartbeat->code, heartbeat->manufacturer,
+                               heartbeat->major, heartbeat->minor, heartbeat->power, heartbeat->calibrated_power,
+                               heartbeat->rssi, heartbeat->time);
+        scannerView->displayHeartbeat(heartbeatBeacon);
+    }
+
+}
+
+void HCIDumpParser::displayStatus() {
+    scannerView->displayStatus(*statusInformation);
 }

@@ -8,6 +8,7 @@
 #include "tclap/CmdLine.h"
 #include "HCIDumpParser.h"
 #include "MsgPublisherTypeConstraint.h"
+#include "../lcd/LcdDisplay.h"
 
 static HCIDumpParser parserLogic;
 
@@ -91,7 +92,7 @@ int main(int argc, const char **argv) {
             false, "beaconEvents", "string", cmd);
     TCLAP::ValueArg<int> analyzeWindow("W", "analyzeWindow",
                                        "Specify the number of seconds in the analyzeMode time window",
-                                       false, 5, "int", cmd);
+                                       false, 1, "int", cmd);
     TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
                                         "Specify the name of the host controller interface to use; default hci0",
                                         false, "hci0", "string", cmd);
@@ -175,6 +176,9 @@ int main(int argc, const char **argv) {
         parserLogic.setScannerUUID(heartbeatUUID.getValue());
         printf("Set heartbeatUUID: %s\n", heartbeatUUID.getValue().c_str());
     }
+    shared_ptr<LcdDisplay> lcd(LcdDisplay::getLcdDisplayInstance());
+    lcd->init();
+    parserLogic.setScannerView(lcd);
     char cwd[256];
     getcwd(cwd, sizeof(cwd));
     printf("Begin scanning, cwd=%s...\n", cwd);

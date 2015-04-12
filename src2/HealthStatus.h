@@ -19,13 +19,15 @@ using Properties = map<string, string>;
  */
 enum class StatusProperties {
     ScannerID,          // the name of the scanner passed in via the --scannerID argument
-    SystemTime,         // java System.currentMillis() style time on scanner
+    SystemTime,         // strftime(timestr, 128, "%F %T", tm) = YYYY-MM-DD HH:MM:SS
     Uptime,             // uptime in seconds as string formatted as "uptime: %ld, days:%d, hrs: %d, min: %d"
     Procs,              // number of procs active on the scanner
     LoadAverage,        // load averages for the past 1, 5, and 15 minutes "load average: 0.00, 0.01, 0.05"
     RawEventCount,      // Raw number of BLE iBeacon type of events from the bluetooth stack
     PublishEventCount,  // The number of time windowed events pushed to the message broker
     HeartbeatCount,     // The number of events from the scanner's associated --heartbeatUUID beacon
+    HeartbeatRSSI,      // The average RSSI for the scanner's associated --heartbeatUUID beacon
+    EventsWindow,       // The counts of beacon events as a sequence of +{minorID}: {count}; values
     MemTotal,           // Total memory on scanner in MB
     MemFree,            // Free memory on scanner in MB
     MemActive,          // Total - Free memory on scanner in MB
@@ -44,7 +46,6 @@ private:
     static const string statusPropertyNames[static_cast<unsigned int>(StatusProperties::N_STATUS_PROPERTIES)];
 
     shared_ptr<MsgPublisher> publisher;
-
     shared_ptr<StatusInformation> statusInformation;
     unique_ptr<thread> monitorThread;
     mutable bool running;
@@ -84,6 +85,11 @@ public:
      */
     void reset();
     void stop();
+
+    /**
+     * Run through the status property calculations for debugging
+     */
+    void calculateStatus(StatusInformation& statusInformation);
 
     static const string& getStatusPropertyName(StatusProperties property) {
         return statusPropertyNames[static_cast<unsigned int>(property)];
