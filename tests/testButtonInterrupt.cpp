@@ -42,6 +42,7 @@
 //	This is a wiringPi pin number
 
 #define	BUTTON_PIN	0
+#define	DEBOUNCE_TIME	100
 
 // globalCounter:
 //	Global variable to count interrupts
@@ -49,15 +50,23 @@
 
 static volatile int globalCounter = 0 ;
 static volatile bool displayState = false;
+static volatile int debounceTime = 0;
 
 void fallingEdge(void)
 {
     ++globalCounter ;
+    if (millis () < debounceTime)
+    {
+        debounceTime = millis () + DEBOUNCE_TIME ;
+        return;
+    }
+
     int pinState = digitalRead(BUTTON_PIN);
     if(!pinState) {
         displayState = !displayState;
         printf("fallingEdge, gc=%d, state=%d\n", globalCounter, displayState);
     }
+    debounceTime = millis () + DEBOUNCE_TIME ;
 }
 
 void quit(int signal)
