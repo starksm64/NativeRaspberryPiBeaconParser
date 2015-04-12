@@ -118,8 +118,8 @@ void HealthStatus::monitorStatus() {
     }
 }
 
-void HealthStatus::calculateStatus() {
-    const string& scannerID = statusInformation->getScannerID();
+void HealthStatus::calculateStatus(const StatusInformation& statusInformation) {
+    const string& scannerID = statusInformation.getScannerID();
     Properties statusProperties;
     const string& ScannerID = getStatusPropertyName(StatusProperties::ScannerID);
     const string& SystemTime = getStatusPropertyName(StatusProperties::SystemTime);
@@ -154,21 +154,12 @@ void HealthStatus::calculateStatus() {
     readLoadAvg(tmp, sizeof(tmp));
     // Create the status message properties
     statusProperties[LoadAverage] = tmp;
-    statusProperties[RawEventCount] = to_string(statusInformation->getRawEventCount());
-    statusProperties[PublishEventCount] = to_string(statusInformation->getPublishEventCount());
-    statusProperties[HeartbeatCount] = to_string(statusInformation->getHeartbeatCount());
-    statusProperties[HeartbeatRSSI] = to_string(statusInformation->getHeartbeatRSSI());
-    printf("RawEventCount: %d, PublishEventCount: %d, HeartbeatCount: %d, HeartbeatRSSI: %d\n",  statusInformation->getRawEventCount(),
-           statusInformation->getPublishEventCount(), statusInformation->getHeartbeatCount(), statusInformation->getHeartbeatRSSI());
-
-    // Events bucket info
-    shared_ptr<EventsBucket> eventsBucket(statusInformation->getStatusWindow());
-    if(eventsBucket) {
-        vector<char> eventsBucketStr;
-        eventsBucket->toSimpleString(eventsBucketStr);
-        statusProperties[EventsWindow] = eventsBucketStr.data();
-        printf("EventsBucket[%d]: %s\n", eventsBucket->size(), eventsBucketStr.data());
-    }
+    statusProperties[RawEventCount] = to_string(statusInformation.getRawEventCount());
+    statusProperties[PublishEventCount] = to_string(statusInformation.getPublishEventCount());
+    statusProperties[HeartbeatCount] = to_string(statusInformation.getHeartbeatCount());
+    statusProperties[HeartbeatRSSI] = to_string(statusInformation.getHeartbeatRSSI());
+    printf("RawEventCount: %d, PublishEventCount: %d, HeartbeatCount: %d, HeartbeatRSSI: %d\n",  statusInformation.getRawEventCount(),
+           statusInformation.getPublishEventCount(), statusInformation.getHeartbeatCount(), statusInformation.getHeartbeatRSSI());
 
     // System uptime, load, procs, memory info
     struct sysinfo info;

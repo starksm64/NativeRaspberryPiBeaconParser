@@ -94,7 +94,7 @@ public:
     /**
      * Run through the status property calculations
      */
-    void calculateStatus();
+    void calculateStatus(const StatusInformation& statusInformation);
 
     static const string& getStatusPropertyName(StatusProperties property) {
         return statusPropertyNames[static_cast<unsigned int>(property)];

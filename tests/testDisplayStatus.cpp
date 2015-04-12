@@ -44,7 +44,7 @@ int main() {
     status.addEvent(beacon, true);
 
     HealthStatus healthStatus;
-    healthStatus.calculateStatus();
+    healthStatus.calculateStatus(status);
     Properties statusProps = healthStatus.getLastStatus();
     char tmp[20];
     snprintf(tmp, 20, "%s: HC:%.5d RSSI:%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
