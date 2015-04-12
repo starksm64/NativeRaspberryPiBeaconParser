@@ -51,10 +51,10 @@ int main() {
     lcd->displayText(tmp, 0, 0);
     string uptime = statusProps["Uptime"];
     printf("%s; length=%d\n", uptime.c_str(), uptime.size());
-    snprintf(tmp, 20, "UP: %s: ", uptime.c_str());
+    snprintf(tmp, 20, "UP D:dd H:hh M:mm");
     lcd->displayText(tmp, 0, 1);
     const char *load = statusProps["LoadAverage"].c_str();
-    lcd->displayText(tmp, 0, 2);
+    lcd->displayText(load, 0, 2);
 
 
     cout << "Enter any key to exit: ";
