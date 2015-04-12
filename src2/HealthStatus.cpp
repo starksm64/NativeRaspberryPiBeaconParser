@@ -170,7 +170,7 @@ void HealthStatus::calculateStatus(const StatusInformation& statusInformation) {
         int days = info.uptime / (24*3600);
         int hours = (info.uptime - days * 24*3600) / 3600;
         int minute = (info.uptime - days * 24*3600 - hours*3600) / 60;
-        sprintf(tmp, "uptime: %ld, days:%d, hrs: %d, min: %d", info.uptime, days, hours, minute);
+        sprintf(tmp, "uptime: %ld, days:%d, hrs:%d, min:%d", info.uptime, days, hours, minute);
         statusProperties[Uptime] = tmp;
         printf("%s\n", tmp);
         sprintf(tmp, "%.2f, %.2f, %.2f", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
