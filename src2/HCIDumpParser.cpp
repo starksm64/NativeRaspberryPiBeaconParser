@@ -37,7 +37,6 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
     string clientID(parseCommand.getClientID());
     if (clientID.empty())
         clientID = parseCommand.getScannerID();
-    publisher.reset(MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", ""));
     timeWindow.reset(parseCommand.getAnalyzeWindow());
     // Setup the status information
     statusInformation->setScannerID(parseCommand.getScannerID());
@@ -49,6 +48,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
                timeWindow.getBegin());
     }
     else if (!parseCommand.isSkipPublish()) {
+        publisher.reset(MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", ""));
         publisher->setUseTopics(!parseCommand.isUseQueues());
         publisher->setDestinationName(parseCommand.getDestinationName());
         if (batchCount > 0) {
@@ -62,14 +62,14 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
         eventConsumer.init(eventExchanger, publisher, statusInformation);
         consumerThread.reset(new thread(&BeaconEventConsumer::publishEvents, &eventConsumer));
         printf("Started event consumer thread\n");
-
-        // If the status interval is > 0, start the health status monitor
-        if(parseCommand.getStatusInterval() > 0) {
-            statusMonitor.start(publisher, statusInformation);
-        }
     }
     else {
         printf("Skipping publish of parsed beacons\n");
+    }
+
+    // If the status interval is > 0, start the health status monitor
+    if(parseCommand.getStatusInterval() > 0) {
+        statusMonitor.start(publisher, statusInformation);
     }
 
     if(parseCommand.isGenerateTestData()) {

@@ -109,11 +109,13 @@ void HealthStatus::monitorStatus() {
         fflush(stdout);
 
         // Publish the status
-        try {
-            publisher->publishProperties(statusQueue, statusProperties);
-            statusInformation->setLastStatus(statusProperties);
-        } catch(exception& e) {
-            fprintf(stderr, "Failed to send status, %s\n", e.what());
+        if(publisher) {
+            try {
+                publisher->publishProperties(statusQueue, statusProperties);
+                statusInformation->setLastStatus(statusProperties);
+            } catch (exception &e) {
+                fprintf(stderr, "Failed to send status, %s\n", e.what());
+            }
         }
     }
 }
