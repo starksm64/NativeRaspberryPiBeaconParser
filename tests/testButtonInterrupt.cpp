@@ -36,7 +36,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <wiringPi.h>
-
+#include <csignal>
 
 // What GPIO input are we using?
 //	This is a wiringPi pin number
@@ -48,15 +48,23 @@
 //	Should be declared volatile to make sure the compiler doesn't cache it.
 
 static volatile int globalCounter = 0 ;
-
+static volatile bool displayState = false;
 
 void fallingEdge(void)
 {
     ++globalCounter ;
     int pinState = digitalRead(BUTTON_PIN);
-    printf("fallingEdge, gc=%d, state=%d\n", globalCounter, pinState);
+    if(!pinState) {
+        displayState = !displayState;
+        printf("fallingEdge, gc=%d, state=%d\n", globalCounter, displayState);
+    }
 }
 
+void quit(int signal)
+{
+    printf("Caught SIGINT, exiting...\n");
+    exit(0);
+}
 
 /*
  *********************************************************************************
@@ -84,6 +92,7 @@ int main (void)
         fprintf (stderr, "Unable to setup ISR: %s\n", strerror (errno)) ;
         return 1 ;
     }
+    std::signal(SIGINT, quit);
 
     for (;;)
     {
