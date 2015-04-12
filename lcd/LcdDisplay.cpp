@@ -80,7 +80,7 @@ void LcdDisplay::displayStatus(const StatusInformation& status){
     snprintf(tmp, sizeof(tmp), "%s:%.7d;%d", name.c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     displayText(tmp, 0, 0);
     Properties statusProps = status.getLastStatus();
-#if 1
+#if 0
     printf("StatusProps dump:\n");
     for(Properties::const_iterator iter = statusProps.begin(); iter != statusProps.end(); iter ++) {
         printf("%s = %s\n", iter->first.c_str(), iter->second.c_str());
