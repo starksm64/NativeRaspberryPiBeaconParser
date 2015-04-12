@@ -47,12 +47,15 @@ int main() {
     healthStatus.calculateStatus(status);
     Properties statusProps = healthStatus.getLastStatus();
     char tmp[20];
-    snprintf(tmp, 20, "%s: HC:%.5d RSSI:%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
+    snprintf(tmp, 20, "%s:%.5d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     lcd->displayText(tmp, 0, 0);
-    const char *uptime = statusProps["Uptime"].c_str();
+    string uptime = statusProps["Uptime"];
+    printf("%s; length=%d\n", uptime.c_str(), uptime.size());
     snprintf(tmp, 20, "UP: %s: ", uptime);
     lcd->displayText(tmp, 0, 1);
     const char *load = statusProps["LoadAverage"].c_str();
+    lcd->displayText(tmp, 0, 2);
+
 
     cout << "Enter any key to exit: ";
     std::string line; std::getline(std::cin, line);
