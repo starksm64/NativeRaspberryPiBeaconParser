@@ -90,6 +90,11 @@ add_executable(testButtonInterrupt testButtonInterrupt.cpp)
 target_link_libraries (testButtonInterrupt LINK_PUBLIC wiringPi)
 add_test(testButtonInterrupt ${CMAKE_CURRENT_BINARY_DIR}/testButtonInterrupt)
 
+set(testDisplayStatus_FILES testDisplayStatus.cpp ../src2/EventsWindow.cpp ../src2/HealthStatus.cpp)
+add_executable(testDisplayStatus ${testDisplayStatus_FILES})
+target_link_libraries (testDisplayStatus LINK_PUBLIC Beacon lcdDisplay wiringPiDev wiringPi)
+add_test(testDisplayStatus ${CMAKE_CURRENT_BINARY_DIR}/testDisplayStatus)
+
 set(testMsgProperties_FILES testMsgProperties.cpp)
 add_executable(testMsgProperties ${testMsgProperties_FILES})
 target_link_libraries (testMsgProperties LINK_PUBLIC ${Qpid_LIBRARIES})

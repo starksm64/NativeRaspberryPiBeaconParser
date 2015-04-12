@@ -46,9 +46,9 @@ private:
     static const string statusPropertyNames[static_cast<unsigned int>(StatusProperties::N_STATUS_PROPERTIES)];
 
     shared_ptr<MsgPublisher> publisher;
-
     shared_ptr<StatusInformation> statusInformation;
     unique_ptr<thread> monitorThread;
+    Properties lastStatus;
     mutable bool running;
 
     void monitorStatus();
@@ -81,11 +81,20 @@ public:
     */
     void start(shared_ptr<MsgPublisher>& publisher, shared_ptr<StatusInformation>& statusInformation);
 
+    Properties  getLastStatus() const {
+        return lastStatus;
+    }
+
     /**
      * Reset any counters
      */
     void reset();
     void stop();
+
+    /**
+     * Run through the status property calculations
+     */
+    void calculateStatus();
 
     static const string& getStatusPropertyName(StatusProperties property) {
         return statusPropertyNames[static_cast<unsigned int>(property)];

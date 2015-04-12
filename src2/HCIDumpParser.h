@@ -13,7 +13,7 @@
 #include <map>
 #include <memory>
 #include <thread>
-#include <BeaconViewer.h>
+#include "ScannerView.h"
 
 extern "C" {
 #include "hcidumpinternal.h"
@@ -36,8 +36,8 @@ private:
     shared_ptr<EventExchanger> eventExchanger;
     /** An information class published by the HealthStatus task */
     shared_ptr<StatusInformation> statusInformation;
-    /** */
-    shared_ptr<BeaconViewer> beaconViewer;
+    /** The ScannerView implementation used to output information about the scanner */
+    shared_ptr<ScannerView> scannerView;
     /** A background status monitor task class */
     HealthStatus statusMonitor;
 
@@ -62,6 +62,9 @@ private:
         return false;
     }
 
+    void displayClosestBeacon(const shared_ptr<EventsBucket>& bucket);
+    void displayStatus();
+
 public:
     HCIDumpParser() : publisher(nullptr), batchCount(0), scannerUUID(""), statusInformation(new StatusInformation()) {
     }
@@ -82,12 +85,11 @@ public:
         statusInformation->setScannerID(scannerUUID);
     }
 
-
-    shared_ptr<BeaconViewer> const &getBeaconViewer() const {
-        return beaconViewer;
+    shared_ptr<ScannerView> const &getScannerView() const {
+        return scannerView;
     }
-    void setBeaconViewer(shared_ptr<BeaconViewer> const &beaconViewer) {
-        HCIDumpParser::beaconViewer = beaconViewer;
+    void setScannerView(shared_ptr<ScannerView> const &beaconViewer) {
+        HCIDumpParser::scannerView = beaconViewer;
     }
 
     void processHCI(HCIDumpCommand& parseCommand);

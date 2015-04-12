@@ -111,10 +111,91 @@ void HealthStatus::monitorStatus() {
         // Publish the status
         try {
             publisher->publishProperties(statusQueue, statusProperties);
+            lastStatus = statusProperties;
         } catch(exception& e) {
             fprintf(stderr, "Failed to send status, %s\n", e.what());
         }
     }
+}
+
+void HealthStatus::calculateStatus() {
+    const string& scannerID = statusInformation->getScannerID();
+    Properties statusProperties;
+    const string& ScannerID = getStatusPropertyName(StatusProperties::ScannerID);
+    const string& SystemTime = getStatusPropertyName(StatusProperties::SystemTime);
+    const string& Uptime = getStatusPropertyName(StatusProperties::Uptime);
+    const string& LoadAverage = getStatusPropertyName(StatusProperties::LoadAverage);
+    const string& Procs = getStatusPropertyName(StatusProperties::Procs);
+    const string& RawEventCount = getStatusPropertyName(StatusProperties::RawEventCount);
+    const string& PublishEventCount = getStatusPropertyName(StatusProperties::PublishEventCount);
+    const string& HeartbeatCount = getStatusPropertyName(StatusProperties::HeartbeatCount);
+    const string& HeartbeatRSSI = getStatusPropertyName(StatusProperties::HeartbeatRSSI);
+    const string& EventsWindow = getStatusPropertyName(StatusProperties::EventsWindow);
+    const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
+    const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
+    const string& MemActive = getStatusPropertyName(StatusProperties::MemActive);
+    const string& SwapTotal = getStatusPropertyName(StatusProperties::SwapTotal);
+    const string& SwapFree = getStatusPropertyName(StatusProperties::SwapFree);
+    struct timeval  tv;
+    struct tm *tm;
+
+    statusProperties[ScannerID] = scannerID;
+
+    // Time
+    gettimeofday(&tv, nullptr);
+    tm = localtime(&tv.tv_sec);
+    char timestr[256];
+    strftime(timestr, 128, "%F %T", tm);
+    statusProperties[SystemTime] = timestr;
+    printf("--- HealthStatus: %s\n", timestr);
+
+    // Get the load average
+    char tmp[128];
+    readLoadAvg(tmp, sizeof(tmp));
+    // Create the status message properties
+    statusProperties[LoadAverage] = tmp;
+    statusProperties[RawEventCount] = to_string(statusInformation->getRawEventCount());
+    statusProperties[PublishEventCount] = to_string(statusInformation->getPublishEventCount());
+    statusProperties[HeartbeatCount] = to_string(statusInformation->getHeartbeatCount());
+    statusProperties[HeartbeatRSSI] = to_string(statusInformation->getHeartbeatRSSI());
+    printf("RawEventCount: %d, PublishEventCount: %d, HeartbeatCount: %d, HeartbeatRSSI: %d\n",  statusInformation->getRawEventCount(),
+           statusInformation->getPublishEventCount(), statusInformation->getHeartbeatCount(), statusInformation->getHeartbeatRSSI());
+
+    // Events bucket info
+    shared_ptr<EventsBucket> eventsBucket(statusInformation->getStatusWindow());
+    if(eventsBucket) {
+        vector<char> eventsBucketStr;
+        eventsBucket->toSimpleString(eventsBucketStr);
+        statusProperties[EventsWindow] = eventsBucketStr.data();
+        printf("EventsBucket[%d]: %s\n", eventsBucket->size(), eventsBucketStr.data());
+    }
+
+    // System uptime, load, procs, memory info
+    struct sysinfo info;
+    if(sysinfo(&info)) {
+        perror("Failed to read sysinfo");
+    } else {
+        int mb = 1024*1024;
+        int days = info.uptime / (24*3600);
+        int hours = (info.uptime - days * 24*3600) / 3600;
+        int minute = (info.uptime - days * 24*3600 - hours*3600) / 60;
+        sprintf(tmp, "uptime: %ld, days:%d, hrs: %d, min: %d", info.uptime, days, hours, minute);
+        statusProperties[Uptime] = tmp;
+        printf("%s\n", tmp);
+        sprintf(tmp, "%.2f, %.2f, %.2f", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
+        printf("loadavg: %s\n", tmp);
+        statusProperties[LoadAverage] = tmp;
+        statusProperties[Procs] = to_string(info.procs);
+        statusProperties[MemTotal] = to_string(info.totalram*info.mem_unit / mb);
+        printf("MemTotal: %ld;  MemFree: %ld\n", info.totalram*info.mem_unit,  info.freeram*info.mem_unit);
+        statusProperties[MemActive] = to_string((info.totalram - info.freeram)*info.mem_unit / mb);
+        statusProperties[MemFree] = to_string(info.freeram*info.mem_unit / mb);
+        statusProperties[SwapFree] = to_string(info.freeswap*info.mem_unit / mb);
+        statusProperties[SwapTotal] = to_string(info.totalswap*info.mem_unit / mb);
+    }
+
+    // Publish the status
+    lastStatus = statusProperties;
 }
 
 /** Begin monitoring in the background, sending status messages to the indicated queue via the publisher

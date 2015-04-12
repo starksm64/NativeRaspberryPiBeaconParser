@@ -176,9 +176,9 @@ int main(int argc, const char **argv) {
         parserLogic.setScannerUUID(heartbeatUUID.getValue());
         printf("Set heartbeatUUID: %s\n", heartbeatUUID.getValue().c_str());
     }
-    shared_ptr<LcdDisplay> lcd(new LcdDisplay);
+    shared_ptr<LcdDisplay> lcd(LcdDisplay::getLcdDisplayInstance());
     lcd->init();
-    parserLogic.setBeaconViewer(lcd);
+    parserLogic.setScannerView(lcd);
     char cwd[256];
     getcwd(cwd, sizeof(cwd));
     printf("Begin scanning, cwd=%s...\n", cwd);

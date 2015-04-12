@@ -5,6 +5,43 @@
 #include "LcdDisplay.h"
 #include <wiringPi.h>
 #include <lcd.h>
+#include <string.h>
+
+/* The pi's GPIO pin 0, header pin 11, wiringPi pin 0
+ * https://projects.drogon.net/raspberry-pi/wiringpi/pins/
+ */
+#define	BUTTON_PIN	0
+
+//
+#define	DEBOUNCE_TIME	100
+static volatile int debounceTime = 0;
+
+/**
+ * The LcdDisplay singleton used invoke in the buttonPressed interrupt callback.
+ */
+static LcdDisplay *theDisplay;
+
+static void buttonPressed() {
+    if (millis () < debounceTime)
+    {
+        debounceTime = millis () + DEBOUNCE_TIME ;
+        return;
+    }
+
+    int pinState = digitalRead(BUTTON_PIN);
+    if(!pinState) {
+        bool displayBeaconsMode = theDisplay->toggleDisplayState();
+        printf("buttonPressed, displayBeaconsMode=%d\n", displayBeaconsMode);
+    }
+    debounceTime = millis () + DEBOUNCE_TIME ;
+}
+
+LcdDisplay *LcdDisplay::getLcdDisplayInstance() {
+    if(theDisplay == nullptr)
+        theDisplay = new LcdDisplay();
+    return theDisplay;
+}
+
 
 void LcdDisplay::displayBeacon(const Beacon &beacon) {
     char tmp[80];
@@ -26,6 +63,10 @@ void LcdDisplay::displayHeartbeat(const Beacon &beacon) {
     displayTime(beacon.getTime(), 2, 2);
     sprintf(tmp, "No other in range");
     displayText(tmp, 2, 3);
+}
+
+void LcdDisplay::displayStatus(const StatusInformation& status){
+
 }
 
 void LcdDisplay::displayText(const string &text, int col, int row) {
@@ -72,6 +113,17 @@ int LcdDisplay::init(int rows, int cols) {
         fprintf (stderr, "lcdInit failed\n") ;
         return -1 ;
     }
+    // Set the button pin to input mode
+    pinMode(BUTTON_PIN, INPUT);
+    // Set the pull up resistor to up to fix it at 3.3V so it reads high until button is pressed
+    pullUpDnControl(BUTTON_PIN, PUD_UP);
+
+    // Register the interrupt callback function
+    if (wiringPiISR (BUTTON_PIN, INT_EDGE_FALLING, &buttonPressed) < 0) {
+        fprintf (stderr, "Unable to setup button press callback: %s\n", strerror (errno)) ;
+        return 1 ;
+    }
+
     return 0;
 }
 

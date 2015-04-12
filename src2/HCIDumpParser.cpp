@@ -117,36 +117,12 @@ void HCIDumpParser::beaconEvent(const beacon_info &info) {
                     printBeaconCounts(beacon, bucket);
             }
         }
-        // Display the closest beacon
-        if(beaconViewer) {
-            map<int32_t, beacon_info>::const_iterator iter = bucket->begin();
-            int32_t maxRSSI = -100;
-            const beacon_info *closest = nullptr;
-            const beacon_info *heartbeat = nullptr;
-            while (iter != bucket->end()) {
-                // Skip the heartbeast beacon...
-                if(iter->second.rssi > maxRSSI) {
-                    if(scannerUUID.compare(iter->second.uuid) == 0)
-                        heartbeat = &iter->second;
-                    else {
-                        maxRSSI = iter->second.rssi;
-                        closest = &iter->second;
-                    }
-                }
-                iter++;
-            }
-            if(closest != nullptr) {
-                Beacon closestBeacon(parseCommand.getScannerID(), closest->uuid, closest->code, closest->manufacturer,
-                                     closest->major, closest->minor, closest->power, closest->calibrated_power,
-                                     closest->rssi, closest->time);
-                beaconViewer->displayBeacon(closestBeacon);
-            } else if(heartbeat != nullptr) {
-                // The only beacon seen was the heartbeat beacon, so display it
-                Beacon heartbeatBeacon(parseCommand.getScannerID(), heartbeat->uuid, heartbeat->code, heartbeat->manufacturer,
-                                       heartbeat->major, heartbeat->minor, heartbeat->power, heartbeat->calibrated_power,
-                                       heartbeat->rssi, heartbeat->time);
-                beaconViewer->displayHeartbeat(heartbeatBeacon);
-            }
+        // Display either the closest beacon or status
+        if(scannerView) {
+            if(scannerView->isDisplayBeaconsMode())
+                displayClosestBeacon(bucket);
+            else
+                displayStatus();
         }
     }
 }
@@ -165,4 +141,40 @@ void HCIDumpParser::printBeaconCounts(const shared_ptr<EventsBucket> &bucket) {
     vector<char> tmp;
     bucket->toString(tmp);
     printf("%s\n", tmp.data());
+}
+
+void HCIDumpParser::displayClosestBeacon(const shared_ptr<EventsBucket>& bucket) {
+    map<int32_t, beacon_info>::const_iterator iter = bucket->begin();
+    int32_t maxRSSI = -100;
+    const beacon_info *closest = nullptr;
+    const beacon_info *heartbeat = nullptr;
+    while (iter != bucket->end()) {
+        // Skip the heartbeast beacon...
+        if(iter->second.rssi > maxRSSI) {
+            if(scannerUUID.compare(iter->second.uuid) == 0)
+                heartbeat = &iter->second;
+            else {
+                maxRSSI = iter->second.rssi;
+                closest = &iter->second;
+            }
+        }
+        iter++;
+    }
+    if(closest != nullptr) {
+        Beacon closestBeacon(parseCommand.getScannerID(), closest->uuid, closest->code, closest->manufacturer,
+                             closest->major, closest->minor, closest->power, closest->calibrated_power,
+                             closest->rssi, closest->time);
+        scannerView->displayBeacon(closestBeacon);
+    } else if(heartbeat != nullptr) {
+        // The only beacon seen was the heartbeat beacon, so display it
+        Beacon heartbeatBeacon(parseCommand.getScannerID(), heartbeat->uuid, heartbeat->code, heartbeat->manufacturer,
+                               heartbeat->major, heartbeat->minor, heartbeat->power, heartbeat->calibrated_power,
+                               heartbeat->rssi, heartbeat->time);
+        scannerView->displayHeartbeat(heartbeatBeacon);
+    }
+
+}
+
+void HCIDumpParser::displayStatus() {
+    scannerView->displayStatus(*statusInformation);
 }
