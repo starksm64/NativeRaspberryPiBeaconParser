@@ -46,6 +46,10 @@ int main() {
     HealthStatus healthStatus;
     healthStatus.calculateStatus(status);
     Properties statusProps = status.getLastStatus();
+    printf("StatusProps dump:\n");
+    for(Properties::const_iterator iter = statusProps.begin(); iter != statusProps.end(); iter ++) {
+        printf("%s = %s\n", iter->first.c_str(), iter->second.c_str());
+    }
     char tmp[20];
     snprintf(tmp, 20, "%s:%.5d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     lcd->displayText(tmp, 0, 0);
