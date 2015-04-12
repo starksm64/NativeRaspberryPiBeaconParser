@@ -105,6 +105,7 @@ void HealthStatus::monitorStatus() {
             statusProperties[MemFree] = to_string(info.freeram*info.mem_unit / mb);
             statusProperties[SwapFree] = to_string(info.freeswap*info.mem_unit / mb);
             statusProperties[SwapTotal] = to_string(info.totalswap*info.mem_unit / mb);
+            statusInformation->setLastStatus(statusProperties);
         }
         fflush(stdout);
 
