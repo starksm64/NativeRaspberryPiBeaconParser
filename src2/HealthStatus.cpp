@@ -118,7 +118,7 @@ void HealthStatus::monitorStatus() {
     }
 }
 
-void HealthStatus::calculateStatus(const StatusInformation& statusInformation) {
+void HealthStatus::calculateStatus(StatusInformation& statusInformation) {
     const string& scannerID = statusInformation.getScannerID();
     Properties statusProperties;
     const string& ScannerID = getStatusPropertyName(StatusProperties::ScannerID);
@@ -184,6 +184,7 @@ void HealthStatus::calculateStatus(const StatusInformation& statusInformation) {
         statusProperties[SwapFree] = to_string(info.freeswap*info.mem_unit / mb);
         statusProperties[SwapTotal] = to_string(info.totalswap*info.mem_unit / mb);
     }
+    statusInformation.setLastStatus(statusProperties);
 }
 
 /** Begin monitoring in the background, sending status messages to the indicated queue via the publisher
