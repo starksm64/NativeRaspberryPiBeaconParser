@@ -65,9 +65,19 @@ void LcdDisplay::displayHeartbeat(const Beacon &beacon) {
     displayText(tmp, 2, 3);
 }
 
+static inline void truncateName(string& name) {
+    size_t length = name.length();
+    if(length > 8) {
+        name.resize(8);
+        name.replace(7, 1, 1, '.');
+    }
+}
+
 void LcdDisplay::displayStatus(const StatusInformation& status){
     char tmp[21];
-    snprintf(tmp, sizeof(tmp), "%s: %.7d;%d", status.getScannerID().c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
+    string name(status.getScannerID());
+    truncateName(name);
+    snprintf(tmp, sizeof(tmp), "%s:%.7d;%d", name.c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     displayText(tmp, 0, 0);
     Properties statusProps = status.getLastStatus();
     string uptime = statusProps["Uptime"];

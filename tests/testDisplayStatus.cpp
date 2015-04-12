@@ -10,11 +10,9 @@ using namespace std::chrono;
 
 static inline void truncateName(string& name) {
     size_t length = name.length();
-    if(length > 7) {
-        int middle = length/2;
-        size_t count = length - 7;
-        middle -= count / 2;
-        name.erase(middle, count);
+    if(length > 8) {
+        name.resize(8);
+        name.replace(7, 1, 1, '.');
     }
 }
 
