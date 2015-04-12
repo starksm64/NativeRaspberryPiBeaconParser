@@ -55,7 +55,8 @@ int main() {
     lcd->displayText(tmp, 0, 1);
     const char *load = statusProps["LoadAverage"].c_str();
     lcd->displayText(load, 0, 2);
-
+    snprintf(tmp, 20, "Events: %d; Msgs: %d", status.getRawEventCount(), status.getPublishEventCount());
+    lcd->displayText(load, 0, 3);
 
     cout << "Enter any key to exit: ";
     std::string line; std::getline(std::cin, line);
