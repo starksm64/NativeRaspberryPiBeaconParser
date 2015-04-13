@@ -9,6 +9,7 @@
 #include "HCIDumpParser.h"
 #include "MsgPublisherTypeConstraint.h"
 #include "../lcd/LcdDisplay.h"
+#include "MockScannerView.h"
 
 static HCIDumpParser parserLogic;
 
@@ -52,6 +53,17 @@ extern "C" bool beacon_event_callback(beacon_info * info) {
 }
 
 using namespace std;
+
+static ScannerView *getDisplayInstance() {
+    ScannerView *view = nullptr;
+#ifdef HAVE_LCD_DISPLAY
+    LcdDisplay *lcd = LcdDisplay::getLcdDisplayInstance();
+    lcd->init();
+    view = lcd;
+#else
+    view = new MockScannerView();
+#endif
+}
 
 /**
 * A version of the native scanner that directly integrates with the bluez stack hcidump command rather than parsing
@@ -176,8 +188,7 @@ int main(int argc, const char **argv) {
         parserLogic.setScannerUUID(heartbeatUUID.getValue());
         printf("Set heartbeatUUID: %s\n", heartbeatUUID.getValue().c_str());
     }
-    shared_ptr<LcdDisplay> lcd(LcdDisplay::getLcdDisplayInstance());
-    lcd->init();
+    shared_ptr<ScannerView> lcd(getDisplayInstance());
     parserLogic.setScannerView(lcd);
     char cwd[256];
     getcwd(cwd, sizeof(cwd));
