@@ -333,16 +333,17 @@ There are systemd services, scanner-configd.service and scannerd.service, that a
 	
 # LCD Display
 The beacon scanner code supports display of information about the closest beacon to the scanner as well a brief summary of status information via an attached lcd screen. An example of wiring up a RaspberryPi Model B to an LCD display is show in this image:
-![wiring](docs/BeaconScanner_bb.png =640x480)
+<img src="docs/BeaconScanner_bb.png" width="640" height="480" />
+
 
 The scanner has two different display modes; closest beacon and a status summary. The current display mode can be toggled by wiring up and then pressing the momentary button as shown in the preceeding illustration.
 
 ## Closest Beacon Display
 The scanner will display the closest in its default display mode. If there are no beacons in range of the scanner, it will display the heartbeat beacon associated with the scanner. The following images show switching between beacons 130 and 156, and then finally displaying the scanner heartbeat beacon 999 when no other beacons are within range.
 
-![Beacon130](docs/images/130.jpg =640x480)
-![Beacon156](docs/images/156.jpg =640x480)
-![Beacon999](docs/images/999.jpg =640x480)
+<img src="docs/images/130.jpg" width="640" height="480" />
+<img src="docs/images/156.jpg" width="640" height="480" />
+<img src="docs/images/999.jpg" width="640" height="480" />
 
 ## Status Display
 Clicking the mode button switches the scanner display mode to status display. In this mode the scanner displays:
@@ -353,4 +354,4 @@ Clicking the mode button switches the scanner display mode to status display. In
 * ScannerEvents:NNNNNNNN;MsgPublishedToBroker:NNNNNNNN
 
 An example status view is shown in this picture:
-![Beacon](docs/images/Status.jpg =640x480)
+<img src="docs/images/Status.jpg" width="640" height="480" />
