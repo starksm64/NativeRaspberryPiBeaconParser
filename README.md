@@ -333,7 +333,8 @@ There are systemd services, scanner-configd.service and scannerd.service, that a
 	
 # LCD Display
 The beacon scanner code supports display of information about the closest beacon to the scanner as well a brief summary of status information via an attached lcd screen. An example of wiring up a RaspberryPi Model B to an LCD display is show in this image:
-![wiring](docs/BeaconScanner_bb.png =640x480)
+<img src="docs/BeaconScanner_bb.png" width="640" height="480" />
+
 
 The scanner has two different display modes; closest beacon and a status summary. The current display mode can be toggled by wiring up and then pressing the momentary button as shown in the preceeding illustration.
 
