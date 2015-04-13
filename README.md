@@ -296,8 +296,8 @@ There are systemd services, scanner-configd.service and scannerd.service, that a
 
 	[Unit]
 	Description=Serivce config file for the beacon scanner
-	Requires=scanner-configd.service
-	After=scanner-configd.service
+	Wants=scanner-configd.service
+	After=network-online.target
 	
 	[Service]
 	Environment="JAVA_HOME=/root/jdk1.8.0_33"
@@ -308,10 +308,15 @@ There are systemd services, scanner-configd.service and scannerd.service, that a
 	WantedBy=multi-user.target
 
 
-Use the sytemctl command to check the service status, restart, etc.
+#### Enable the scannerd.service:
+	[root@pi-room202 NativeRaspberryPiBeaconParser]# systemctl enable scannerd.service
+	ln -s '/usr/lib/systemd/system/scannerd.service' '/etc/systemd/system/multi-user.target.wants/scannerd.service'
 
-	[root@pi2-room201 ~]# sytemctl status scannerd.service
-	-bash: sytemctl: command not found
+#### Reload the scannerd.service configuration after a change
+	[root@pi-room202 NativeRaspberryPiBeaconParser]# systemctl daemon-reload
+
+#### Use the sytemctl command to check the service status, restart, etc.
+
 	[root@pi2-room201 ~]# systemctl status scannerd.service
 	scannerd.service - Serivce config file for the beacon scanner
 	   Loaded: loaded (/usr/lib/systemd/system/scannerd.service; enabled)
@@ -325,3 +330,27 @@ Use the sytemctl command to check the service status, restart, etc.
 	Jan 01 00:00:37 pi2-room201 run-scanner.sh[1067]: Running: /root/NativeRaspbe...
 	Jan 01 00:00:37 pi2-room201 systemd[1]: Started Serivce config file for the ....
 	Hint: Some lines were ellipsized, use -l to show in full.
+	
+# LCD Display
+The beacon scanner code supports display of information about the closest beacon to the scanner as well a brief summary of status information via an attached lcd screen. An example of wiring up a RaspberryPi Model B to an LCD display is show in this image:
+![wiring](docs/BeaconScanner_bb.png =640x480)
+
+The scanner has two different display modes; closest beacon and a status summary. The current display mode can be toggled by wiring up and then pressing the momentary button as shown in the preceeding illustration.
+
+## Closest Beacon Display
+The scanner will display the closest in its default display mode. If there are no beacons in range of the scanner, it will display the heartbeat beacon associated with the scanner. The following images show switching between beacons 130 and 156, and then finally displaying the scanner heartbeat beacon 999 when no other beacons are within range.
+
+![Beacon130](docs/images/130.jpg =640x480)
+![Beacon156](docs/images/156.jpg =640x480)
+![Beacon999](docs/images/999.jpg =640x480)
+
+## Status Display
+Clicking the mode button switches the scanner display mode to status display. In this mode the scanner displays:
+
+* ScannerName: HeartbeatBeacon count; HeartbeatBeaconRSSI
+* UP Days:DD Hours:HH Minutes:MM Seconds:SS
+* Load average over 1, 5 and 15 minutes
+* ScannerEvents:NNNNNNNN;MsgPublishedToBroker:NNNNNNNN
+
+An example status view is shown in this picture:
+![Beacon](docs/images/Status.jpg =640x480)
