@@ -47,6 +47,11 @@ void HealthStatus::monitorStatus() {
     const string& SwapFree = getStatusPropertyName(StatusProperties::SwapFree);
     struct timeval  tv;
     struct tm *tm;
+    struct sysinfo beginInfo;
+
+    if(sysinfo(&beginInfo)) {
+        perror("Failed to read sysinfo");
+    };
 
     while(running) {
         // Wait for statusInterval before
@@ -89,10 +94,10 @@ void HealthStatus::monitorStatus() {
             perror("Failed to read sysinfo");
         } else {
             int mb = 1024*1024;
-            long days = info.uptime / (24*3600);
-            long hours = (info.uptime - days * 24*3600) / 3600;
-            long minute = (info.uptime - days * 24*3600 - hours*3600) / 60;
-            long seconds = info.uptime - days * 24*3600 - hours*3600 - minute*60;
+            long days = info.uptime - beginInfo.uptime / (24*3600);
+            long hours = (info.uptime - beginInfo.uptime - days * 24*3600) / 3600;
+            long minute = (info.uptime - beginInfo.uptime - days * 24*3600 - hours*3600) / 60;
+            long seconds = info.uptime - beginInfo.uptime - days * 24*3600 - hours*3600 - minute*60;
             sprintf(tmp, "uptime: %ld, days:%ld, hrs:%ld, min:%ld, sec:%ld", info.uptime, days, hours, minute, seconds);
             statusProperties[Uptime] = tmp;
             printf("%s\n", tmp);
