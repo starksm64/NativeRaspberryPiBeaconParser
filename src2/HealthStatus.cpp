@@ -94,11 +94,12 @@ void HealthStatus::monitorStatus() {
             perror("Failed to read sysinfo");
         } else {
             int mb = 1024*1024;
-            long days = info.uptime - beginInfo.uptime / (24*3600);
-            long hours = (info.uptime - beginInfo.uptime - days * 24*3600) / 3600;
-            long minute = (info.uptime - beginInfo.uptime - days * 24*3600 - hours*3600) / 60;
-            long seconds = info.uptime - beginInfo.uptime - days * 24*3600 - hours*3600 - minute*60;
-            sprintf(tmp, "uptime: %ld, days:%ld, hrs:%ld, min:%ld, sec:%ld", info.uptime, days, hours, minute, seconds);
+            long uptimeDiff = info.uptime - beginInfo.uptime;
+            long days = uptimeDiff / (24*3600);
+            long hours = (uptimeDiff - days * 24*3600) / 3600;
+            long minute = (uptimeDiff - days * 24*3600 - hours*3600) / 60;
+            long seconds = uptimeDiff - days * 24*3600 - hours*3600 - minute*60;
+            sprintf(tmp, "uptime: %ld, days:%ld, hrs:%ld, min:%ld, sec:%ld", uptimeDiff, days, hours, minute, seconds);
             statusProperties[Uptime] = tmp;
             printf("%s\n", tmp);
             sprintf(tmp, "%.2f, %.2f, %.2f", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
