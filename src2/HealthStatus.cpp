@@ -152,14 +152,7 @@ void HealthStatus::monitorStatus() {
         fflush(stdout);
 
         // Publish the status
-        if(publisher) {
-            try {
-                publisher->publishProperties(statusQueue, statusProperties);
-                statusInformation->setLastStatus(statusProperties);
-            } catch (exception &e) {
-                fprintf(stderr, "Failed to send status, %s\n", e.what());
-            }
-        }
+        statusInformation->setLastStatus(statusProperties);
 
         // Wait for statusInterval before
         this_thread::sleep_for(chrono::seconds(statusInterval));

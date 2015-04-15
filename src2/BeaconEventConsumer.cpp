@@ -67,9 +67,12 @@ void BeaconEventConsumer::publishEvents() {
     printf("BeaconEventConsumer::publishEvents, starting\n");
     while (running) {
         shared_ptr<EventsBucket> info = exchanger->takeEvent();
-        if (info)
+        if (info) {
             handleMessage(info);
-        else {
+        } else if(statusInformation->isStatusChanged()) {
+            publisher->publishProperties(statusInformation->getStatusQueue(), statusInformation->getLastStatus());
+            statusInformation->clearStatusChanged();
+        } else {
             this_thread::sleep_for(chrono::milliseconds(1));
         }
     }

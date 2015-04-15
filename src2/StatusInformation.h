@@ -1,6 +1,7 @@
 #ifndef NATIVESCANNER_EVENTCOUNTS_H
 #define NATIVESCANNER_EVENTCOUNTS_H
 
+#include <atomic>
 #include <map>
 #include <string>
 #include "EventsWindow.h"
@@ -22,10 +23,11 @@ private:
     shared_ptr<EventsBucket> lastWindow;
     SMA heartbeatRSSI;
     Properties lastStatus;
+    atomic_bool statusUpdated;
 
 public:
 
-    StatusInformation() : scannerID(""), rawEventCount(0), publishEventCount(0), heartbeatCount(0), heartbeatRSSI(30) {}
+    StatusInformation() : scannerID(""), rawEventCount(0), publishEventCount(0), heartbeatCount(0), heartbeatRSSI(30), statusUpdated(false) {}
 
     const string &getStatusQueue() const {
         return statusQueue;
@@ -95,6 +97,13 @@ public:
     }
     void setLastStatus(Properties &lastStatus) {
         StatusInformation::lastStatus = lastStatus;
+        statusUpdated = true;
+    }
+    bool isStatusChanged() {
+        return statusUpdated;
+    }
+    void clearStatusChanged() {
+        statusUpdated = false;
     }
 };
 #endif //NATIVESCANNER_EVENTCOUNTS_H
