@@ -92,7 +92,7 @@ public:
     * @param flag - true for a topic, false for a queue
     */
     void setUseTopics(bool flag) {
-        useTopics = false;
+        useTopics = flag;
     }
     bool isUseTopics() {
         return useTopics;
