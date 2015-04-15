@@ -2,6 +2,8 @@
 // Created by Scott Stark on 3/30/15.
 //
 
+#include <ifaddrs.h>
+#include <netdb.h>
 #include <string.h>
 #include <sys/sysinfo.h>
 #include <sys/time.h>
@@ -56,12 +58,37 @@ void HealthStatus::monitorStatus() {
     if(sysinfo(&beginInfo)) {
         perror("Failed to read sysinfo");
     };
+// Send an initial hello status msg with the host inet address
+    char hostIPAddress[128];
+    struct ifaddrs *ifaddr, *ifa;
+    int family, s, n;
+    if (getifaddrs(&ifaddr) == -1) {
+        perror("getifaddrs");
+    }
+    for (ifa = ifaddr, n = 0; ifa != nullptr; ifa = ifa->ifa_next, n++) {
+        if (ifa->ifa_addr == nullptr)
+            continue;
+        family = ifa->ifa_addr->sa_family;
+        if(family == AF_INET) {
+            char tmp[sizeof(hostIPAddress)];
+            int err = getnameinfo(ifa->ifa_addr, sizeof(sockaddr_in), tmp, sizeof(tmp), nullptr, 0, NI_NUMERICHOST);
+            if(err != 0) {
+                printf("getnameinfo() failed: %s\n", gai_strerror(s));
+            }
+            printf("Found hostIPAddress of: %s\n", tmp);
+            if(strncasecmp(tmp, "127.0", 5) == 0) {
+                printf("Skipping localhost address\n");
+                continue;
+            }
+            strcpy(hostIPAddress, tmp);
+        }
+    }
+
+    freeifaddrs(ifaddr);
 
     while(running) {
-        // Wait for statusInterval before
-        this_thread::sleep_for(chrono::seconds(statusInterval));
-
         statusProperties[ScannerID] = scannerID;
+        statusProperties[HostIPAddress] = hostIPAddress;
 
         // Time
         gettimeofday(&tv, nullptr);
@@ -133,6 +160,9 @@ void HealthStatus::monitorStatus() {
                 fprintf(stderr, "Failed to send status, %s\n", e.what());
             }
         }
+
+        // Wait for statusInterval before
+        this_thread::sleep_for(chrono::seconds(statusInterval));
     }
 }
 
