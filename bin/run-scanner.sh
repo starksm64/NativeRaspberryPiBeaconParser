@@ -30,7 +30,7 @@ else
 fi
 
 CMD="${ROOT}/Debug/src2/NativeScannerBlueZ"
-ARGS="--scannerID "${scannerID:-`hostname`}" --brokerURL "${brokerURL:-192.168.1.107:5672}" --heartbeatUUID "${heartbeatUUID}" --useQueues"
+ARGS="--scannerID "${scannerID:-`hostname`}" --brokerURL "${brokerURL:-192.168.1.107:5672}" --heartbeatUUID "${heartbeatUUID}""
 BACKGROUND=""
 # Check for a background argument
 if [ "$1" == "-background" ]; then
