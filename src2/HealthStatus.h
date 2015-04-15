@@ -19,7 +19,9 @@ using Properties = map<string, string>;
  */
 enum class StatusProperties {
     ScannerID,          // the name of the scanner passed in via the --scannerID argument
+    HostIPAddress,      // the ip address of the scanner host
     SystemTime,         // strftime(timestr, 128, "%F %T", tm) = YYYY-MM-DD HH:MM:SS
+    SystemTimeMS,       // system time in milliseconds since epoch
     Uptime,             // uptime in seconds as string formatted as "uptime: %ld, days:%d, hrs: %d, min: %d"
     Procs,              // number of procs active on the scanner
     LoadAverage,        // load averages for the past 1, 5, and 15 minutes "load average: 0.00, 0.01, 0.05"

@@ -9,7 +9,9 @@
 
 const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusProperties::N_STATUS_PROPERTIES)] = {
         string("ScannerID"),
+        string("HostIPAddress"),
         string("SystemTime"),
+        string("SystemTimeMS"),
         string("Uptime"),
         string("Procs"),
         string("LoadAverage"),
@@ -31,7 +33,9 @@ void HealthStatus::monitorStatus() {
     const string& scannerID = statusInformation->getScannerID();
     Properties statusProperties;
     const string& ScannerID = getStatusPropertyName(StatusProperties::ScannerID);
+    const string& HostIPAddress = getStatusPropertyName(StatusProperties::HostIPAddress);
     const string& SystemTime = getStatusPropertyName(StatusProperties::SystemTime);
+    const string& SystemTimeMS = getStatusPropertyName(StatusProperties::SystemTimeMS);
     const string& Uptime = getStatusPropertyName(StatusProperties::Uptime);
     const string& LoadAverage = getStatusPropertyName(StatusProperties::LoadAverage);
     const string& Procs = getStatusPropertyName(StatusProperties::Procs);
@@ -62,9 +66,13 @@ void HealthStatus::monitorStatus() {
         // Time
         gettimeofday(&tv, nullptr);
         tm = localtime(&tv.tv_sec);
+        int64_t nowMS = tv.tv_sec;
+        nowMS *= 1000;
+        nowMS += tv.tv_usec/1000;
         char timestr[256];
         strftime(timestr, 128, "%F %T", tm);
         statusProperties[SystemTime] = timestr;
+        statusProperties[SystemTimeMS] = to_string(nowMS);
         printf("--- HealthStatus: %s\n", timestr);
 
         // Get the load average
