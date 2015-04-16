@@ -56,7 +56,7 @@ add_test(testRE1 ${CMAKE_CURRENT_BINARY_DIR}/testRE1)
 add_executable(testSscanf testSscanf.cpp)
 add_test(testSscanf ${CMAKE_CURRENT_BINARY_DIR}/testSscanf)
 
-add_executable(testSscanf2 testSscanf2.cpp)
+add_executable(testSscanf2 testSScanf2.cpp)
 add_test(testSscanf2 ${CMAKE_CURRENT_BINARY_DIR}/testSscanf2)
 
 add_executable(testParse testParse.cpp)
