@@ -169,6 +169,7 @@ int main(int argc, const char **argv) {
     }
 
     HCIDumpCommand command(scannerID.getValue(), brokerURL.getValue(), clientID.getValue(), topicName.getValue());
+    command.setUseQueues(useQueues.getValue());
     command.setSkipPublish(skipPublish.getValue());
     command.setSkipHeartbeat(skipHeartbeat.getValue());
     command.setHciDev(hciDev.getValue());

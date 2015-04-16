@@ -20,6 +20,7 @@ string AmqQueueName(const string name) {
 
 
 void QpidPublisher::start(bool asyncMode) {
+  printf("QpidPublisher, start, this=%p\n", this);
   // Open connection
   /* Reconnect behaviour can be controlled through the following options:
     * - reconnect: true/false (enables/disables reconnect entirely)
