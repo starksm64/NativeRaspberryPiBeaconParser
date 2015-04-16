@@ -55,6 +55,8 @@ void QpidPublisher::start(bool asyncMode) {
   // Create sender with default topic destination address
   string destName = isUseTopics() ? AmqTopicName(destinationName) : AmqQueueName(destinationName);
   sender = session.createSender(destName);
+  printf("Created new sender for: %s\n", destName.c_str());
+  senders[destName] = sender;
 }
 
 void QpidPublisher::stop() {
@@ -79,7 +81,12 @@ void QpidPublisher::publish(string const &destName, MqttQOS qos, byte *payload, 
   messaging::Sender sndr = sender;
   if (destName.length() > 0) {
     string fullDestName = isUseTopics() ? AmqTopicName(destName) : AmqQueueName(destName);
-    sndr = session.createSender(fullDestName);
+    sndr = senders[fullDestName];
+    if(!sndr) {
+      sndr = session.createSender(fullDestName);
+      printf("Created new sender for: %s\n", fullDestName.c_str());
+      senders[fullDestName] = sndr;
+    }
   }
 
   // Create message
@@ -101,7 +108,12 @@ void QpidPublisher::publish(string const &destName, Beacon &beacon) {
   messaging::Sender sndr = sender;
   if (destName.length() > 0) {
     string fullDestName = isUseTopics() ? AmqTopicName(destName) : AmqQueueName(destName);
-    sndr = session.createSender(fullDestName);
+    sndr = senders[fullDestName];
+    if(!sndr) {
+      sndr = session.createSender(fullDestName);
+      printf("Created new sender for: %s\n", fullDestName.c_str());
+      senders[fullDestName] = sndr;
+    }
   }
 
   doPublishProperties(sndr, beacon, BeconEventType::SCANNER_READ);
@@ -148,7 +160,12 @@ void QpidPublisher::publishProperties(string const &destName, map<string,string>
   messaging::Sender sndr = sender;
   if (destName.length() > 0) {
     string fullDestName = isUseTopics() ? AmqTopicName(destName) : AmqQueueName(destName);
-    sndr = session.createSender(fullDestName);
+    sndr = senders[fullDestName];
+    if(!sndr) {
+      sndr = session.createSender(fullDestName);
+      printf("Created new sender for: %s\n", fullDestName.c_str());
+      senders[fullDestName] = sndr;
+    }
   }
 
   messaging::Message message;
