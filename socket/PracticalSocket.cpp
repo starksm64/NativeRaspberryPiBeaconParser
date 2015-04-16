@@ -205,7 +205,6 @@ throw(SocketException) {
     if (wrote < 0) {
         throw SocketException("Send failed (send())", true);
     }
-    printf("send wrote %d bytes\n", wrote);
 }
 
 int CommunicatingSocket::recv(void *buffer, int bufferLen)
