@@ -56,7 +56,10 @@ void SocketPublisher::publish(vector<Beacon> events) {
 void SocketPublisher::publish(string const &destinationName, Beacon &beacon) {
     vector<byte> msg = beacon.toByteMsg();
     buffer.clear();
-    buffer.writeBytes(destinationName);
+    if(destinationName.size() == 0)
+        buffer.writeBytes("beaconEvents");
+    else
+        buffer.writeBytes(destinationName);
     buffer.writeInt(msg.size());
     vector<byte> prefix = buffer.getData();
     msg.insert(msg.begin(), prefix.begin(), prefix.end());
@@ -70,7 +73,10 @@ void SocketPublisher::publishStatus(Beacon &beacon) {
 
 void SocketPublisher::publishProperties(string const &destinationName, map<string, string> const &properties) {
     buffer.clear();
-    buffer.writeBytes(destinationName);
+    if(destinationName.size() == 0)
+        buffer.writeBytes("scannerHealth");
+    else
+        buffer.writeBytes(destinationName);
     // Save room for the msg size
     uint32_t sizePos = buffer.reserveBytes(4);
     uint32_t start = buffer.getWritePos();
