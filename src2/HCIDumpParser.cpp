@@ -50,6 +50,7 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
     else if (!parseCommand.isSkipPublish()) {
         publisher.reset(MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", ""));
         publisher->setUseTopics(!parseCommand.isUseQueues());
+        printf("setUseTopics: %s\n", publisher->isUseTopics() ? "true" : "false");
         publisher->setDestinationName(parseCommand.getDestinationName());
         if (batchCount > 0) {
             publisher->setUseTransactions(true);
