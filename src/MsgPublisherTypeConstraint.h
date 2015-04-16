@@ -33,6 +33,8 @@ public:
             return true;
         if(value.compare("AMQP_QPID") == 0)
             return true;
+        if(value.compare("SOCKET") == 0)
+            return true;
         return false;
     }
 
@@ -45,6 +47,8 @@ public:
             return MsgPublisherType::AMQP_CMS;
         if(value.compare("AMQP_QPID") == 0)
             return MsgPublisherType::AMQP_QPID;
+        if(value.compare("SOCKET") == 0)
+            return MsgPublisherType::SOCKET;
         return MsgPublisherType::INVALID;
     }
 };

@@ -3,6 +3,7 @@
 #include "ProtonPublisher.h"
 #include "CMSPublisher.h"
 #include "QpidPublisher.h"
+#include "SocketPublisher.h"
 
 MsgPublisher* MsgPublisher::create(MsgPublisherType type, string brokerUrl, string clientID, string userName, string password) {
     MsgPublisher* publisher = nullptr;
@@ -20,6 +21,13 @@ MsgPublisher* MsgPublisher::create(MsgPublisherType type, string brokerUrl, stri
         case AMQP_QPID:
             publisher = new QpidPublisher(brokerUrl, clientID, userName, password);
             printf("Created QpidPublisher instance\n");
+            break;
+        case SOCKET:
+            publisher = new SocketPublisher(brokerUrl, clientID, userName, password);
+            printf("Created SocketPublisher instance\n");
+            break;
+        default:
+            fprintf(stderr, "Unknown MsgPublisherType: %d\n", type);
             break;
     }
     return publisher;

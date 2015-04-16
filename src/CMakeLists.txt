@@ -7,7 +7,7 @@ set(SOURCE_FILES Beacon.h Beacon.cpp ByteBuffer.h ByteBuffer.cpp MqttPublisher.h
     MsgPublisher.cpp CMSPublisher.cpp MqttPublisher.cpp ProtonPublisher.cpp QpidPublisher.cpp
 )
 
-add_library (BeaconObjs OBJECT ${SOURCE_FILES})
+add_library (BeaconObjs OBJECT ${SOURCE_FILES} SocketPublisher.cpp SocketPublisher.h)
 add_library (Beacon STATIC $<TARGET_OBJECTS:BeaconObjs>)
 
 add_executable(NativeScanner main.cpp)

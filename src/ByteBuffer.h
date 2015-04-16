@@ -132,6 +132,14 @@ public:
     inline void writeInt(uint32_t value) {putInt(value);}
     inline void writeLong(uint64_t value) {putLong(value);}
     void writeBytes(std::string str);
+    // Reserve space at the current write locaton and return that location after advancing the write pos by size
+    uint32_t reserveBytes(uint32_t bytes) {
+        uint32_t currentWpos = wpos;
+        wpos += bytes;
+        if (size() < (wpos + bytes))
+            buf.resize(wpos + bytes);
+        return currentWpos;
+    }
 
     // Buffer Position Accessors & Mutators
 

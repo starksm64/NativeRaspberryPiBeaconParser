@@ -18,7 +18,7 @@ using byte = unsigned char;
 using namespace std;
 
 /** The current byte[] toByteMsg/fromByteMsg version format */
-static int32_t VERSION = 4;
+static int32_t VERSION = 5;
 
 enum BeconEventType {
     /** A beacon event read by a scanner */
@@ -86,7 +86,7 @@ public:
               calibratedPower(calibratedPower),
               rssi(rssi),
               time(time),
-              messageType(BeconEventType::SCANNER_READ){
+              messageType(BeconEventType::SCANNER_READ) {
     }
     ~Beacon() {
     }
@@ -186,6 +186,10 @@ public:
 
     void setMessageType(int32_t messageType) {
         Beacon::messageType = messageType;
+    }
+
+    bool isHeartbeat() {
+        return messageType == BeconEventType::SCANNER_HEARTBEAT;
     }
 
     string toString();

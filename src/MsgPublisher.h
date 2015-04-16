@@ -14,6 +14,7 @@ enum MsgPublisherType {
     AMQP_PROTON,
     AMQP_CMS,
     AMQP_QPID,
+    SOCKET,
     INVALID=-1
 } ;
 

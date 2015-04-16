@@ -57,26 +57,28 @@ string Beacon::toString() {
 }
 
 Beacon Beacon::fromByteMsg(byte *msg, uint32_t length) {
-        ByteBuffer dis(msg, length);
-        int32_t version = dis.readInt();
-        if(version != VERSION) {
-            char *tmp = new char[1024]{'\0'};
-            snprintf(tmp, 1024, "Msg version: %d does not match current version: %d", version, VERSION);
-        }
-        string scannerID = dis.readString();
-        string uuid = dis.readString();
-        int32_t code = dis.readInt();
-        int32_t manufacturer = dis.readInt();
-        int32_t major = dis.readInt();
-        int32_t minor = dis.readInt();
-        int32_t power = dis.readInt();
-        int32_t calibratedPower = dis.readInt();
-        int32_t rssi = dis.readInt();
-        int32_t messageType = dis.readInt();
-        // The format is milliseconds since Epoch, but c++ time expects seconds
-        int64_t time = dis.readLong();
-        Beacon beacon = Beacon(scannerID, uuid, code, manufacturer, major, minor, power, calibratedPower, rssi, time);
-        return beacon;
+    ByteBuffer dis(msg, length);
+    int32_t version = dis.readInt();
+    if(version != VERSION) {
+        char *tmp = new char[1024]{'\0'};
+        snprintf(tmp, 1024, "Msg version: %d does not match current version: %d", version, VERSION);
+    }
+    string scannerID = dis.readString();
+    string uuid = dis.readString();
+    int32_t code = dis.readInt();
+    int32_t manufacturer = dis.readInt();
+    int32_t major = dis.readInt();
+    int32_t minor = dis.readInt();
+    int32_t power = dis.readInt();
+    int32_t calibratedPower = dis.readInt();
+    int32_t rssi = dis.readInt();
+    int32_t messageType = dis.readInt();
+    int32_t heartbeat = dis.readInt();
+    // The format is milliseconds since Epoch, but c++ time expects seconds
+    int64_t time = dis.readLong();
+    Beacon beacon = Beacon(scannerID, uuid, code, manufacturer, major, minor, power, calibratedPower, rssi, time);
+    beacon.setMessageType(messageType);
+    return beacon;
 }
 
 /**
