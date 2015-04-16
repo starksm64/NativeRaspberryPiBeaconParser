@@ -26,7 +26,7 @@ set(tools_hcidump_SOURCES ${BluezToolsParser}/parser.h ${BluezToolsParser}/parse
 add_library(BluezLibInternal SHARED IMPORTED)
 set_property(TARGET BluezLibInternal PROPERTY IMPORTED_LOCATION ${BluezHome}/lib/.libs/libbluetooth-internal.a)
 
-set(SCANNER_LIBS Beacon CMS pthread ssl crypto z apr-1 MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES})
+set(SCANNER_LIBS Beacon CMS pthread ssl crypto z apr-1 MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
 if(WiringPi_FOUND)
     set(SCANNER_LIBS ${SCANNER_LIBS} lcdDisplay wiringPiDev wiringPi)
 endif()

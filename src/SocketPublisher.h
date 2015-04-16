@@ -8,6 +8,7 @@
 
 #include "MsgPublisher.h"
 #include "ByteBuffer.h"
+#include <memory>
 
 class TCPSocket;
 

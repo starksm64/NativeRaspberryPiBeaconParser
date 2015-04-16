@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include "PracticalSocket.h"
+#include <string.h>
 
 #ifdef WIN32
   #include <winsock.h>         // For socket(), connect(), send(), and recv()
@@ -151,7 +152,7 @@ void Socket::setLocalAddressAndPort(const string &localAddress,
     }
 }
 
-void Socket::close() {
+void Socket::close() throw(SocketException) {
     shutdown(sockDesc, SHUT_RD);
     if(::close(sockDesc) < 0)
         throw SocketException("close() failed");
