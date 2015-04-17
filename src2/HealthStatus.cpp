@@ -139,9 +139,9 @@ void HealthStatus::monitorStatus() {
             statusProperties[LoadAverage] = tmp;
             statusProperties[Procs] = to_string(info.procs);
             statusProperties[MemTotal] = to_string(info.totalram*info.mem_unit / mb);
-            printf("MemTotal: %ld;  MemFree: %ld\n", info.totalram*info.mem_unit,  info.freeram*info.mem_unit);
             statusProperties[MemActive] = to_string((info.totalram - info.freeram)*info.mem_unit / mb);
             statusProperties[MemFree] = to_string(info.freeram*info.mem_unit / mb);
+            printf("MemTotal: %s;  MemFree: %s\n", statusProperties[MemTotal].c_str(),  statusProperties[MemFree].c_str());
             statusProperties[SwapFree] = to_string(info.freeswap*info.mem_unit / mb);
             statusProperties[SwapTotal] = to_string(info.totalswap*info.mem_unit / mb);
             statusInformation->setLastStatus(statusProperties);
