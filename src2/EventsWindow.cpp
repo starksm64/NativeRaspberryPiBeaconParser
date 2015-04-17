@@ -2,17 +2,13 @@
 // Created by starksm on 3/28/15.
 //
 
-#include <sys/time.h>
 #include "EventsWindow.h"
+#include <chrono>
+using namespace std::chrono;
 
 int64_t EventsWindow::currentMilliseconds() {
-    timeval now;
-    gettimeofday(&now, nullptr);
-
-    int64_t nowMS = now.tv_sec;
-    nowMS *= 1000;
-    nowMS += now.tv_usec/1000;
-    return nowMS;
+    milliseconds ms = duration_cast< milliseconds >(high_resolution_clock::now().time_since_epoch());
+    return ms.count();
 }
 
 int64_t EventsWindow::reset(int32_t sizeInSeconds) {
