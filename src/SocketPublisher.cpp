@@ -109,6 +109,10 @@ void SocketPublisher::doSend(const vector<byte> &msg, int64_t now) {
             if(shouldReconnect(now)) {
                 fprintf(stderr, "Trying to reconnect...\n");
                 start(false);
+                printf("Sending %d backlog msgs...", backlog.size());
+                for(vector<vector<byte>>::const_iterator iter = backlog.begin(); iter != backlog.end(); iter ++) {
+                    doSend(*iter, now);
+                }
             }
         }
     } catch(SocketException& e) {
