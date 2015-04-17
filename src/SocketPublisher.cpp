@@ -4,6 +4,9 @@
 
 #include "SocketPublisher.h"
 #include "../socket/PracticalSocket.h"
+#include <chrono>
+
+using namespace std::chrono;
 
 SocketPublisher::SocketPublisher(string brokerUrl, string clientID, string userName, string password) : MsgPublisher(
         brokerUrl, clientID, userName, password) {
@@ -33,6 +36,8 @@ void SocketPublisher::start(bool asyncMode) {
     printf("Connecting to: %s, %d\n", host.c_str(), port);
     TCPSocket *client = new TCPSocket(host, port);
     clientSocket.reset(client);
+    connected = true;
+    printf("connected, %s\n", client->getForeignAddress().c_str());
 }
 
 void SocketPublisher::stop() {
@@ -63,7 +68,7 @@ void SocketPublisher::publish(string const &destinationName, Beacon &beacon) {
     buffer.writeInt(msg.size());
     vector<byte> prefix = buffer.getData();
     msg.insert(msg.begin(), prefix.begin(), prefix.end());
-    clientSocket->send(msg.data(), msg.size());
+    doSend(msg, beacon.getTime());
 }
 
 void SocketPublisher::publishStatus(Beacon &beacon) {
@@ -91,5 +96,32 @@ void SocketPublisher::publishProperties(string const &destinationName, map<strin
     buffer.setWritePos(sizePos);
     buffer.writeInt(end - start);
     vector<byte> msg = buffer.getData();
-    clientSocket->send(msg.data(), msg.size());
+    milliseconds ms = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
+    doSend(msg, ms.count());
+}
+
+void SocketPublisher::doSend(const vector<byte> &msg, int64_t now) {
+    try {
+        if(isConnected())
+            clientSocket->send(msg.data(), msg.size());
+        else {
+            backlog.push_back(msg);
+            if(shouldReconnect(now)) {
+                fprintf(stderr, "Trying to reconnect...\n");
+                start(false);
+            }
+        }
+    } catch(SocketException& e) {
+        fprintf(stderr, "Send failed, %s, will reconnect\n", e.what());
+        connected = false;
+        calculateReconnectTime(now);
+    }
+}
+
+void SocketPublisher::calculateReconnectTime(int64_t now) {
+    setNextReconnectTime(now + 30*1000);
+    milliseconds ms(nextReconnectTime);
+    seconds s = duration_cast<seconds>(ms);
+    time_t t = s.count();
+    fprintf(stderr, "Will attempt reconnect at: %s\n", ctime(&t));
 }

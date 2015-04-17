@@ -18,10 +18,31 @@ class TCPSocket;
 class SocketPublisher : public MsgPublisher {
     unique_ptr<TCPSocket> clientSocket;
     ByteBuffer buffer;
+    bool connected;
+    int64_t nextReconnectTime;
+    vector<vector<byte>> backlog;
+
+protected:
+    void doSend(const vector<byte>& msg, int64_t now);
+    void calculateReconnectTime(int64_t now);
+
+    int64_t getNextReconnectTime() const {
+        return nextReconnectTime;
+    }
+    void setNextReconnectTime(int64_t nextReconnectTime) {
+        SocketPublisher::nextReconnectTime = nextReconnectTime;
+    }
+    bool shouldReconnect(int64_t now) {
+        return now >= nextReconnectTime;
+    }
 
 public:
 
     SocketPublisher(string brokerUrl, string clientID, string userName, string password);
+
+    bool isConnected() const {
+        return connected;
+    }
 
     virtual ~SocketPublisher();
 
