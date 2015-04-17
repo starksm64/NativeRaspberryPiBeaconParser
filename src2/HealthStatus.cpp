@@ -8,6 +8,8 @@
 #include <sys/sysinfo.h>
 #include <sys/time.h>
 #include "HealthStatus.h"
+#include <chrono>
+using namespace std::chrono;
 
 const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusProperties::N_STATUS_PROPERTIES)] = {
         string("ScannerID"),
@@ -91,15 +93,11 @@ void HealthStatus::monitorStatus() {
         statusProperties[HostIPAddress] = hostIPAddress;
 
         // Time
-        gettimeofday(&tv, nullptr);
-        tm = localtime(&tv.tv_sec);
-        int64_t nowMS = tv.tv_sec;
-        nowMS *= 1000;
-        nowMS += tv.tv_usec/1000;
+        milliseconds ms = duration_cast< milliseconds >(high_resolution_clock::now().time_since_epoch());
         char timestr[256];
         strftime(timestr, 128, "%F %T", tm);
         statusProperties[SystemTime] = timestr;
-        statusProperties[SystemTimeMS] = to_string(nowMS);
+        statusProperties[SystemTimeMS] = to_string(ms.count());
         printf("--- HealthStatus: %s\n", timestr);
 
         // Get the load average
