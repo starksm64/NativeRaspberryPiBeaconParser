@@ -97,7 +97,12 @@ Socket::Socket(int type, int protocol) throw(SocketException) {
     if ((sockDesc = socket(PF_INET, type, protocol)) < 0) {
         throw SocketException("Socket creation failed (socket())", true);
     }
-
+    int optval = 1;
+    int ok = setsockopt(sockDesc, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval));
+    if(ok < 0) {
+        perror("Failed to set SO_KEEPALIVE");
+        throw SocketException("Failed to set SO_KEEPALIVE");
+    }
 }
 
 Socket::Socket(int sockDesc) {
