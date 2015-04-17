@@ -32,7 +32,7 @@ int main() {
     beacon.code = 0xbeef;
     beacon.count = 3;
     beacon.rssi = -68;
-    milliseconds now = duration_cast<milliseconds >(high_resolution_clock::now().time_since_epoch());
+    milliseconds now = duration_cast<milliseconds >(system_clock::now().time_since_epoch());
     beacon.time = now.count();
     status.addEvent(beacon, false);
 

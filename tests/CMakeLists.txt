@@ -19,8 +19,10 @@ add_executable(testProducerConsumer ${testProducerConsumer_FILES} threads/Messag
 target_link_libraries (testProducerConsumer LINK_PUBLIC pthread)
 add_test(testProducerConsumer ${CMAKE_CURRENT_BINARY_DIR}/testProducerConsumer)
 
-set(testTime_FILES testTime.cpp)
-add_executable(testTime ${testTime_FILES})
+add_executable(testChrono testChrono.cpp)
+add_test(testChrono ${CMAKE_CURRENT_BINARY_DIR}/testChrono)
+
+add_executable(testTime testTime.cpp)
 add_test(testTime ${CMAKE_CURRENT_BINARY_DIR}/testTime)
 
 set(testProcStat_FILES testProcStat.cpp)
@@ -66,6 +68,10 @@ add_test(testParse ${CMAKE_CURRENT_BINARY_DIR}/testParse)
 add_executable(testSocket testSocket.cpp)
 target_link_libraries (testSocket LINK_PUBLIC Beacon Socket)
 add_test(testSocket ${CMAKE_CURRENT_BINARY_DIR}/testSocket)
+
+add_executable(testSocketReconnect testSocketReconnect.cpp)
+target_link_libraries (testSocketReconnect LINK_PUBLIC Beacon Socket)
+add_test(testSocketReconnect ${CMAKE_CURRENT_BINARY_DIR}/testSocketReconnect)
 
 add_executable(testParseHCIDump testParseHCIDump.cpp)
 target_link_libraries (testParseHCIDump LINK_PUBLIC Beacon)

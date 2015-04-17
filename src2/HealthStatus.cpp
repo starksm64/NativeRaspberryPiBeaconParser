@@ -93,7 +93,7 @@ void HealthStatus::monitorStatus() {
         statusProperties[HostIPAddress] = hostIPAddress;
 
         // Time
-        milliseconds ms = duration_cast< milliseconds >(high_resolution_clock::now().time_since_epoch());
+        milliseconds ms = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
         char timestr[256];
         strftime(timestr, 128, "%F %T", tm);
         statusProperties[SystemTime] = timestr;

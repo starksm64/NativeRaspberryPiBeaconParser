@@ -7,7 +7,7 @@
 using namespace std::chrono;
 
 int64_t EventsWindow::currentMilliseconds() {
-    milliseconds ms = duration_cast< milliseconds >(high_resolution_clock::now().time_since_epoch());
+    milliseconds ms = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
     return ms.count();
 }
 

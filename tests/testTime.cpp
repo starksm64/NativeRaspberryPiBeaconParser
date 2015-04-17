@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     buildTimeString(ms64, timestr);
     printf("buildTimeString(%lld) = %s\n", ms64, timestr);
 
-    milliseconds now = duration_cast<milliseconds >(high_resolution_clock::now().time_since_epoch());
+    milliseconds now = duration_cast<milliseconds >(system_clock::now().time_since_epoch());
     buildTimeString(now.count(), timestr);
     printf("buildTimeString from chrono(%lld) = %s\n", now.count(), timestr);
 
