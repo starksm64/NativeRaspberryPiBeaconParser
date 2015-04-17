@@ -53,8 +53,6 @@ void HealthStatus::monitorStatus() {
     const string& MemActive = getStatusPropertyName(StatusProperties::MemActive);
     const string& SwapTotal = getStatusPropertyName(StatusProperties::SwapTotal);
     const string& SwapFree = getStatusPropertyName(StatusProperties::SwapFree);
-    struct timeval  tv;
-    struct tm *tm;
     struct sysinfo beginInfo;
 
     if(sysinfo(&beginInfo)) {
@@ -93,9 +91,10 @@ void HealthStatus::monitorStatus() {
         statusProperties[HostIPAddress] = hostIPAddress;
 
         // Time
-        milliseconds ms = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
-        char timestr[256];
-        strftime(timestr, 128, "%F %T", tm);
+        system_clock::time_point now = system_clock::now();
+        milliseconds ms = duration_cast< milliseconds >(now.time_since_epoch());
+        time_t systime = system_clock::to_time_t(now);
+        const char* timestr = ctime(&systime);
         statusProperties[SystemTime] = timestr;
         statusProperties[SystemTimeMS] = to_string(ms.count());
         printf("--- HealthStatus: %s\n", timestr);
