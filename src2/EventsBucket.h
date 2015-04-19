@@ -108,7 +108,7 @@ public:
         char *ptr = tmp;
         map<int32_t, beacon_info>::const_iterator iter = begin();
         while (iter != end()) {
-            int32_t count = snprintf(tmp, sizeof(tmp), "+%2d: %2d; ", iter->first, iter->second.count);
+            int32_t count = snprintf(tmp, sizeof(tmp), "+%d=%d; ", iter->first, iter->second.count);
             output.insert(output.end(), ptr, ptr + count);
             iter++;
         }
