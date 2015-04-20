@@ -267,7 +267,7 @@ void HealthStatus::readLoadAvg(char *buffer, int size) {
     buffer[length-1] = '\0';
 }
 
-static string HealthStatus::determineSystemType() {
+string HealthStatus::determineSystemType() {
     // First check the env for SYSTEM_TYPE
     const char *systemType = getenv("SYSTEM_TYPE");
     if(systemType != nullptr) {
