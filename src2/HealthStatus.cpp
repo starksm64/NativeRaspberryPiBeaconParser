@@ -95,6 +95,7 @@ void HealthStatus::monitorStatus() {
     while(running) {
         statusProperties[ScannerID] = scannerID;
         statusProperties[HostIPAddress] = hostIPAddress;
+        statusProperties[SystemType] = systemType;
 
         // Time
         system_clock::time_point now = system_clock::now();
