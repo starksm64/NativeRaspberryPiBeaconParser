@@ -20,6 +20,7 @@ using Properties = map<string, string>;
 enum class StatusProperties {
     ScannerID,          // the name of the scanner passed in via the --scannerID argument
     HostIPAddress,      // the ip address of the scanner host
+    SystemType,         // Type of the system; PiB, PiB+, P2B, IntelNUC, BeagleBoneBlack, ...
     SystemTime,         // strftime(timestr, 128, "%F %T", tm) = YYYY-MM-DD HH:MM:SS
     SystemTimeMS,       // system time in milliseconds since epoch
     Uptime,             // uptime in seconds as string formatted as "uptime: %ld, days:%d, hrs: %d, min: %d"
@@ -54,9 +55,10 @@ private:
 
     void monitorStatus();
     void readLoadAvg(char *buffer, int size);
-    void readMeminfo(Properties& properties);
 
 public:
+
+    static string determineSystemType();
 
     shared_ptr<MsgPublisher> const &getPublisher() const {
         return publisher;

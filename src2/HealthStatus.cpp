@@ -14,6 +14,7 @@ using namespace std::chrono;
 const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusProperties::N_STATUS_PROPERTIES)] = {
         string("ScannerID"),
         string("HostIPAddress"),
+        string("SystemType"),
         string("SystemTime"),
         string("SystemTimeMS"),
         string("Uptime"),
@@ -38,6 +39,7 @@ void HealthStatus::monitorStatus() {
     Properties statusProperties;
     const string& ScannerID = getStatusPropertyName(StatusProperties::ScannerID);
     const string& HostIPAddress = getStatusPropertyName(StatusProperties::HostIPAddress);
+    const string& SystemType = getStatusPropertyName(StatusProperties::SystemType);
     const string& SystemTime = getStatusPropertyName(StatusProperties::SystemTime);
     const string& SystemTimeMS = getStatusPropertyName(StatusProperties::SystemTimeMS);
     const string& Uptime = getStatusPropertyName(StatusProperties::Uptime);
@@ -54,6 +56,10 @@ void HealthStatus::monitorStatus() {
     const string& SwapTotal = getStatusPropertyName(StatusProperties::SwapTotal);
     const string& SwapFree = getStatusPropertyName(StatusProperties::SwapFree);
     struct sysinfo beginInfo;
+
+    // Determine the scanner type
+    string systemType = determineSystemType();
+    printf("Determined SystemType as: %s\n", systemType.c_str());
 
     if(sysinfo(&beginInfo)) {
         perror("Failed to read sysinfo");
@@ -261,33 +267,74 @@ void HealthStatus::readLoadAvg(char *buffer, int size) {
     buffer[length-1] = '\0';
 }
 
-void HealthStatus::readMeminfo(Properties& properties) {
-    FILE *meminfo = fopen ("/proc/meminfo", "r");
-    if (meminfo == NULL) {
-        perror ("Failed to open /proc/meminfo");
+static string HealthStatus::determineSystemType() {
+    // First check the env for SYSTEM_TYPE
+    const char *systemType = getenv("SYSTEM_TYPE");
+    if(systemType != nullptr) {
+        return systemType;
+    }
+
+    systemType = nullptr;
+    // Check cpuinfo for Revision
+    FILE *cpuinfo = fopen ("/proc/cpuinfo", "r");
+    if (cpuinfo == NULL) {
+        perror ("Failed to open /proc/cpuinfo");
     }
 
     char buffer[64];
-    const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
-    const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
-    const string& MemAvailable = getStatusPropertyName(StatusProperties::MemActive);
-    const string& SwapTotal = getStatusPropertyName(StatusProperties::SwapTotal);
-    const string& SwapFree = getStatusPropertyName(StatusProperties::SwapFree);
-    while(fgets (buffer, sizeof(buffer), meminfo)){
+    while(fgets (buffer, sizeof(buffer), cpuinfo)){
         // Replace trailing newline char with nil
         size_t length = strlen(buffer);
         buffer[length-1] = '\0';
-        if(MemTotal.compare(0, MemTotal.size(), buffer, length))
-            properties[MemTotal] = buffer;
-        else if(MemFree.compare(0, MemFree.size(), buffer, length))
-            properties[MemFree] = buffer;
-        else if(MemAvailable.compare(0, MemAvailable.size(), buffer, length))
-            properties[MemAvailable] = buffer;
-        else if(SwapTotal.compare(0, SwapTotal.size(), buffer, length))
-            properties[SwapTotal] = buffer;
-        else if(SwapFree.compare(0, SwapFree.size(), buffer, length))
-            properties[SwapFree] = buffer;
+        length --;
+        if(strncasecmp(buffer, "Revision", 8) == 0) {
+            // find start of rev string
+            string rev(buffer);
+            size_t found = rev.find_last_of(' ');
+            if(found != string::npos) {
+                try {
+                    // http://www.raspberrypi-spy.co.uk/2012/09/checking-your-raspberry-pi-board-version/
+                    int revision = stoi(rev.substr(found), nullptr, 16);
+                    switch (revision) {
+                        case 0x007:
+                        case 0x008:
+                        case 0x009:
+                            systemType = "PiA";
+                        break;
+                        case 0x002:
+                        case 0x004:
+                        case 0x005:
+                        case 0x006:
+                        case 0x00d:
+                        case 0x00e:
+                        case 0x00f:
+                            systemType = "PiB";
+                            break;
+                        case 0x010:
+                            systemType = "PiB+";
+                            break;
+                        case 0x012:
+                            systemType = "PiA+";
+                            break;
+                        case 0xa01041:
+                        case 0xa21041:
+                            systemType = "Pi2B";
+                            break;
+                        default:
+                            break;
+                    }
+                } catch (const std::invalid_argument& e) {
+                    fprintf(stderr, "Failed to parse revision: %s, ex=%d", rev.c_str(), e.what());
+                }
+            }
+        }
     }
-    fclose(meminfo);
+    fclose(cpuinfo);
 
+    if(systemType == nullptr) {
+        // TODO
+        systemType = "IntelNUC";
+    }
+
+    return systemType;
 }

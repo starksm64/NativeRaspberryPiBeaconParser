@@ -17,6 +17,12 @@ scannerID=${scannerID:=$SCANNER_ID}
 heartbeatUUID=${HEARTBEAT_UUID:=$heartbeatUUID}
 brokerURL=${BROKER_URL:=$brokerURL}
 
+# If scanner.conf defined a systemType, export it as SYSTEM_TYPE
+if [ -n "$systemType" ]; then
+        echo "Exporting SYSTEM_TYPE=$systemType"
+        export SYSTEM_TYPE=$systemType
+fi
+
 # Bring up bluetooth interface
 hciconfig hci0 up
 
