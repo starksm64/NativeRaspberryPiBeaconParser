@@ -10,14 +10,19 @@ set(threadsTest_FILES threads/threadsTest.cpp threads/backgroundTask.cpp threads
 add_executable(threadsTest ${threadsTest_FILES} threads/MessageExchanger.cpp threads/MessageExchanger.h)
 add_test(threadsTest ${CMAKE_CURRENT_BINARY_DIR}/threadsTest)
 
-set(testEventsWindow_FILES testEventsWindow.cpp ../src2/EventsWindow.cpp)
-add_executable(testEventsWindow ${testEventsWindow_FILES})
+add_executable(testThreadSleep threads/testThreadSleep.cpp)
+add_test(threadsTest ${CMAKE_CURRENT_BINARY_DIR}/testThreadSleep)
+
+add_executable(testEventsWindow testEventsWindow.cpp ../src2/EventsWindow.cpp)
 add_test(testEventsWindow ${CMAKE_CURRENT_BINARY_DIR}/testEventsWindow)
 
 set(testProducerConsumer_FILES threads/testProducerConsumer.cpp)
 add_executable(testProducerConsumer ${testProducerConsumer_FILES} threads/MessageExchanger.cpp threads/MessageExchanger.h)
 target_link_libraries (testProducerConsumer LINK_PUBLIC pthread)
 add_test(testProducerConsumer ${CMAKE_CURRENT_BINARY_DIR}/testProducerConsumer)
+
+add_executable(testAtomic testAtomic.cpp)
+add_test(testAtomic ${CMAKE_CURRENT_BINARY_DIR}/testAtomic)
 
 add_executable(testChrono testChrono.cpp)
 add_test(testChrono ${CMAKE_CURRENT_BINARY_DIR}/testChrono)
