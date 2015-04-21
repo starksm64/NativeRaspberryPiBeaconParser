@@ -25,6 +25,22 @@ static void hello() {
     now = system_clock::now();
     ms = duration_cast< milliseconds >(now.time_since_epoch());
     printf("End sleep_for(%lld), now=%lld\n", chrono::seconds(10).count(), ms.count());
+
+    now = system_clock::now();
+    ms = duration_cast< milliseconds >(now.time_since_epoch());
+    printf("Begin yield for(%lld), now=%lld\n", chrono::seconds(10).count(), ms.count());
+    chrono::seconds sleepTime(10);
+    now = system_clock::now();
+    system_clock::time_point wakeup = now + sleepTime;
+    while(now < wakeup) {
+        this_thread::yield();
+        now = system_clock::now();
+        this_thread::sleep_for(chrono::nanoseconds(1000000));
+    }
+    now = system_clock::now();
+    ms = duration_cast< milliseconds >(now.time_since_epoch());
+    printf("End yield for(%lld), now=%lld\n", chrono::seconds(10).count(), ms.count());
+
 }
 
 

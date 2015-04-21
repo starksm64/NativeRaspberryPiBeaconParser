@@ -158,8 +158,25 @@ void HealthStatus::monitorStatus() {
         // Publish the status
         statusInformation->setLastStatus(statusProperties);
 
-        // Wait for statusInterval before
-        this_thread::sleep_for(chrono::seconds(statusInterval));
+        // Wait for statusInterval before next status message
+        chrono::seconds sleepTime(statusInterval);
+#ifdef __i686
+        // Having weird problem on IntelNUC where sleep_for is not pausing the thread. This seems to work.
+        now = system_clock::now();
+        ms = duration_cast< milliseconds >(now.time_since_epoch());
+        printf("Begin yield for(%lld), now=%lld\n", sleepTime.count(), ms.count());
+        system_clock::time_point wakeup = now + sleepTime;
+        while(now < wakeup) {
+            this_thread::yield();
+            now = system_clock::now();
+            this_thread::sleep_for(chrono::nanoseconds(1000000));
+        }
+        now = system_clock::now();
+        ms = duration_cast< milliseconds >(now.time_since_epoch());
+        printf("End yield for(%lld), now=%lld\n", chrono::seconds(10).count(), ms.count());
+#else
+        this_thread::sleep_for(sleepTime);
+#endif
     }
 }
 
