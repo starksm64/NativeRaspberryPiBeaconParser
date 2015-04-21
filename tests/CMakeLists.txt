@@ -11,7 +11,8 @@ add_executable(threadsTest ${threadsTest_FILES} threads/MessageExchanger.cpp thr
 add_test(threadsTest ${CMAKE_CURRENT_BINARY_DIR}/threadsTest)
 
 add_executable(testThreadSleep threads/testThreadSleep.cpp)
-add_test(threadsTest ${CMAKE_CURRENT_BINARY_DIR}/testThreadSleep)
+target_link_libraries (testThreadSleep LINK_PUBLIC pthread)
+add_test(threadsTest ${CMAKE_CURRENT_BINARY_DIR}/testThreadSleep )
 
 add_executable(testEventsWindow testEventsWindow.cpp ../src2/EventsWindow.cpp)
 add_test(testEventsWindow ${CMAKE_CURRENT_BINARY_DIR}/testEventsWindow)
