@@ -160,7 +160,7 @@ void HealthStatus::monitorStatus() {
 
         // Wait for statusInterval before next status message
         chrono::seconds sleepTime(statusInterval);
-#ifdef DUSE_YIELD_LOOP
+#ifdef USE_YIELD_LOOP
         // Having weird problem on IntelNUC where sleep_for is not pausing the thread. This seems to work.
         now = system_clock::now();
         ms = duration_cast< milliseconds >(now.time_since_epoch());
