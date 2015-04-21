@@ -10,6 +10,10 @@ IF(PRINT_DEBUG)
   MESSAGE("Build type is " ${CMAKE_BUILD_TYPE})
 ENDIF(PRINT_DEBUG)
 
+if(${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES "i[3-6]86")
+	add_definitions(-DUSE_YIELD_LOOP)
+endif()
+
 # The location of a local bluez source tree
 if(EXISTS $ENV{HOME}/bluez-5.28)
     set(BluezHome $ENV{HOME}/bluez-5.28)
