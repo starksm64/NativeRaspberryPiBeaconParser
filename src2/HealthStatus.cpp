@@ -239,6 +239,7 @@ void HealthStatus::start(shared_ptr<MsgPublisher>& publisher, shared_ptr<StatusI
     this->statusInformation = statusInformation;
     this->publisher = publisher;
     monitorThread.reset(new thread(&HealthStatus::monitorStatus, this));
+    printf("HealthStatus::start, runnnig with statusInterval: %d\n", statusInformation->getStatusInterval());
 }
 
 /**
