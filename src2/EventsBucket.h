@@ -112,7 +112,6 @@ public:
             output.insert(output.end(), ptr, ptr + count);
             iter++;
         }
-        output.push_back('\n');
         output.push_back('\0');
     }
 };

@@ -101,7 +101,10 @@ void HealthStatus::monitorStatus() {
         system_clock::time_point now = system_clock::now();
         milliseconds ms = duration_cast< milliseconds >(now.time_since_epoch());
         time_t systime = system_clock::to_time_t(now);
-        const char* timestr = ctime(&systime);
+        char* timestr = ctime(&systime);
+        // Remove trailing '\n'
+        size_t length = strlen(timestr);
+        timestr[length-1] = 0;
         statusProperties[SystemTime] = timestr;
         statusProperties[SystemTimeMS] = to_string(ms.count());
         printf("--- HealthStatus: %s\n", timestr);
