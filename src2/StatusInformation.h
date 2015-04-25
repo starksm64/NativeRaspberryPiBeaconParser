@@ -27,7 +27,10 @@ private:
 
 public:
 
-    StatusInformation() : scannerID(""), rawEventCount(0), publishEventCount(0), heartbeatCount(0), heartbeatRSSI(30), statusUpdated(false) {}
+    StatusInformation() : scannerID(""), rawEventCount(0), publishEventCount(0), heartbeatCount(0), heartbeatRSSI(30),
+                          statusUpdated(false),
+                          statusInterval(30)
+    {}
 
     const string &getStatusQueue() const {
         return statusQueue;

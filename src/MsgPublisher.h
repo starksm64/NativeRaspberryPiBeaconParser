@@ -50,6 +50,8 @@ public:
           userName(userName),
           password(password),
           destinationName("beaconEvents"),
+          reconnectInterval(30),
+          reconnectOnFailure(false),
           useTopics(true),
           useTransactions(false) {
     }

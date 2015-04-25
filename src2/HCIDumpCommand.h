@@ -14,18 +14,18 @@ private:
     string destinationName;
     string hciDev = "hci0";
     string statusQueue;
-    int statusInterval;
-    int analyzeWindow;
-    bool analyzeMode;
-    bool generateTestData;
-    bool noBrokerReconnect;
+    int statusInterval = 30;
+    int analyzeWindow = 1;
+    bool analyzeMode = false;
+    bool generateTestData = false;
+    bool noBrokerReconnect = true;
 
 private:
-    bool skipPublish;
-    bool asyncMode;
-    bool useQueues;
-    bool skipHeartbeat;
-    MsgPublisherType pubType;
+    bool skipPublish = false;
+    bool asyncMode = false;
+    bool useQueues = false;
+    bool skipHeartbeat = false;
+    MsgPublisherType pubType = MsgPublisherType::AMQP_QPID;
 
 public:
 

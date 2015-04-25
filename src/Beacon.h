@@ -35,20 +35,20 @@ private:
     string scannerID;
     string uuid;
     /** A serial sequence number to order messages from a scanner that allows for gap detection */
-    int32_t scannerSequenceNo;
-    int32_t code;
-    int32_t manufacturer;
-    int32_t major;
-    int32_t minor;
+    int32_t scannerSequenceNo = 0;
+    int32_t code = 0;
+    int32_t manufacturer = 0;
+    int32_t major = 0;
+    int32_t minor = 0;
     /** Current unused */
-    int32_t power;
+    int32_t power = 0;
     /** Power in DB measured at 1m away */
-    int32_t calibratedPower;
-    int32_t rssi;
+    int32_t calibratedPower = 0;
+    int32_t rssi = 0;
     /** BeconEventType */
-    int32_t messageType;
+    int32_t messageType = 0;
     // std::time() value * 1000
-    int64_t time;
+    int64_t time = 0;
 
 public:
 

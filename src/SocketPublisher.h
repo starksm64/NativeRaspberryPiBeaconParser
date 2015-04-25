@@ -13,13 +13,12 @@
 class TCPSocket;
 
 /**
- * A simple implementation of the MsgPublisher that sends binary data over a clientSocket usin gthe ByteBuffer class.
+ * A simple implementation of the MsgPublisher that sends binary data over a clientSocket using the ByteBuffer class.
  */
 class SocketPublisher : public MsgPublisher {
     unique_ptr<TCPSocket> clientSocket;
     ByteBuffer buffer;
-    bool connected;
-    int64_t nextReconnectTime;
+    int64_t nextReconnectTime = 0;
     vector<vector<byte>> backlog;
 
 protected:

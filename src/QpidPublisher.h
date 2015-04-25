@@ -19,8 +19,8 @@ private:
     qpid::messaging::Session session;
     qpid::messaging::Sender sender;
     map<string, qpid::messaging::Sender> senders;
-    int disconnectCount;
-    int64_t nextReconnectTime;
+    int disconnectCount = 0;
+    int64_t nextReconnectTime = 0;
 
 protected:
     /**

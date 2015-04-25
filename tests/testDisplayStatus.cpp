@@ -21,7 +21,7 @@ int main() {
     lcd->init();
     StatusInformation status;
     beacon_info beacon;
-    memset(&beacon, sizeof(beacon), 0);
+    memset(&beacon, 0, sizeof(beacon));
     status.setScannerID("LCDScanner");
 
     // Add some events
@@ -76,7 +76,7 @@ int main() {
     lcd->displayText(tmp, 0, 0);
     string uptime = statusProps["Uptime"];
     const char *uptimeStr = uptime.c_str();
-    printf("%s; length=%d\n", uptimeStr, uptime.size());
+    printf("%s; length=%ld\n", uptimeStr, uptime.size());
     int days=0, hrs=0, mins=0;
     int count = sscanf (uptimeStr, "uptime: %*d, days:%d, hrs:%d, min:%d", &days, &hrs, &mins);
     printf("matched:%d, UP D:%d H:%d M:%d\n", count, days, hrs, mins);

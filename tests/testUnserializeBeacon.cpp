@@ -20,7 +20,7 @@ int main() {
     long time = 0;
     // Read in the serialize form of the beacon to a file
     ifstream in("/tmp/testSerializeBeacon.ser", ios_base::in);
-    int size;
+    int size = 0;
     byte *dataptr = nullptr;
     if(in.is_open()) {
         in.seekg(0,ios::end);

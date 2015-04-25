@@ -33,13 +33,13 @@ void BeaconEventConsumer::handleMessage(shared_ptr<EventsBucket> &bucket) {
             events.push_back(beacon);
             if (shouldSendMessages()) {
 #ifdef PRINT_DEBUG
-printf("Sending msg batch, size=%d\n", events.size());
+printf("Sending msg batch, size=%ld\n", events.size());
 #endif
                 publisher->publish(events);
                 events.clear();
             } else {
 #ifdef PRINT_DEBUG
-printf("Batched msg, size=%d\n", events.size());
+printf("Batched msg, size=%ld\n", events.size());
 #endif
             }
         } else if (info.isHeartbeat) {

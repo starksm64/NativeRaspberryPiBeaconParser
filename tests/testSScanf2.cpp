@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
     int port;
     char host[64];
 
-    int count = sscanf("192.168.1.107:12345", "%s:%d", host, &port);
+    int count = sscanf("192.168.1.107:12345", "%63s:%d", host, &port);
     printf("Parsed(%d) host: %s, port: %d\n", count, host, port);
 
     string brokerURL("192.168.1.107:12345");

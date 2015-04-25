@@ -19,9 +19,6 @@ private:
     bool quietMode;
     bool clean;
     bool asyncMode;
-    string password;
-    string userName;
-    string clientID;
 
     void setupClient();
     void setupAsyncClient();
