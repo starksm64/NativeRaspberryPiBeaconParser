@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include <map>
+#include <mutex>
 #include <string>
 #include "EventsWindow.h"
 #include "hcidumpinternal.h"
