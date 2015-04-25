@@ -79,21 +79,21 @@ void LcdDisplay::displayStatus(const StatusInformation& status){
     truncateName(name);
     snprintf(tmp, sizeof(tmp), "%s:%.7d;%d", name.c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     displayText(tmp, 0, 0);
-    Properties statusProps = status.getLastStatus();
+    shared_ptr<Properties> statusProps = status.getLastStatus();
 #if 0
     printf("StatusProps dump:\n");
-    for(Properties::const_iterator iter = statusProps.begin(); iter != statusProps.end(); iter ++) {
+    for(Properties::const_iterator iter = statusProps->begin(); iter != statusProps->end(); iter ++) {
         printf("%s = %s\n", iter->first.c_str(), iter->second.c_str());
     }
     printf("+++ End dump\n\n");
 #endif
 
-    string uptime = statusProps["Uptime"];
+    string uptime = *statusProps["Uptime"];
     int days=0, hrs=0, mins=0, secs=0;
     int count = sscanf (uptime.c_str(), "uptime: %*d, days:%d, hrs:%d, min:%d, sec:%d", &days, &hrs, &mins, &secs);
     snprintf(tmp, sizeof(tmp), "UP D:%d H:%d M:%d S:%d", days, hrs, mins, secs);
     displayText(tmp, 0, 1);
-    const char *load = statusProps["LoadAverage"].c_str();
+    const char *load = *statusProps["LoadAverage"].c_str();
     displayText(load, 0, 2);
     snprintf(tmp, sizeof(tmp), "S:%.8d;M:%.7d", status.getRawEventCount(), status.getPublishEventCount());
     displayText(tmp, 0, 3);
