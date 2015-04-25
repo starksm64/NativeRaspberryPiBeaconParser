@@ -60,8 +60,7 @@ Beacon Beacon::fromByteMsg(byte *msg, uint32_t length) {
     ByteBuffer dis(msg, length);
     int32_t version = dis.readInt();
     if(version != VERSION) {
-        char *tmp = new char[1024]{'\0'};
-        snprintf(tmp, 1024, "Msg version: %d does not match current version: %d", version, VERSION);
+        fprintf(stderr, "Msg version: %d does not match current version: %d", version, VERSION);
     }
     string scannerID = dis.readString();
     string uuid = dis.readString();
