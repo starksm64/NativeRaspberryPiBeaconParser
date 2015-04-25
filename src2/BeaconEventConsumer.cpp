@@ -68,7 +68,8 @@ void BeaconEventConsumer::publishEvents() {
     while (running) {
         shared_ptr<EventsBucket> info = exchanger->takeEvent();
         if(statusInformation->isStatusChanged()) {
-            publisher->publishProperties(statusInformation->getStatusQueue(), statusInformation->getLastStatus());
+            shared_ptr<Properties> lastStatus = statusInformation->getLastStatus();
+            publisher->publishProperties(statusInformation->getStatusQueue(), *lastStatus);
             statusInformation->clearStatusChanged();
         }
         else if (info) {

@@ -22,6 +22,7 @@ private:
     EventsWindow statusWindow;
     shared_ptr<EventsBucket> lastWindow;
     SMA heartbeatRSSI;
+    mutable mutex statusMutex;
     Properties lastStatus;
     atomic_bool statusUpdated;
 
@@ -95,10 +96,14 @@ public:
         return lastWindow;
     }
 
-    const Properties &getLastStatus() const {
-        return lastStatus;
+    shared_ptr<Properties> getLastStatus() const {
+        std::lock_guard<mutex> guard(statusMutex);
+        Properties *copy = new map<string,string>(lastStatus);
+        shared_ptr<Properties> currentStatus(copy);
+        return currentStatus;
     }
     void setLastStatus(Properties &lastStatus) {
+        std::lock_guard<mutex> guard(statusMutex);
         StatusInformation::lastStatus = lastStatus;
         statusUpdated = true;
     }
