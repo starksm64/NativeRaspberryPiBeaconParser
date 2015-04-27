@@ -144,7 +144,8 @@ void QpidPublisher::doPublishProperties(messaging::Sender sndr, Beacon &beacon, 
   message.setProperty("minor", beacon.getMinor());
   message.setProperty("manufacturer", beacon.getManufacturer());
   message.setProperty("code", beacon.getCode());
-  message.setProperty("power", beacon.getCalibratedPower());
+  message.setProperty("power", beacon.getPower());
+  message.setProperty("calibratedPower", beacon.getCalibratedPower());
   message.setProperty("rssi", beacon.getRssi());
   message.setProperty("time", beacon.getTime());
   message.setProperty("messageType", messageType);
