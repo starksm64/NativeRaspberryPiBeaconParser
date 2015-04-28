@@ -164,7 +164,7 @@ void HealthStatus::monitorStatus() {
         // Wait for statusInterval before next status message
         chrono::seconds sleepTime(statusInterval);
 #ifdef USE_YIELD_LOOP
-        // Having weird problem on IntelNUC where sleep_for is not pausing the thread. This seems to work.
+        // Valgrind is causing the sleep_for() call to not work, so use a simple yield spin loop.
         now = system_clock::now();
         ms = duration_cast< milliseconds >(now.time_since_epoch());
         printf("Begin yield for(%lld), now=%lld\n", sleepTime.count(), ms.count());
