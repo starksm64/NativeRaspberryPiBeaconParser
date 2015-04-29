@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
 
 
     messenger = pn_messenger(NULL);
-
+    message = pn_message();
     pn_messenger_start(messenger);
     pn_messenger_subscribe(messenger, brokerURL);
 
