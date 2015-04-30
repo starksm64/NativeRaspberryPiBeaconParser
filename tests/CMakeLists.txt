@@ -47,12 +47,10 @@ set(testSysinfo_FILES testSysinfo.cpp)
 add_executable(testSysinfo ${testSysinfo_FILES})
 add_test(testSysinfo ${CMAKE_CURRENT_BINARY_DIR}/testSysinfo)
 
-set(testParseNativeHCIDump_FILES testParseNativeHCIDump.c)
-add_executable(testParseNativeHCIDump ${testParseNativeHCIDump_FILES})
+add_executable(testParseNativeHCIDump testParseNativeHCIDump.c)
 add_test(testParseNativeHCIDump ${CMAKE_CURRENT_BINARY_DIR}/testParseNativeHCIDump)
 
-set(testRE1_FILES testRE1.cpp)
-add_executable(testRE1 ${testRE1_FILES})
+add_executable(testRE1 testRE1.cpp)
 add_test(testRE1 ${CMAKE_CURRENT_BINARY_DIR}/testRE1)
 
 add_executable(testSscanf testSscanf.cpp)
@@ -63,8 +61,15 @@ add_executable(testParse ${testParse_FILES})
 target_link_libraries (testParse LINK_PUBLIC Beacon)
 add_test(testParse ${CMAKE_CURRENT_BINARY_DIR}/testParse)
 
-set(testParseHCIDump_FILES testParseHCIDump.cpp)
-add_executable(testParseHCIDump ${testParseHCIDump_FILES})
+add_executable(testSocket testSocket.cpp)
+target_link_libraries (testSocket LINK_PUBLIC Beacon Socket)
+add_test(testSocket ${CMAKE_CURRENT_BINARY_DIR}/testSocket)
+
+add_executable(testSocketReconnect testSocketReconnect.cpp)
+target_link_libraries (testSocketReconnect LINK_PUBLIC Beacon Socket)
+add_test(testSocketReconnect ${CMAKE_CURRENT_BINARY_DIR}/testSocketReconnect)
+
+add_executable(testParseHCIDump testParseHCIDump.cpp)
 target_link_libraries (testParseHCIDump LINK_PUBLIC Beacon)
 add_test(testParseHCIDump ${CMAKE_CURRENT_BINARY_DIR}/testParseHCIDump)
 
