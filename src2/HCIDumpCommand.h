@@ -6,6 +6,10 @@
 
 using namespace std;
 
+/**
+ * See the main.cpp TCLAP::* definitions for the meaning of these command options.
+ *
+ */
 class HCIDumpCommand {
 private:
     string scannerID;
@@ -16,6 +20,7 @@ private:
     string statusQueue;
     int statusInterval = 30;
     int analyzeWindow = 1;
+    int rebootAfterNoReply = -1;
     bool analyzeMode = false;
     bool generateTestData = false;
     bool noBrokerReconnect = true;
@@ -120,6 +125,14 @@ public:
         HCIDumpCommand::analyzeMode = analyzeMode;
     }
 
+
+    int getRebootAfterNoReply() const {
+        return rebootAfterNoReply;
+    }
+
+    void setRebootAfterNoReply(int rebootAfterNoReply) {
+        HCIDumpCommand::rebootAfterNoReply = rebootAfterNoReply;
+    }
 
     bool isGenerateTestData() const {
         return generateTestData;

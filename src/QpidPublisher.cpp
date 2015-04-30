@@ -1,6 +1,7 @@
 #include "QpidPublisher.h"
 #include <qpid/messaging/Connection.h>
 #include <qpid/messaging/Session.h>
+#include <qpid/messaging/Receiver.h>
 #include <qpid/messaging/Sender.h>
 #include <qpid/messaging/Message.h>
 #include <chrono>
@@ -190,4 +191,9 @@ void QpidPublisher::calculateReconnectTime(int64_t now) {
   seconds s = duration_cast<seconds>(ms);
   time_t t = s.count();
   fprintf(stderr, "Will attempt reconnect at: %s\n", ctime(&t));
+}
+
+void QpidPublisher::monitorHeartbeats(string const &destinationName, heartbeatReceived callback) {
+  string destName = isUseTopics() ? AmqTopicName(destinationName) : AmqQueueName(destinationName);
+  messaging::Receiver receiver = session.createReceiver(destName);
 }

@@ -13,6 +13,8 @@
 
 using namespace qpid;
 
+typedef void (*heartbeatReceived)();
+
 class QpidPublisher : public MsgPublisher {
 private:
     qpid::messaging::Connection connection;
@@ -73,5 +75,6 @@ public:
     virtual void publishStatus(Beacon& beacon);
 
     virtual void publishProperties(string const &destinationName, map<string,string> const &properties);
+    virtual void monitorHeartbeats(string const &destinationName, heartbeatReceived callback);
 };
 #endif

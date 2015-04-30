@@ -121,6 +121,9 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<int> statusInterval("I", "statusInterval",
                                         "Specify the interval in seconds between health status messages, <= 0 means no messages; default 30",
                                         false, 30, "int", cmd);
+    TCLAP::ValueArg<int> rebootAfterNoReply("I", "rebootAfterNoReply",
+                                        "Specify the interval in seconds after which a failure to hear our own heartbeat triggers a reboot, <= 0 means no reboot; default -1",
+                                        false, -1, "int", cmd);
     TCLAP::ValueArg<std::string> statusQueue("q", "statusQueue",
                                              "Specify the name of the status health queue destination; default scannerHealth",
                                              false, "scannerHealth", "string", cmd);
