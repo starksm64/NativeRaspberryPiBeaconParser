@@ -109,8 +109,12 @@ public:
     }
 
 // Interface methods ---
-    virtual void start(bool asyncMode) = 0;
-    virtual void stop() = 0;
+    virtual void start(bool asyncMode) {
+
+    }
+    virtual void stop() {
+
+    }
 
     /**
     * Enque a msg for publishing asynchronounsly
@@ -119,7 +123,9 @@ public:
     * @param - payload, the serialized form of the Beacon object to send
     * @param - len, the length of payload
     */
-    virtual void queueForPublish(string const &destinationName, MqttQOS qos, byte *payload, size_t len) = 0;
+    virtual void queueForPublish(string const &destinationName, MqttQOS qos, byte *payload, size_t len) {
+
+    }
 
     /**
     * Send a message to the broker synchronously
@@ -128,30 +134,40 @@ public:
     * @param - payload, the serialized form of the Beacon object to send
     * @param - len, the length of payload
     */
-    virtual void publish(string const &destinationName, MqttQOS qos, byte *payload, size_t len) = 0;
+    virtual void publish(string const &destinationName, MqttQOS qos, byte *payload, size_t len) {
+
+    }
 
     /**
     * Send a beacon event to the broker as a collection of message properties
     * @param - destinationName, a possibly empty name for the message destination
     * @param - beacon, the beacon event to publish
     */
-    virtual void publish(string const &destinationName, Beacon &beacon) = 0;
+    virtual void publish(string const &destinationName, Beacon &beacon) {
+
+    }
 
     /**
     * Send a collection of beacon events in batch to the broker, with each message consisting of the beacon
     * properties
     */
-    virtual void publish(vector<Beacon> events) = 0;
+    virtual void publish(vector<Beacon> events) {
+
+    }
 
     /**
     * Called to publish a beacon event from the beacon associated with the scanner heartbeat
     */
-    virtual void publishStatus(Beacon& beacon) = 0;
+    virtual void publishStatus(Beacon& beacon) {
+
+    }
 
     /**
      * Called to publish a set of properties as a message
      */
-    virtual void publishProperties(string const &destinationName, map<string,string> const &properties) = 0;
+    virtual void publishProperties(string const &destinationName, map<string,string> const &properties) {
+
+    }
 
     virtual const char *toString() {
         int length = brokerUrl.length() + clientID.length();

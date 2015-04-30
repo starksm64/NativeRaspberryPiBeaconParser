@@ -36,14 +36,20 @@ public:
     /**
      * Display the beacon event's information
      */
-    virtual void displayBeacon(const Beacon& beacon) = 0;
+    virtual void displayBeacon(const Beacon& beacon) {
+
+    }
     /**
      * Display the heartbeat beacon event's information
      */
-    virtual void displayHeartbeat(const Beacon& beacon) = 0;
+    virtual void displayHeartbeat(const Beacon& beacon) {
+
+    }
     /**
      * Display the scanner's status information
      */
-    virtual void displayStatus(const StatusInformation& status) = 0;
+    virtual void displayStatus(const StatusInformation& status) {
+
+    }
 };
 #endif //NATIVESCANNER_SCANNERVIEW_H
