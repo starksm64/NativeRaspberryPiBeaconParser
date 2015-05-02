@@ -5,15 +5,16 @@
 // a topic on an ActiveMQ AMQP Broker.
 
 #include "MsgPublisher.h"
-
+#include <thread>
 #include <qpid/messaging/Connection.h>
+#include <qpid/messaging/Receiver.h>
 #include <qpid/messaging/Session.h>
 #include <qpid/messaging/Sender.h>
 #include <qpid/messaging/Message.h>
 
 using namespace qpid;
 
-typedef void (*heartbeatReceived)();
+typedef void (*heartbeatReceived)(bool , int, int);
 
 class QpidPublisher : public MsgPublisher {
 private:
@@ -21,8 +22,10 @@ private:
     qpid::messaging::Session session;
     qpid::messaging::Sender sender;
     map<string, qpid::messaging::Sender> senders;
+    unique_ptr<thread> heartbeatMonitorThread;
     int disconnectCount = 0;
     int64_t nextReconnectTime = 0;
+    volatile bool running = false;
 
 protected:
     /**
@@ -32,6 +35,11 @@ protected:
     * @param - messageType, 0=beacon event, 1=scanner heartbeat event
     */
     void doPublishProperties(messaging::Sender sndr, Beacon &beacon, BeconEventType messageType);
+    /**
+     * Background thread entry point for monitoring receipt of our own status messages as a measure of our
+     * network health.
+     */
+    void doMonitorHeartbeats(string const &destinationName, heartbeatReceived callback);
 
     int64_t getNextReconnectTime() const {
         return nextReconnectTime;

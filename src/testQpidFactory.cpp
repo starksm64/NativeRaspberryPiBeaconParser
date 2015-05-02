@@ -45,7 +45,7 @@ int main(int argc, char*argv[]) {
     // Create a messages
     Beacon beacon = testBeacon();
     vector<Beacon> events;
-    int N = 100;
+    int N = 5;
     struct timeval  start;
     gettimeofday(&start, nullptr);
     for (int ix = 0; ix < N; ++ix) {

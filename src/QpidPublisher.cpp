@@ -1,9 +1,4 @@
 #include "QpidPublisher.h"
-#include <qpid/messaging/Connection.h>
-#include <qpid/messaging/Session.h>
-#include <qpid/messaging/Receiver.h>
-#include <qpid/messaging/Sender.h>
-#include <qpid/messaging/Message.h>
 #include <chrono>
 
 
@@ -38,8 +33,8 @@ void QpidPublisher::start(bool asyncMode) {
     * failure until the value of max_retry_interval is reached.
   */
   // This does not work, reconnect fails to reestablish the flow of messages
-  connection = messaging::Connection(brokerUrl, "{protocol:amqp1.0,reconnect:true,reconnect_interval:30}");
-  //connection = messaging::Connection(brokerUrl, "{protocol:amqp1.0}");
+  //connection = messaging::Connection(brokerUrl, "{protocol:amqp1.0,reconnect:true,reconnect_interval:30}");
+  connection = messaging::Connection(brokerUrl, "{protocol:amqp1.0}");
   connection.open();
   disconnectCount = 0;
   connected = true;
@@ -62,12 +57,17 @@ void QpidPublisher::start(bool asyncMode) {
 }
 
 void QpidPublisher::stop() {
+  running = false;
   if(sender)
     sender.close();
   if(session)
     session.close();
   if(connection)
     connection.close();
+  if(heartbeatMonitorThread) {
+    heartbeatMonitorThread->detach();
+    heartbeatMonitorThread.reset(nullptr);
+  }
   sender = messaging::Sender();
   session = messaging::Session();
   connection = messaging::Connection();
@@ -194,6 +194,26 @@ void QpidPublisher::calculateReconnectTime(int64_t now) {
 }
 
 void QpidPublisher::monitorHeartbeats(string const &destinationName, heartbeatReceived callback) {
+  thread *t = new thread(&QpidPublisher::doMonitorHeartbeats, this, destinationName, callback);
+  this->heartbeatMonitorThread.reset(t);
+}
+
+void QpidPublisher::doMonitorHeartbeats(string const &destinationName, heartbeatReceived callback) {
   string destName = isUseTopics() ? AmqTopicName(destinationName) : AmqQueueName(destinationName);
   messaging::Receiver receiver = session.createReceiver(destName);
+  int missedCount = 0;
+  int receivedCount = 0;
+  while(running) {
+    messaging::Message message;
+    try {
+      receiver.fetch(message, messaging::Duration::MINUTE);
+      receivedCount ++;
+      missedCount = 0;
+      callback(true, receivedCount, missedCount);
+    } catch(messaging::NoMessageAvailable& e) {
+      fprintf(stderr, "Failed to receive own heartbeat for 1 minute, %s\n", e.what());
+      missedCount ++;
+      callback(false, receivedCount, missedCount);
+    }
+  }
 }

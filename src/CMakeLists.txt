@@ -20,4 +20,4 @@ target_link_libraries (testCmsFactory LINK_PUBLIC Beacon MqttCLib MqttAsyncCLib 
 
 set(testQpidFactory_FILES testQpidFactory.cpp)
 add_executable(testQpidFactory ${testQpidFactory_FILES})
-target_link_libraries (testQpidFactory LINK_PUBLIC Beacon MqttCLib MqttAsyncCLib CMS ssl crypto z apr-1 pthread ${Qpid_LIBRARIES})
+target_link_libraries (testQpidFactory LINK_PUBLIC Beacon MqttCLib MqttAsyncCLib CMS ssl crypto z apr-1 pthread Socket ${Qpid_LIBRARIES})

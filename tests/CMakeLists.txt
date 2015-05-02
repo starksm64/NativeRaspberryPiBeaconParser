@@ -17,7 +17,7 @@ add_test(threadsTest ${CMAKE_CURRENT_BINARY_DIR}/testThreadSleep )
 add_executable(testEventsWindow testEventsWindow.cpp ../src2/EventsWindow.cpp)
 add_test(testEventsWindow ${CMAKE_CURRENT_BINARY_DIR}/testEventsWindow)
 
-add_executable(testMedFilter medfilter/direct_med.h medfilter/medflt.h medfilter/testMedFilter.cpp)
+add_executable(testMedFilter medfilter/medflt.h medfilter/testMedFilter.cpp)
 add_test(testProducerConsumer ${CMAKE_CURRENT_BINARY_DIR}/testProducerConsumer)
 
 set(testProducerConsumer_FILES threads/testProducerConsumer.cpp)
@@ -122,4 +122,4 @@ target_link_libraries (testMsgProperties LINK_PUBLIC ${Qpid_LIBRARIES})
 add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testMsgProperties)
 
 add_executable(testQpidHeartbeat testQpidHeartbeat.cpp)
-target_link_libraries (testQpidHeartbeat LINK_PUBLIC ${Qpid_LIBRARIES})
+target_link_libraries (testQpidHeartbeat LINK_PUBLIC Beacon MqttCLib MqttAsyncCLib CMS ssl crypto z apr-1 pthread Socket ${Qpid_LIBRARIES})

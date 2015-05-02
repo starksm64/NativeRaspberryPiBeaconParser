@@ -6,12 +6,35 @@
 
 using namespace std::chrono;
 
+static volatile bool terminate = false;
+
+static void callback(bool success, int receivedCount, int missedCount) {
+    printf("callback(%d), received=%d, missed=%d\n", success, receivedCount, missedCount);
+    if(missedCount > 2)
+        ::terminate = true;
+}
+
+Beacon testBeacon() {
+    const char *scannerID = "testQpidFactory";
+    const char *uuid = "15DAF246CE836311E4B116123B93F75C";
+    int code = 2;
+    int manufacturer = 3852;
+    int major = 47616;
+    int minor = 12345;
+    int power = -253;
+    int rssi = -62;
+    time_t time = ::time(nullptr);
+    Beacon beacon(scannerID, uuid, code, manufacturer, major, minor, 0, power, rssi, time);
+    return beacon;
+}
+
 int main(int argc, char*argv[]) {
+    setenv("QPID_LOG_ENABLE", "trace+", true);
     MsgPublisherType type = MsgPublisherType::AMQP_QPID;
     string brokerUrl("192.168.1.107:5672");
     string clientID("testQpidHeartbeat");
-    string userName("");
-    string password("");
+    string userName;
+    string password;
 
     if (argc > 1) brokerUrl = argv[1];
 
@@ -23,6 +46,10 @@ int main(int argc, char*argv[]) {
     qpid->setUseTopics(false);
     qpid->start(false);
     printf("Started QPID MsgPublisher\n");
+    //qpid->monitorHeartbeats("scannerHealth", callback);
+    Beacon beacon = testBeacon();
+    //qpid->publish("", beacon);
+
     system_clock::time_point p2 = system_clock::now();
     string ScannerID("ScannerID");
     string SystemType("SystemType");
@@ -33,10 +60,19 @@ int main(int argc, char*argv[]) {
     map<string,string> properties;
     properties[ScannerID] = "testQpidHeartbeat";
     properties[SystemType] = "TestSystem";
-    time_t now = std::time(nullptr);
-    properties[SystemTime] = ctime(&now);
 
-    qpid->publishProperties("scannerHealth", properties);
+    int sentCount = 0;
+    do {
+        system_clock::time_point time = system_clock::now();
+        time_t now = system_clock::to_time_t(time);
+        properties[SystemTime] = ctime(&now);
+        properties[SystemTimeMS] = time.time_since_epoch().count();
+        qpid->publishProperties("scannerHealth", properties);
+        sentCount ++;
+        printf("Sent properties, count=%d\n", sentCount);
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+    }
+    while(sentCount < 10);
     system_clock::time_point end = system_clock::now();
     printf("Elapsed, %d\n", end.time_since_epoch() - start.time_since_epoch());
     qpid->stop();
