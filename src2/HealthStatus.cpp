@@ -25,6 +25,7 @@ const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusP
         string("HeartbeatCount"),
         string("HeartbeatRSSI"),
         string("EventsWindow"),
+        string("ActiveBeacons"),
         string("MemTotal"),
         string("MemFree"),
         string("MemAvailable"),
@@ -50,6 +51,7 @@ void HealthStatus::monitorStatus() {
     const string& HeartbeatCount = getStatusPropertyName(StatusProperties::HeartbeatCount);
     const string& HeartbeatRSSI = getStatusPropertyName(StatusProperties::HeartbeatRSSI);
     const string& EventsWindow = getStatusPropertyName(StatusProperties::EventsWindow);
+    const string& ActiveBeacons = getStatusPropertyName(StatusProperties::ActiveBeacons);
     const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
     const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
     const string& MemActive = getStatusPropertyName(StatusProperties::MemActive);
@@ -127,7 +129,9 @@ void HealthStatus::monitorStatus() {
             vector<char> eventsBucketStr;
             eventsBucket->toSimpleString(eventsBucketStr);
             statusProperties[EventsWindow] = eventsBucketStr.data();
-            printf("EventsBucket[%d]: %s\n", eventsBucket->size(), eventsBucketStr.data());
+            printf("EventsBucket[%ld]: %s\n", eventsBucket->size(), eventsBucketStr.data());
+            statusProperties[ActiveBeacons] = to_string(eventsBucket->size());
+
         }
 
         // System uptime, load, procs, memory info

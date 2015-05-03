@@ -31,6 +31,7 @@ enum class StatusProperties {
     HeartbeatCount,     // The number of events from the scanner's associated --heartbeatUUID beacon
     HeartbeatRSSI,      // The average RSSI for the scanner's associated --heartbeatUUID beacon
     EventsWindow,       // The counts of beacon events as a sequence of +{minorID}: {count}; values
+    ActiveBeacons,      // The count of beacons active in the last events window
     MemTotal,           // Total memory on scanner in MB
     MemFree,            // Free memory on scanner in MB
     MemActive,          // Total - Free memory on scanner in MB
