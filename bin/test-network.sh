@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-# A script that runs to test whether
-GATEWAY=192.168.1.1
-IFACE=wlan0
 
+# Include scanner configuration
+. ~/scanner.conf
+
+# A script that runs to test whether
+GATEWAY=${GATEWAY:-192.168.1.1}
+IFACE=${IFACE:-wlan0}
 
 ping -I ${IFACE} -nc4 ${GATEWAY}
 
