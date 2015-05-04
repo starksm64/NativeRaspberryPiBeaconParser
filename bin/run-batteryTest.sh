@@ -19,6 +19,7 @@ ROOT=`dirname $BIN`
 SCANNER_ID="`hostname`"
 scannerID=${scannerID:=$SCANNER_ID}
 heartbeatUUID=${HEARTBEAT_UUID:=$heartbeatUUID}
+brokerURL=${BROKER_URL:=$brokerURL}
 
 # Bring up bluetooth interface
 hciconfig hci0 up
@@ -36,5 +37,6 @@ fi
 echo "Running in battery test mode(--batteryTestMode), to rawHeartbeatEvents queue"
 ARGS="--scannerID ${scannerID}"
 ARGS="${ARGS} --heartbeatUUID ${heartbeatUUID}"
+ARGS="${ARGS} --brokerURL ${brokerURL:-192.168.1.107:5672}"
 ARGS="${ARGS} --batteryTestMode --destinationName rawHeartbeatEvents --useQueues --statusInterval 0"
 ${ROOT}/Debug/src2/NativeScannerBlueZ  ${ARGS} $*
