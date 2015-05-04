@@ -153,12 +153,21 @@ void HCIDumpParser::printBeaconCounts(const shared_ptr<EventsBucket> &bucket) {
     printf("%s\n", tmp.data());
 }
 
-
+static int lastRSSI[10];
+static int heartbeatCount = 0;
 void HCIDumpParser::sendRawHeartbeat(const beacon_info &info) {
     Beacon beacon(parseCommand.getScannerID(), info.uuid, info.code, info.manufacturer, info.major, info.minor,
                   info.power, info.calibrated_power, info.rssi, info.time);
     beacon.setMessageType(BeconEventType::SCANNER_HEARTBEAT);
     publisher->publishStatus(beacon);
+    lastRSSI[heartbeatCount%10] = info.rssi;
+    heartbeatCount ++;
+    if(heartbeatCount % 100 == 0) {
+        printf("Last[10].RSSI:");
+        for(int n = 0; n < 10; n ++)
+            printf("%d,", lastRSSI[n]);
+        printf("\n");
+    }
 }
 
 void HCIDumpParser::displayClosestBeacon(const shared_ptr<EventsBucket>& bucket) {
