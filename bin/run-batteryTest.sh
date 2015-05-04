@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Run the beacon scanner in the analyzer mode where the scanner simply reads beacon events and then
-# reports the counts of events for each time window
+# Run the beacon scanner in the battery test mode where the scanner simply reads the heartbeat beacn events and sends
+# the raw unaveraged readings to a rawHeartbeatEvents queue
 
 # Absolute path to this script
 SCRIPT=$(readlink -f $0)
@@ -33,5 +33,9 @@ else
 fi
 
 # Start the scanner
-echo "Running in anylyze mode(--analyzeMode), specify a non-default time window using --analyzeWindow"
-${ROOT}/Debug/src2/NativeScannerBlueZ --scannerID "${scannerID}" --heartbeatUUID "${heartbeatUUID}" --analzyeMode --skipPublish $*
+echo "Running in battery test mode(--batteryTestMode), to rawHeartbeatEvents queue"
+ARGS="--scannerID ${scannerID}"
+ARGS="${ARGS} --heartbeatUUID ${heartbeatUUID}"
+ARGS="${ARGS} --batteryTestMode --skipPublish"
+ARGS="${ARGS} --destinationName rawHeartbeatEvents --useQueues --statusInterval 0"
+${ROOT}/Debug/src2/NativeScannerBlueZ  ${ARGS} $*

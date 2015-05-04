@@ -24,8 +24,7 @@ private:
     bool analyzeMode = false;
     bool generateTestData = false;
     bool noBrokerReconnect = true;
-
-private:
+    bool batteryTestMode = false;
     bool skipPublish = false;
     bool asyncMode = false;
     bool useQueues = false;
@@ -125,6 +124,13 @@ public:
         HCIDumpCommand::analyzeMode = analyzeMode;
     }
 
+    bool isBatteryTestMode() const {
+        return batteryTestMode;
+    }
+
+    void setBatteryTestMode(bool batteryTestMode) {
+        HCIDumpCommand::batteryTestMode = batteryTestMode;
+    }
 
     int getRebootAfterNoReply() const {
         return rebootAfterNoReply;

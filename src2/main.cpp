@@ -97,36 +97,36 @@ int main(int argc, const char **argv) {
             "Specify the password to connect to the MQTT broker with",
             false, "", "string", cmd);
     TCLAP::ValueArg<std::string> brokerURL("b", "brokerURL",
-            "Specify the brokerURL to connect to the MQTT broker with; default tcp://localhost:1883",
-            false, "tcp://localhost:1883", "string", cmd);
-    TCLAP::ValueArg<std::string> topicName("t", "destinationName",
-            "Specify the name of the queue on the MQTT broker to publish to; default beaconEvents",
+            "Specify the brokerURL to connect to the message broker with; default tcp://localhost:5672",
+            false, "tcp://localhost:5672", "string", cmd);
+    TCLAP::ValueArg<std::string> destinationName("t", "destinationName",
+            "Specify the name of the destination on the message broker to publish to; default beaconEvents",
             false, "beaconEvents", "string", cmd);
     TCLAP::ValueArg<int> analyzeWindow("W", "analyzeWindow",
-                                       "Specify the number of seconds in the analyzeMode time window",
-                                       false, 1, "int", cmd);
+            "Specify the number of seconds in the analyzeMode time window",
+            false, 1, "int", cmd);
     TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
-                                        "Specify the name of the host controller interface to use; default hci0",
-                                        false, "hci0", "string", cmd);
+            "Specify the name of the host controller interface to use; default hci0",
+            false, "hci0", "string", cmd);
     MsgPublisherTypeConstraint pubTypeConstraint;
     TCLAP::ValueArg<std::string> pubType("P", "pubType",
-                                         "Specify the MsgPublisherType enum for the publisher implementation to use; default AMQP_QPID",
-                                         false, "AMQP_QPID", &pubTypeConstraint, cmd, nullptr);
+            "Specify the MsgPublisherType enum for the publisher implementation to use; default AMQP_QPID",
+            false, "AMQP_QPID", &pubTypeConstraint, cmd, nullptr);
     TCLAP::ValueArg<int> maxCount("C", "maxCount",
-                                  "Specify a maxium number of events the scanner should process before exiting; default 0 means no limit",
-                                  false, 0, "int", cmd);
+            "Specify a maxium number of events the scanner should process before exiting; default 0 means no limit",
+            false, 0, "int", cmd);
     TCLAP::ValueArg<int> batchCount("B", "batchCount",
-                                    "Specify a maxium number of events the scanner should combine before sending to broker; default 0 means no batching",
-                                    false, 0, "int", cmd);
+            "Specify a maxium number of events the scanner should combine before sending to broker; default 0 means no batching",
+            false, 0, "int", cmd);
     TCLAP::ValueArg<int> statusInterval("I", "statusInterval",
-                                        "Specify the interval in seconds between health status messages, <= 0 means no messages; default 30",
-                                        false, 30, "int", cmd);
+            "Specify the interval in seconds between health status messages, <= 0 means no messages; default 30",
+            false, 30, "int", cmd);
     TCLAP::ValueArg<int> rebootAfterNoReply("r", "rebootAfterNoReply",
-                                        "Specify the interval in seconds after which a failure to hear our own heartbeat triggers a reboot, <= 0 means no reboot; default -1",
-                                        false, -1, "int", cmd);
+            "Specify the interval in seconds after which a failure to hear our own heartbeat triggers a reboot, <= 0 means no reboot; default -1",
+            false, -1, "int", cmd);
     TCLAP::ValueArg<std::string> statusQueue("q", "statusQueue",
-                                             "Specify the name of the status health queue destination; default scannerHealth",
-                                             false, "scannerHealth", "string", cmd);
+            "Specify the name of the status health queue destination; default scannerHealth",
+            false, "scannerHealth", "string", cmd);
     TCLAP::SwitchArg skipPublish("S", "skipPublish",
             "Indicate that the parsed beacons should not be published",
             false);
@@ -139,15 +139,18 @@ int main(int argc, const char **argv) {
     TCLAP::SwitchArg skipHeartbeat("K", "skipHeartbeat",
             "Don't publish the heartbeat messages. Useful to limit the noise when testing the scanner.",
             false);
-    TCLAP::SwitchArg analzyeMode("Z", "analzyeMode",
-                                 "Run the scanner in a mode that simply collects beacon readings and reports unique beacons seen in a time window",
-                                 false);
+    TCLAP::SwitchArg analzyeMode("", "analzyeMode",
+            "Run the scanner in a mode that simply collects beacon readings and reports unique beacons seen in a time window",
+             false);
     TCLAP::SwitchArg generateTestData("T", "generateTestData",
-                                 "Indicate that test data should be generated",
-                                 false);
-    TCLAP::SwitchArg noBrokerReconnect("R", "noBrokerReconnect",
-                                      "Don't try to reconnect to the broker on failure, just exit",
-                                      false);
+             "Indicate that test data should be generated",
+             false);
+    TCLAP::SwitchArg noBrokerReconnect("", "noBrokerReconnect",
+             "Don't try to reconnect to the broker on failure, just exit",
+             false);
+    TCLAP::SwitchArg batteryTestMode("", "batteryTestMode",
+              "Simply monitor the raw heartbeat beacon events and publish them to the destinationName",
+              false);
 
     try {
         // Add the flag arguments
@@ -157,6 +160,8 @@ int main(int argc, const char **argv) {
         cmd.add(skipHeartbeat);
         cmd.add(analzyeMode);
         cmd.add(generateTestData);
+        cmd.add(noBrokerReconnect);
+        cmd.add(batteryTestMode);
         // Parse the argv array.
         printf("Parsing command line...\n");
         cmd.parse( argc, argv );
@@ -171,7 +176,7 @@ int main(int argc, const char **argv) {
         printf("Removed existing %s marker file\n", STOP_MARKER_FILE);
     }
 
-    HCIDumpCommand command(scannerID.getValue(), brokerURL.getValue(), clientID.getValue(), topicName.getValue());
+    HCIDumpCommand command(scannerID.getValue(), brokerURL.getValue(), clientID.getValue(), destinationName.getValue());
     command.setUseQueues(useQueues.getValue());
     command.setSkipPublish(skipPublish.getValue());
     command.setSkipHeartbeat(skipHeartbeat.getValue());

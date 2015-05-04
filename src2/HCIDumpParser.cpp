@@ -58,11 +58,13 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
         }
         publisher->start(parseCommand.isAsyncMode());
 
-        // Create a thread for the consumer
-        eventExchanger.reset(new EventExchanger);
-        eventConsumer.init(eventExchanger, publisher, statusInformation);
-        consumerThread.reset(new thread(&BeaconEventConsumer::publishEvents, &eventConsumer));
-        printf("Started event consumer thread\n");
+        // Create a thread for the consumer unless running in battery test mode
+        if(!parseCommand.isBatteryTestMode()) {
+            eventExchanger.reset(new EventExchanger);
+            eventConsumer.init(eventExchanger, publisher, statusInformation);
+            consumerThread.reset(new thread(&BeaconEventConsumer::publishEvents, &eventConsumer));
+            printf("Started event consumer thread\n");
+        }
     }
     else {
         printf("Skipping publish of parsed beacons\n");
@@ -99,6 +101,13 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
 void HCIDumpParser::beaconEvent(const beacon_info &info) {
     // Check for heartbeat
     bool isHeartbeat = scannerUUID.compare(info.uuid) == 0;
+    if(parseCommand.isBatteryTestMode()) {
+        // Send the raw unaveraged heartbeat info, or ignore non-heartbeat events
+        if(isHeartbeat)
+            sendRawHeartbeat(info);
+        return;
+    }
+
     // Merge the event into the current time window
     shared_ptr<EventsBucket> bucket = timeWindow.addEvent(info, isHeartbeat);
     statusInformation->addEvent(info, isHeartbeat);
@@ -142,6 +151,14 @@ void HCIDumpParser::printBeaconCounts(const shared_ptr<EventsBucket> &bucket) {
     vector<char> tmp;
     bucket->toString(tmp);
     printf("%s\n", tmp.data());
+}
+
+
+void HCIDumpParser::sendRawHeartbeat(const beacon_info &info) {
+    Beacon beacon(parseCommand.getScannerID(), info.uuid, info.code, info.manufacturer, info.major, info.minor,
+                  info.power, info.calibrated_power, info.rssi, info.time);
+    beacon.setMessageType(BeconEventType::SCANNER_HEARTBEAT);
+    publisher->publishStatus(beacon);
 }
 
 void HCIDumpParser::displayClosestBeacon(const shared_ptr<EventsBucket>& bucket) {

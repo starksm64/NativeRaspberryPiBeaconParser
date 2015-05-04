@@ -64,6 +64,7 @@ private:
 
     void displayClosestBeacon(const shared_ptr<EventsBucket>& bucket);
     void displayStatus();
+    void sendRawHeartbeat(const beacon_info &info);
 
 public:
     HCIDumpParser() : publisher(nullptr), batchCount(0), scannerUUID(""), statusInformation(new StatusInformation()) {
