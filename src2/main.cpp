@@ -188,6 +188,7 @@ int main(int argc, const char **argv) {
     command.setStatusInterval(statusInterval.getValue());
     command.setStatusQueue(statusQueue.getValue());
     command.setGenerateTestData(generateTestData.getValue());
+    command.setBatteryTestMode(batteryTestMode.getValue());
     if(maxCount.getValue() > 0) {
         maxEventCount = maxCount.getValue();
         printf("Set maxEventCount: %ld\n", maxEventCount);
