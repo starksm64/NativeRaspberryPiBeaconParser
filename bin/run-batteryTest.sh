@@ -36,6 +36,5 @@ fi
 echo "Running in battery test mode(--batteryTestMode), to rawHeartbeatEvents queue"
 ARGS="--scannerID ${scannerID}"
 ARGS="${ARGS} --heartbeatUUID ${heartbeatUUID}"
-ARGS="${ARGS} --batteryTestMode --skipPublish"
-ARGS="${ARGS} --destinationName rawHeartbeatEvents --useQueues --statusInterval 0"
+ARGS="${ARGS} --batteryTestMode --destinationName rawHeartbeatEvents --useQueues --statusInterval 0"
 ${ROOT}/Debug/src2/NativeScannerBlueZ  ${ARGS} $*
