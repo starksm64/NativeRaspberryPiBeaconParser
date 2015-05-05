@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root"
+   exit 1
+fi
+
 # Include scanner configuration
 . ~/scanner.conf
 
@@ -12,9 +17,9 @@ ping -I ${IFACE} -nc4 ${GATEWAY}
 if [ $? != 0 ]
 then
     logger -t $0 "WiFi seems down, restarting"
-    sudo /sbin/ifdown --force ${IFACE}
+    /sbin/ifdown --force ${IFACE}
     sleep 10
-    sudo /sbin/ifup ${IFACE}
+    /sbin/ifup ${IFACE}
 else
     logger -t $0 "WiFi seems up."
 fi
