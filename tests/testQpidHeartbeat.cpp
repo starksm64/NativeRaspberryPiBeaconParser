@@ -66,7 +66,7 @@ int main(int argc, char*argv[]) {
         system_clock::time_point time = system_clock::now();
         time_t now = system_clock::to_time_t(time);
         properties[SystemTime] = ctime(&now);
-        properties[SystemTimeMS] = time.time_since_epoch().count();
+        properties[SystemTimeMS] = to_string(time.time_since_epoch().count());
         qpid->publishProperties("scannerHealth", properties);
         sentCount ++;
         printf("Sent properties, count=%d\n", sentCount);
