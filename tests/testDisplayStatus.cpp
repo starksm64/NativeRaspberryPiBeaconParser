@@ -53,9 +53,9 @@ int main() {
 
     HealthStatus healthStatus;
     healthStatus.calculateStatus(status);
-    Properties statusProps = status.getLastStatus();
+    shared_ptr<Properties> statusProps = status.getLastStatus();
     printf("StatusProps dump:\n");
-    for(Properties::const_iterator iter = statusProps.begin(); iter != statusProps.end(); iter ++) {
+    for(Properties::const_iterator iter = statusProps->begin(); iter != statusProps->end(); iter ++) {
         printf("%s = %s\n", iter->first.c_str(), iter->second.c_str());
     }
     printf("+++ End dump\n\n");
@@ -74,7 +74,7 @@ int main() {
     truncateName(name);
     snprintf(tmp, sizeof(tmp), "%s:%.7d;%d", name.c_str(), status.getHeartbeatCount(), status.getHeartbeatRSSI());
     lcd->displayText(tmp, 0, 0);
-    string uptime = statusProps["Uptime"];
+    string uptime = (*statusProps)["Uptime"];
     const char *uptimeStr = uptime.c_str();
     printf("%s; length=%ld\n", uptimeStr, uptime.size());
     int days=0, hrs=0, mins=0;
@@ -82,7 +82,7 @@ int main() {
     printf("matched:%d, UP D:%d H:%d M:%d\n", count, days, hrs, mins);
     snprintf(tmp, sizeof(tmp), "UP D:%d H:%d M:%d", days, hrs, mins);
     lcd->displayText(tmp, 0, 1);
-    const char *load = statusProps["LoadAverage"].c_str();
+    const char *load = (*statusProps)["LoadAverage"].c_str();
     printf("Load: %s\n", load);
     lcd->displayText(load, 0, 2);
     snprintf(tmp, sizeof(tmp), "Events: %d; Msgs: %d", status.getRawEventCount(), status.getPublishEventCount());
