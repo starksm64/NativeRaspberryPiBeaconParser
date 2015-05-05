@@ -31,8 +31,6 @@
 #include <time.h>
 #include <stdlib.h>
 #include "medflt.h"
-#include "direct_med.h"
-
 
 
 // very primitive initialization of 1d array - uniformly distributed values from [a,b]
