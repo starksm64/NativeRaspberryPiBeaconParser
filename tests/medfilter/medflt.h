@@ -29,7 +29,7 @@
 // under the License.
 //
 //
-
+#include <algorithm>
 #include <map>
 #include <vector>
 
@@ -217,5 +217,33 @@ private:
 
 };
 
+
+template <typename T> void direct_median(std::vector<T>& output, const std::vector<T>& input, int windowsize)
+{
+    std::vector<T> window;
+    int w2 = windowsize/2;
+
+    for(int j=0; j<input.size(); j++)
+    {
+        window.clear();
+        for (int k = j-w2; k <= j+w2; k++ )
+        {
+            if(k< 0)
+            {
+                window.push_back(input.front());
+            }
+            else if(k > input.size()-1)
+            {
+                window.push_back(input.back());
+            }
+            else
+            {
+                window.push_back(input[k]);
+            }
+        }
+        std::sort(window.begin(), window.end());
+        output.push_back(window[w2]);
+    }
+}
 
 #endif //NATIVESCANNER_MEDFLT_H
