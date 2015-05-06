@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <execinfo.h>
 // http://tclap.sourceforge.net/manual.html
 #include "tclap/CmdLine.h"
 #include "HCIDumpParser.h"
@@ -63,6 +64,32 @@ static ScannerView *getDisplayInstance() {
 #else
     view = new MockScannerView();
 #endif
+}
+
+void printStacktrace() {
+    void *array[20];
+    int size = backtrace(array, sizeof(array) / sizeof(array[0]));
+    backtrace_symbols_fd(array, size, STDERR_FILENO);
+}
+
+static void terminateHandler() {
+    std::exception_ptr exptr = std::current_exception();
+    if (exptr != nullptr) {
+        // the only useful feature of std::exception_ptr is that it can be rethrown...
+        try {
+            std::rethrow_exception(exptr);
+        } catch (std::exception &ex) {
+            std::fprintf(stderr, "Terminated due to exception: %s\n", ex.what());
+        }
+        catch (...) {
+            std::fprintf(stderr, "Terminated due to unknown exception\n");
+        }
+    }
+    else {
+        std::fprintf(stderr, "Terminated due to unknown reason :(\n");
+    }
+    printStacktrace();
+    exit(100);
 }
 
 /**
@@ -198,6 +225,10 @@ int main(int argc, const char **argv) {
         parserLogic.setScannerUUID(heartbeatUUID.getValue());
         printf("Set heartbeatUUID: %s\n", heartbeatUUID.getValue().c_str());
     }
+
+    // Install default terminate handler to make sure we exit with non-zero status
+    std::set_terminate(terminateHandler);
+
     shared_ptr<ScannerView> lcd(getDisplayInstance());
     parserLogic.setScannerView(lcd);
     char cwd[256];
