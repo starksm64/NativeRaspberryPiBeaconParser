@@ -18,6 +18,7 @@ const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusP
         string("SystemTime"),
         string("SystemTimeMS"),
         string("Uptime"),
+        string("SystemUptime"),
         string("Procs"),
         string("LoadAverage"),
         string("RawEventCount"),
@@ -44,6 +45,7 @@ void HealthStatus::monitorStatus() {
     const string& SystemTime = getStatusPropertyName(StatusProperties::SystemTime);
     const string& SystemTimeMS = getStatusPropertyName(StatusProperties::SystemTimeMS);
     const string& Uptime = getStatusPropertyName(StatusProperties::Uptime);
+    const string& SystemUptime = getStatusPropertyName(StatusProperties::SystemUptime);
     const string& LoadAverage = getStatusPropertyName(StatusProperties::LoadAverage);
     const string& Procs = getStatusPropertyName(StatusProperties::Procs);
     const string& RawEventCount = getStatusPropertyName(StatusProperties::RawEventCount);
@@ -57,6 +59,7 @@ void HealthStatus::monitorStatus() {
     const string& MemActive = getStatusPropertyName(StatusProperties::MemActive);
     const string& SwapTotal = getStatusPropertyName(StatusProperties::SwapTotal);
     const string& SwapFree = getStatusPropertyName(StatusProperties::SwapFree);
+    // Used to calculate the scanner process uptime relative to its starting time
     struct sysinfo beginInfo;
 
     // Determine the scanner type
@@ -147,8 +150,19 @@ void HealthStatus::monitorStatus() {
             long seconds = uptimeDiff - days * 24*3600 - hours*3600 - minute*60;
             sprintf(tmp, "uptime: %ld, days:%ld, hrs:%ld, min:%ld, sec:%ld", uptimeDiff, days, hours, minute, seconds);
             statusProperties[Uptime] = tmp;
-            printf("%s\n", tmp);
+            printf("Scanner %s\n", tmp);
             sprintf(tmp, "%.2f, %.2f, %.2f", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
+            // Calcualte system uptime
+            uptimeDiff = info.uptime;
+            days = uptimeDiff / (24*3600);
+            hours = (uptimeDiff - days * 24*3600) / 3600;
+            minute = (uptimeDiff - days * 24*3600 - hours*3600) / 60;
+            seconds = uptimeDiff - days * 24*3600 - hours*3600 - minute*60;
+            sprintf(tmp, "uptime: %ld, days:%ld, hrs:%ld, min:%ld, sec:%ld", uptimeDiff, days, hours, minute, seconds);
+            statusProperties[SystemUptime] = tmp;
+            printf("System %s\n", tmp);
+            sprintf(tmp, "%.2f, %.2f, %.2f", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
+
             printf("loadavg: %s\n", tmp);
             statusProperties[LoadAverage] = tmp;
             statusProperties[Procs] = to_string(info.procs);
