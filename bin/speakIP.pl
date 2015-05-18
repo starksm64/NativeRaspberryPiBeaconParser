@@ -8,7 +8,9 @@ while (1)
   $IP_wireless = `ifconfig wlan0 | grep 'inet'`;
   $IP_ethernet = `ifconfig eth0 | grep 'inet'`;
 
-  if ($IP_wireless =~ /inet (.*?) /)
+  @ifaces = ();
+
+  if ($IP_wireless =~ /inet (\d+.\d+.\d+.\d+)\s/)
   {
     # split address into its characters and join with spaces
     @characters = split(//,$1);
@@ -19,7 +21,7 @@ while (1)
     @ifaces = ($text);
   }
 
-  if( $IP_ethernet  =~ /inet (.*?) /)
+  if( $IP_ethernet  =~ /inet (\d+.\d+.\d+.\d+)\s/)
   {
     @characters = split(//,$1);
     $text = "ethernet address " . join(" ", @characters);
@@ -28,12 +30,13 @@ while (1)
     push(@ifaces, $text);
   }
 
-  if( $#ifaces <= 0 )
+  $size = @ifaces;
+  if( $size <= 0 )
   {
     @ifaces = ("no IP address");
   }
 
-  for my $i (0 .. $#ifaces)
+  for my $i (0 .. $size)
   {
     print "$ifaces[$i]\n";
     system("espeak -s90 --stdout '$ifaces[$i]' | aplay");
