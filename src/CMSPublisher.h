@@ -13,13 +13,13 @@
 #include <activemq/core/ActiveMQConnectionFactory.h>
 #include <decaf/lang/System.h>
 #include <activemq/library/ActiveMQCPP.h>
-#endif
-
 using namespace activemq::core;
 using namespace decaf::util::concurrent;
 using namespace decaf::util;
 using namespace decaf::lang;
 using namespace cms;
+#endif
+
 using namespace std;
 
 class CMSPublisher : public MsgPublisher {
