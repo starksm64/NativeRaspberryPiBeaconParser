@@ -32,10 +32,7 @@ private:
 #endif
 
 public:
-    CMSPublisher(string brokerUrl, string clientID, string userName, string password)
-            : MsgPublisher(brokerUrl, clientID, userName, password) {
-        activemq::library::ActiveMQCPP::initializeLibrary();
-    }
+    CMSPublisher(string brokerUrl, string clientID, string userName, string password);
 
     virtual void start(bool asyncMode);
 
