@@ -1,6 +1,6 @@
 #include "CMSPublisher.h"
 
-
+#ifdef HAVE_ActiveMQ_CPP
 void CMSPublisher::start(bool asyncMode) {
 
     // Create a ConnectionFactory
@@ -82,3 +82,20 @@ void CMSPublisher::publish(string const &destName, Beacon &beacon) {
 void CMSPublisher::publishProperties(string const &destinationName, map<string,string> const &properties) {
 
 }
+#else
+void CMSPublisher::start(bool asyncMode) {
+}
+void CMSPublisher::stop() {
+}
+
+void CMSPublisher::queueForPublish(string const &topicName, MqttQOS qos, byte *payload, size_t len) {
+}
+
+void CMSPublisher::publish(string const &destName, MqttQOS qos, byte *payload, size_t len) {
+}
+void CMSPublisher::publish(string const &destName, Beacon &beacon) {
+}
+void CMSPublisher::publishProperties(string const &destinationName, map<string,string> const &properties) {
+
+}
+#endif

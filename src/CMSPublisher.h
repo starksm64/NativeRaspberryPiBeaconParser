@@ -3,6 +3,7 @@
 
 #include "MsgPublisher.h"
 #include "MqttPublisher.h"
+#ifdef HAVE_ActiveMQ_CPP
 #include <activemq/util/Config.h>
 #include <cms/Connection.h>
 #include <cms/Session.h>
@@ -12,6 +13,7 @@
 #include <activemq/core/ActiveMQConnectionFactory.h>
 #include <decaf/lang/System.h>
 #include <activemq/library/ActiveMQCPP.h>
+#endif
 
 using namespace activemq::core;
 using namespace decaf::util::concurrent;
@@ -22,10 +24,12 @@ using namespace std;
 
 class CMSPublisher : public MsgPublisher {
 private:
+#ifdef HAVE_ActiveMQ_CPP
     Connection* connection;
     Session* session;
     Destination* destination;
     MessageProducer* producer;
+#endif
 
 public:
     CMSPublisher(string brokerUrl, string clientID, string userName, string password)
