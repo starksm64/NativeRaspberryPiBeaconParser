@@ -88,6 +88,10 @@ void CMSPublisher::publishProperties(string const &destinationName, map<string,s
 
 }
 #else
+CMSPublisher::CMSPublisher(string brokerUrl, string clientID, string userName, string password)
+: MsgPublisher(brokerUrl, clientID, userName, password) {
+}
+
 void CMSPublisher::start(bool asyncMode) {
 }
 void CMSPublisher::stop() {
