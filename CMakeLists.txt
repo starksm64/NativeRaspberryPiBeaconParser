@@ -69,10 +69,11 @@ find_library(MqttAsync_Libs NAMES paho-mqtt3as)
 if(Mqtt_Libs AND MqttAsync_Libs)
     MESSAGE(STATUS "Found Mqtt_Libs: ${Mqtt_Libs}, ${MqttAsync_Libs}")
     ADD_DEFINITIONS(-DHAVE_MQTT)
-    set(MQTT_LIBRARIES ${Mqtt_Libs}  ${Mqtt_Libs} ${MqttAsync_Libs})
+    set(MQTT_LIBRARIES ${Mqtt_Libs} ${MqttAsync_Libs})
     set(MQTT_FOUND true)
 else()
     MESSAGE(STATUS "Skipping MQTT publisher")
+    set(MQTT_LIBRARIES "")
 endif()
 
 # Source directories
