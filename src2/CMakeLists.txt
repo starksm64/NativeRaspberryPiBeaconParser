@@ -37,9 +37,9 @@ if(Apr_Libs)
 endif()
 
 if(ActiveMQ_CPP_Libs)
-    set(SCANNER_LIBS Beacon CMS pthread ssl crypto z apr MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
+    set(SCANNER_LIBS Beacon CMS pthread ssl crypto z ${Apr_Libs} MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
 else()
-    set(SCANNER_LIBS Beacon pthread ssl crypto z apr MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
+    set(SCANNER_LIBS Beacon pthread ssl crypto z ${Apr_Libs} MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
 endif()
 
 if(WiringPi_FOUND)
