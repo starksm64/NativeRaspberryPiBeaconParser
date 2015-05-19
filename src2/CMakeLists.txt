@@ -32,7 +32,7 @@ if(ActiveMQ_CPP_Libs)
     set(SCANNER_LIBS Beacon CMS pthread ssl crypto z apr-1 MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
 else()
     set(SCANNER_LIBS Beacon pthread ssl crypto z apr-1 MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
-fi()
+endif()
 
 if(WiringPi_FOUND)
     set(SCANNER_LIBS ${SCANNER_LIBS} lcdDisplay wiringPiDev wiringPi)
