@@ -28,10 +28,18 @@ set(tools_hcidump_SOURCES ${BluezToolsParser}/parser.h ${BluezToolsParser}/parse
 add_library(BluezLibInternal SHARED IMPORTED)
 set_property(TARGET BluezLibInternal PROPERTY IMPORTED_LOCATION ${BluezHome}/lib/.libs/libbluetooth-internal.a)
 
+
+find_library(Apr_Libs NAMES apr-1 apr-1.0)
+if(Apr_Libs)
+    set(apr_LIBRARIES ${Apr_Libs})
+    set(apr_FOUND true)
+    MESSAGE(STATUS "Using Apr_Libs: ${Apr_Libs}")
+endif()
+
 if(ActiveMQ_CPP_Libs)
-    set(SCANNER_LIBS Beacon CMS pthread ssl crypto z apr-1 MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
+    set(SCANNER_LIBS Beacon CMS pthread ssl crypto z apr MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
 else()
-    set(SCANNER_LIBS Beacon pthread ssl crypto z apr-1 MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
+    set(SCANNER_LIBS Beacon pthread ssl crypto z apr MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
 endif()
 
 if(WiringPi_FOUND)
