@@ -1,7 +1,11 @@
+
+#ifdef HAVE_MQTT
 #include <MQTTAsync.h>
 #include <MQTTClient.h>
+#endif
 #include "MqttPublisher.h"
 
+#ifdef HAVE_MQTT
 MqttPublisher::MqttPublisher(string brokerUrl, string clientID)
         : MsgPublisher(brokerUrl, clientID, "", "")
 {
@@ -183,3 +187,22 @@ void MqttPublisher::setupAsyncClient() {
         printf("Failed to start connect, return code %d\n", rc);
     }
 }
+
+#else
+// Stub implementation
+void MqttPublisher::setupClient() {}
+void MqttPublisher::setupAsyncClient() {}
+
+MqttPublisher::MqttPublisher(string brokerUrl, string clientID) : MsgPublisher(brokerUrl, "", "", clientID) {}
+MqttPublisher::MqttPublisher(string brokerUrl, string userName, string password, string clientID) : MsgPublisher(brokerUrl, userName, password, clientID) {}
+MqttPublisher::~MqttPublisher() {}
+
+void MqttPublisher::start(bool asyncMode) {}
+void MqttPublisher::stop() {}
+void MqttPublisher::queueForPublish(string const &destinationName, MqttQOS qos, byte *payload, size_t len) {}
+void MqttPublisher::publish(string const &destinationName, MqttQOS qos, byte *payload, size_t len) {}
+
+void MqttPublisher::publish(string const &destinationName, Beacon &beacon) {}
+void MqttPublisher::publishProperties(string const &destinationName, map<string,string> const &properties) {}
+
+#endif

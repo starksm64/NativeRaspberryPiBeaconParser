@@ -50,6 +50,7 @@ if(WiringPi_Libs AND WiringPiDev_Libs)
     MESSAGE(STATUS "Added lcd source to build")
 endif()
 
+# Conditional settings on activemq-cpp lib
 find_library(ActiveMQ_CPP_Libs NAMES activemq-cpp)
 if(ActiveMQ_CPP_Libs)
     add_subdirectory(cms)
@@ -58,6 +59,20 @@ if(ActiveMQ_CPP_Libs)
     ADD_DEFINITIONS(-DHAVE_ActiveMQ_CPP)
     MESSAGE(STATUS "Using ActiveMQ_CPP: ${ActiveMQ_CPP_LIBRARIES}")
     MESSAGE(STATUS "Added cms source to build")
+else()
+    MESSAGE(STATUS "Skipping ActiveMQ_CPP publisher")
+endif()
+
+# Conditional settings on MqttCLib
+find_library(Mqtt_Libs NAMES paho-mqtt3c)
+find_library(MqttAsync_Libs NAMES paho-mqtt3as)
+if(Mqtt_Libs AND MqttAsync_Libs)
+    MESSAGE(STATUS "Found Mqtt_Libs: ${Mqtt_Libs}, ${MqttAsync_Libs}")
+    ADD_DEFINITIONS(-DHAVE_MQTT)
+    set(MQTT_LIBRARIES ${Mqtt_Libs}  ${Mqtt_Libs} ${MqttAsync_Libs})
+    set(MQTT_FOUND true)
+else()
+    MESSAGE(STATUS "Skipping MQTT publisher")
 endif()
 
 # Source directories

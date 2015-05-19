@@ -3,17 +3,21 @@
 
 #include <string>
 #include <iostream>
-#include <MQTTAsync.h>
-#include "MQTTClient.h"
 #include "MsgPublisher.h"
 #include "QOS.h"
+#ifdef HAVE_MQTT
+#include <MQTTAsync.h>
+#include "MQTTClient.h"
+#endif
 
 using namespace std;
 
 class MqttPublisher : public MsgPublisher {
 private:
+#ifdef HAVE_MQTT
     MQTTClient client;
     MQTTAsync asyncClient;
+#endif
 
     string brokerURL;
     bool quietMode;

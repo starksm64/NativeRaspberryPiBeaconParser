@@ -13,7 +13,9 @@ ENDIF(PRINT_DEBUG)
 add_definitions(-DUSE_YIELD_LOOP)
 
 # The location of a local bluez source tree
-if(EXISTS $ENV{HOME}/bluez-5.28)
+if(EXISTS $ENV{HOME}/bluez-5.30)
+    set(BluezHome $ENV{HOME}/bluez-5.30)
+elseif(EXISTS $ENV{HOME}/bluez-5.28)
     set(BluezHome $ENV{HOME}/bluez-5.28)
 else()
     set(BluezHome ../../BlueZ/bluez-5.28)
@@ -36,11 +38,7 @@ if(Apr_Libs)
     MESSAGE(STATUS "Using Apr_Libs: ${Apr_Libs}")
 endif()
 
-if(ActiveMQ_CPP_Libs)
-    set(SCANNER_LIBS Beacon CMS pthread ssl crypto z ${Apr_Libs} MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
-else()
-    set(SCANNER_LIBS Beacon pthread ssl crypto z ${Apr_Libs} MqttCLib MqttAsyncCLib BluezLibInternal ${Qpid_LIBRARIES} Socket)
-endif()
+set(SCANNER_LIBS Beacon ${ActiveMQ_CPP} ${MQTT} pthread ssl crypto z ${Apr_Libs} BluezLibInternal ${Qpid_LIBRARIES} Socket)
 
 if(WiringPi_FOUND)
     set(SCANNER_LIBS ${SCANNER_LIBS} lcdDisplay wiringPiDev wiringPi)
