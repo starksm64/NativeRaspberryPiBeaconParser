@@ -428,9 +428,13 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
             printf("UUID(%d):%s\n", strlen(info->uuid), info->uuid);
 #endif
             // Get the beacon major id
-            info->major = 256 * data[index++] + data[index++];
+            int m0 = data[index++];
+            int m1 = data[index++];
+            info->major = 256 * m0 + m1;
             // Get the beacon minor id
-            info->minor = 256 * data[index++] + data[index++];
+            m0 = data[index++];
+            m1 = data[index++];
+            info->minor = 256 * m0 + m1;
 #ifdef PRINT_DEBUG
             p_indent(level, frm);
             printf("Major:%d, Minor:%d\n", info->major, info->minor);
