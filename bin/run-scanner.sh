@@ -14,25 +14,13 @@ ROOT=`dirname $BIN`
 
 # Aliases for backward compatibility to previous variables used from scanner.conf
 scannerID=${scannerID:=$SCANNER_ID}
-heartbeatUUID=${HEARTBEAT_UUID:=$heartbeatUUID}
+heartbeatUUID=${HEARTBEAT_UUID:=$heartbeatUUID }
 brokerURL=${BROKER_URL:=$brokerURL}
 
 # If scanner.conf defined a systemType, export it as SYSTEM_TYPE
 if [ -n "$systemType" ]; then
         echo "Exporting SYSTEM_TYPE=$systemType"
         export SYSTEM_TYPE=$systemType
-fi
-
-# Bring up bluetooth interface
-hciconfig hci0 up
-
-ps -eaf | grep lescan | grep -v grep >/dev/null
-found=$?
-# non-zero return means lescan not seen running
-if [ $found -ne 0 ]; then
-        hcitool lescan --duplicates >/dev/null &
-else
-        echo lescan already running
 fi
 
 CMD="${ROOT}/Debug/src2/NativeScannerBlueZ"
