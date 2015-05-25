@@ -38,7 +38,7 @@ if(Apr_Libs)
     MESSAGE(STATUS "Using Apr_Libs: ${Apr_Libs}")
 endif()
 
-set(SCANNER_LIBS Beacon ${ActiveMQ_CPP} ${MQTT_LIBRARIES} pthread ssl crypto z ${Apr_Libs} BluezLibInternal ${Qpid_LIBRARIES} Socket)
+set(SCANNER_LIBS Beacon ${ActiveMQ_CPP_LIBRARIES} ${MQTT_LIBRARIES} pthread ssl crypto z ${Apr_Libs} BluezLibInternal ${Qpid_LIBRARIES} Socket)
 
 if(WiringPi_FOUND)
     set(SCANNER_LIBS ${SCANNER_LIBS} lcdDisplay wiringPiDev wiringPi)
