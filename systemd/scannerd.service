@@ -1,0 +1,23 @@
+# See systemd.service(5) for details
+# Place into /lib/systemd/system and run:
+# systemctl enable scannerd.service
+
+[Unit]
+Description=Serivce config file for the beacon scanner
+Wants=scanner-configd.service
+After=scanner-configd.service
+Wants=chrony-wait.service
+After=chrony-wait.service
+Wants=lescan.service
+After=lescan.service
+
+[Service]
+WorkingDirectory=/root/NativeRaspberryPiBeaconParser
+Environment="JAVA_HOME=/root/jdk1.8.0_33"
+ExecStart=/root/NativeRaspberryPiBeaconParser/bin/run-scanner.sh -background
+Type=forking
+Restart=on-failure
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target

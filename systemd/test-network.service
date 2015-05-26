@@ -1,0 +1,18 @@
+# See systemd.service(5) for details
+# Place into /lib/systemd/system and run:
+# systemctl enable test-network.service
+
+[Unit]
+Description=Test network service
+Wants=scannerd.service
+After=scannerd.service
+
+[Service]
+WorkingDirectory=/root/NativeRaspberryPiBeaconParser
+ExecStart=/root/NativeRaspberryPiBeaconParser/bin/test-network.sh
+Type=simple
+Restart=on-failure
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target

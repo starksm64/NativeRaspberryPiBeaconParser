@@ -1,0 +1,17 @@
+# See systemd.service(5) for details
+# Place into /lib/systemd/system and run:
+# systemctl enable lescan.service
+
+[Unit]
+Description=Serivce config file for the beacon scanner
+After=network-online.target
+
+[Service]
+WorkingDirectory=/root/NativeRaspberryPiBeaconParser
+ExecStart=/root/NativeRaspberryPiBeaconParser/bin/run-lescan.sh
+Type=forking
+Restart=on-failure
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target
