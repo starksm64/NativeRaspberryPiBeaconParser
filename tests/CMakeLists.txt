@@ -123,3 +123,8 @@ add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testMsgProperties)
 
 add_executable(testQpidHeartbeat testQpidHeartbeat.cpp)
 target_link_libraries (testQpidHeartbeat LINK_PUBLIC Beacon MqttCLib MqttAsyncCLib CMS ssl crypto z apr-1 pthread Socket ${Qpid_LIBRARIES})
+
+add_executable(testQpidReconnect testQpidReconnect.cpp)
+target_link_libraries (testQpidReconnect LINK_PUBLIC Beacon ${ActiveMQ_CPP_LIBRARIES} ${MQTT_LIBRARIES} pthread ssl crypto z ${Apr_Libs} ${Qpid_LIBRARIES} Socket)
+
+add_executable(testSystemD testSystemD.cpp)

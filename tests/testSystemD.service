@@ -1,0 +1,22 @@
+# See systemd.service(5) for details
+# Place into /lib/systemd/system and run:
+# systemctl enable testSystemD.service
+
+[Unit]
+Description=Serivce config file for the beacon scanner
+Wants=scanner-configd.service
+After=scanner-configd.service
+Wants=chrony-wait.service
+After=chrony-wait.service
+Wants=lescan.service
+After=lescan.service
+
+[Service]
+WorkingDirectory=/root/NativeRaspberryPiBeaconParser
+ExecStart=/root/NativeRaspberryPiBeaconParser/tests/testSystemD.sh
+Type=forking
+Restart=on-failure
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target
