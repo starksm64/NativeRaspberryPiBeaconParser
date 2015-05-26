@@ -19,6 +19,18 @@ enum MsgPublisherType {
 } ;
 
 /**
+ * Callback interface for
+ */
+class HeartbeatFailure {
+public:
+
+    /**
+     * @param count, the number of heartbeat messages sent that have not been received
+     */
+    virtual void heartbeatFailure(int count) = 0;
+};
+
+/**
 * An abstraction for the various message publishing apis
 */
 class MsgPublisher {
