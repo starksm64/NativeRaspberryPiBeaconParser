@@ -28,7 +28,9 @@
 *.app
 
 # cmake
+CMakeFiles/*
 */CMakeFiles/*
+CMakeCache.txt
 *.cmake
 Makefile
 Debug
@@ -40,4 +42,3 @@ Testing
 
 # CLion
 .idea/workspace.xml
-
