@@ -71,7 +71,7 @@ int main(int argc, char*argv[]) {
         sentCount ++;
         printf("Sent properties, count=%d, isConnected=%d, sleeping for 30\n", sentCount, qpid->isConnected());
         fflush(stdout);
-        std::this_thread::sleep_for(std::chrono::seconds(30));
+        std::this_thread::sleep_for(std::chrono::seconds(10));
     }
     while(sentCount < 100);
     system_clock::time_point end = system_clock::now();
