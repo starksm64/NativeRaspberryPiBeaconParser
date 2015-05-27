@@ -62,6 +62,7 @@ int main(int argc, char*argv[]) {
     properties[SystemType] = "TestSystem";
 
     int sentCount = 0;
+    int sleepSecs = 10;
     do {
         system_clock::time_point time = system_clock::now();
         time_t now = system_clock::to_time_t(time);
@@ -69,9 +70,9 @@ int main(int argc, char*argv[]) {
         properties[SystemTimeMS] = to_string(time.time_since_epoch().count());
         qpid->publishProperties("scannerHealth", properties);
         sentCount ++;
-        printf("Sent properties, count=%d, isConnected=%d, sleeping for 30\n", sentCount, qpid->isConnected());
+        printf("Sent properties, count=%d, isConnected=%d, sleeping for %d\n", sentCount, qpid->isConnected(), sleepSecs);
         fflush(stdout);
-        std::this_thread::sleep_for(std::chrono::seconds(10));
+        std::this_thread::sleep_for(std::chrono::seconds(sleepSecs));
     }
     while(sentCount < 100);
     system_clock::time_point end = system_clock::now();
