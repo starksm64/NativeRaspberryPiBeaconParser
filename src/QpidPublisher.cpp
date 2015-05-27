@@ -33,7 +33,7 @@ void QpidPublisher::start(bool asyncMode) {
     * failure until the value of max_retry_interval is reached.
   */
   //connection = messaging::Connection(brokerUrl, "{protocol:amqp1.0}");
-  connection = messaging::Connection(brokerUrl, "{protocol:amqp1.0,reconnect:true,reconnect_interval:30}");
+  connection = messaging::Connection(brokerUrl, "{protocol:amqp1.0,reconnect:true,reconnect_interval:30,heartbeat:15}");
   connection.open();
   disconnectCount = 0;
   connected = true;
