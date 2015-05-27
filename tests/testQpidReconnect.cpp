@@ -70,6 +70,7 @@ int main(int argc, char*argv[]) {
         qpid->publishProperties("scannerHealth", properties);
         sentCount ++;
         printf("Sent properties, count=%d, isConnected=%d, sleeping for 30\n", sentCount, qpid->isConnected());
+        fflush(stdout);
         std::this_thread::sleep_for(std::chrono::seconds(30));
     }
     while(sentCount < 100);
