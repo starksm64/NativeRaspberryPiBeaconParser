@@ -18,6 +18,8 @@ private:
     string destinationName;
     string hciDev = "hci0";
     string statusQueue;
+    string username;
+    string password;
     int statusInterval = 30;
     int analyzeWindow = 1;
     int rebootAfterNoReply = -1;
@@ -81,6 +83,22 @@ public:
 
     void setDestinationName(string &topicName) {
         HCIDumpCommand::destinationName = topicName;
+    }
+
+    const string &getUsername() const {
+        return username;
+    }
+
+    void setUsername(const string &username) {
+        HCIDumpCommand::username = username;
+    }
+
+    const string &getPassword() const {
+        return password;
+    }
+
+    void setPassword(const string &password) {
+        HCIDumpCommand::password = password;
     }
 
     bool isSkipPublish() const {

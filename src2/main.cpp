@@ -216,6 +216,8 @@ int main(int argc, const char **argv) {
     command.setStatusQueue(statusQueue.getValue());
     command.setGenerateTestData(generateTestData.getValue());
     command.setBatteryTestMode(batteryTestMode.getValue());
+    command.setUsername(username.getValue());
+    command.setPassword(password.getValue());
     if(maxCount.getValue() > 0) {
         maxEventCount = maxCount.getValue();
         printf("Set maxEventCount: %ld\n", maxEventCount);

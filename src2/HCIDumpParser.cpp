@@ -48,7 +48,10 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
                timeWindow.getBegin());
     }
     else if (!parseCommand.isSkipPublish()) {
-        publisher.reset(MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, "", ""));
+        const string& username = parseCommand.getUsername();
+        const string& password = parseCommand.getPassword();
+        MsgPublisher *mp = MsgPublisher::create(parseCommand.getPubType(), parseCommand.getBrokerURL(), clientID, username, password);
+        publisher.reset(mp);
         publisher->setUseTopics(!parseCommand.isUseQueues());
         printf("setUseTopics: %s\n", publisher->isUseTopics() ? "true" : "false");
         publisher->setDestinationName(parseCommand.getDestinationName());
