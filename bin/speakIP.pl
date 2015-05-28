@@ -68,6 +68,12 @@ while (1)
   {
     print "$ifaces[$i]\n";
     system("espeak -s90 --stdout '$ifaces[$i]' | aplay");
+    # Write the address to /media/usb/IP so that if a flash drive is inserted, the address will be on it
+    if (open(IPFILE, ">/media/usb/IP")) {
+    	print IPFILE "$ifaces[$i]\n";
+    	print "Wrote $ifaces[$i] to /media/usb/IP\n";
+    	close(IPFILE);
+    }
   }
 
   # wait a minute before doing it again
