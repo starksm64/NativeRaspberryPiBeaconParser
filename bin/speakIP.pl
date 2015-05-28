@@ -64,14 +64,14 @@ while (1)
     @ifaces = ("no IP address");
   }
 
-  for my $i (0 .. $size)
+  foreach $iface (@ifaces)
   {
-    print "$ifaces[$i]\n";
-    system("espeak -s90 --stdout '$ifaces[$i]' | aplay");
+    print "$iface\n";
+    system("espeak -s90 --stdout '$iface' | aplay");
     # Write the address to /media/usb/IP so that if a flash drive is inserted, the address will be on it
     if (open(IPFILE, ">/media/usb/IP")) {
-    	print IPFILE "$ifaces[$i]\n";
-    	print "Wrote $ifaces[$i] to /media/usb/IP\n";
+    	print IPFILE "$iface\n";
+    	print "Wrote $iface to /media/usb/IP\n";
     	close(IPFILE);
     }
   }
