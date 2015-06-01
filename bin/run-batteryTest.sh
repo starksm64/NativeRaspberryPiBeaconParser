@@ -39,4 +39,11 @@ ARGS="--scannerID ${scannerID}"
 ARGS="${ARGS} --heartbeatUUID ${heartbeatUUID}"
 ARGS="${ARGS} --brokerURL ${brokerURL:-192.168.1.107:5672}"
 ARGS="${ARGS} --batteryTestMode --destinationName rawHeartbeatEvents --useQueues --statusInterval 0"
+if [ -n "$username" ]; then
+        ARGS="${ARGS} --username ${username}"
+fi
+if [ -n "$password" ]; then
+        ARGS="${ARGS} --password ${password}"
+fi
+
 ${ROOT}/Debug/src2/NativeScannerBlueZ  ${ARGS} $*
