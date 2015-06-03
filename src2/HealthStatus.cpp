@@ -88,7 +88,7 @@ void HealthStatus::monitorStatus() {
     };
 // Send an initial hello status msg with the host inet address
     char hostIPAddress[128];
-    char macaddr[16];
+    char macaddr[32];
     struct ifaddrs *ifaddr, *ifa;
     int family, n;
     if (getifaddrs(&ifaddr) == -1) {
