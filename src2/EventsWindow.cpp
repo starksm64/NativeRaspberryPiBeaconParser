@@ -71,6 +71,10 @@ unique_ptr<EventsBucket> EventsWindow::addEvent(const beacon_info& info, bool is
         eventsMap.clear();
         begin = end;
         end += 1000*windowSizeSeconds;
+        if(end < info.time) {
+            // Warn about this as it seems to happen
+            fprintf(stderr, "Warn: next bucket end(%lld) < info.time(%lld)\n", end, info.time);
+        }
         eventCount = 0;
         // Add the event to the next window
         addInfo(eventsMap, info, isHeartbeat);
