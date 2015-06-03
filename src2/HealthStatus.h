@@ -20,6 +20,7 @@ using Properties = map<string, string>;
 enum class StatusProperties {
     ScannerID,          // the name of the scanner passed in via the --scannerID argument
     HostIPAddress,      // the ip address of the scanner host
+    MACAddress,         // the MAC address of the scanner host
     SystemType,         // Type of the system; PiB, PiB+, P2B, IntelNUC, BeagleBoneBlack, ...
     SystemTime,         // strftime(timestr, 128, "%F %T", tm) = YYYY-MM-DD HH:MM:SS
     SystemTimeMS,       // system time in milliseconds since epoch

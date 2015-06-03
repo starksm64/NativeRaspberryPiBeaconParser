@@ -9,11 +9,27 @@
 #include <sys/time.h>
 #include "HealthStatus.h"
 #include <chrono>
+#include <net/if.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
 using namespace std::chrono;
+
+static void getMACAddress(std::string _iface,unsigned char MAC[6]) {
+    int fd = socket(AF_INET, SOCK_DGRAM, 0);
+    struct ifreq ifr;
+    ifr.ifr_addr.sa_family = AF_INET;
+    strncpy(ifr.ifr_name , _iface.c_str() , IFNAMSIZ-1);
+    ioctl(fd, SIOCGIFHWADDR, &ifr);
+    for(unsigned int i=0;i<6;i++)
+        MAC[i] = ifr.ifr_hwaddr.sa_data[i];
+    close(fd);
+}
 
 const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusProperties::N_STATUS_PROPERTIES)] = {
         string("ScannerID"),
         string("HostIPAddress"),
+        string("MACAddress"),
         string("SystemType"),
         string("SystemTime"),
         string("SystemTimeMS"),
@@ -41,6 +57,7 @@ void HealthStatus::monitorStatus() {
     Properties statusProperties;
     const string& ScannerID = getStatusPropertyName(StatusProperties::ScannerID);
     const string& HostIPAddress = getStatusPropertyName(StatusProperties::HostIPAddress);
+    const string& MACAddress = getStatusPropertyName(StatusProperties::MACAddress);
     const string& SystemType = getStatusPropertyName(StatusProperties::SystemType);
     const string& SystemTime = getStatusPropertyName(StatusProperties::SystemTime);
     const string& SystemTimeMS = getStatusPropertyName(StatusProperties::SystemTimeMS);
@@ -71,8 +88,9 @@ void HealthStatus::monitorStatus() {
     };
 // Send an initial hello status msg with the host inet address
     char hostIPAddress[128];
+    char macaddr[16];
     struct ifaddrs *ifaddr, *ifa;
-    int family, s, n;
+    int family, n;
     if (getifaddrs(&ifaddr) == -1) {
         perror("getifaddrs");
     }
@@ -84,7 +102,7 @@ void HealthStatus::monitorStatus() {
             char tmp[sizeof(hostIPAddress)];
             int err = getnameinfo(ifa->ifa_addr, sizeof(sockaddr_in), tmp, sizeof(tmp), nullptr, 0, NI_NUMERICHOST);
             if(err != 0) {
-                printf("getnameinfo() failed: %s\n", gai_strerror(s));
+                printf("getnameinfo() failed: %s\n", gai_strerror(err));
             }
             printf("Found hostIPAddress of: %s\n", tmp);
             if(strncasecmp(tmp, "127.0", 5) == 0) {
@@ -92,6 +110,9 @@ void HealthStatus::monitorStatus() {
                 continue;
             }
             strcpy(hostIPAddress, tmp);
+            unsigned char MAC[6];
+            getMACAddress(ifa->ifa_name, MAC);
+            sprintf(macaddr, "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n", MAC[0],MAC[1],MAC[2],MAC[3],MAC[4],MAC[5]);
         }
     }
 
@@ -100,6 +121,7 @@ void HealthStatus::monitorStatus() {
     while(running) {
         statusProperties[ScannerID] = scannerID;
         statusProperties[HostIPAddress] = hostIPAddress;
+        statusProperties[MACAddress] = macaddr;
         statusProperties[SystemType] = systemType;
 
         // Time
