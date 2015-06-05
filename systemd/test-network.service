@@ -3,16 +3,14 @@
 # systemctl enable test-network.service
 
 [Unit]
-Description=Test network service
-Wants=scannerd.service
-After=scannerd.service
+Description=Service to validate the network connection by pinging a gateway
+After=network-online.target
 
 [Service]
-WorkingDirectory=/root/NativeRaspberryPiBeaconParser
-ExecStart=/root/NativeRaspberryPiBeaconParser/bin/test-network.sh
-Type=simple
-Restart=on-failure
-RestartSec=15
+ExecStart=/root/NativeRaspberryPiBeaconParser/bin/test-network.sh start
+ExecStop=/root/NativeRaspberryPiBeaconParser/bin/test-network.sh stop
+RemainAfterExit=yes
+Type=forking
 
 [Install]
 WantedBy=multi-user.target

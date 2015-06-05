@@ -1,25 +1,34 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# systemd launch script for the testNetwork.py script.
 
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root"
-   exit 1
-fi
+start() {
+    echo "Starting testNetwork..."
+    /root/NativeRaspberryPiBeaconParser/bin/testNetwork.py &
+}
 
-# Include scanner configuration
-. ~/scanner.conf
-
-# A script that runs to test whether
-GATEWAY=${GATEWAY:-192.168.1.1}
-IFACE=${IFACE:-wlan0}
-
-ping -I ${IFACE} -nc4 ${GATEWAY}
-
-if [ $? != 0 ]
-then
-    logger -t $0 "WiFi seems down, restarting"
-    /sbin/ifdown --force ${IFACE}
-    sleep 10
-    /sbin/ifup ${IFACE}
-else
-    logger -t $0 "WiFi seems up."
-fi
+stop() {
+    echo "Stopping testNetwork..."
+    pids=`ps ax | grep "testNetwork.py" | awk '{print $1}'`
+    if [ -z "$pids" ] ; then
+       echo "testNetwork is not running"
+    else
+        for pid in $pids; do
+            echo "killing " $pid
+            kill $pid
+        done
+    fi
+}
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        sleep 1
+        start
+        ;;
+    *) exit 1
+esac
