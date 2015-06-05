@@ -17,10 +17,10 @@ while True:
 scannerConf.close()
 
 GATEWAY = '192.168.1.1'
-if env['GATEWAY']:
+if 'GATEWAY' in env:
     GATEWAY = env['GATEWAY']
 IFACE = 'wlan0'
-if env['IFACE']:
+if 'IFACE' in env:
     IFACE = env['IFACE']
 
 print("Testing GATEWAY=%s, IFACE=%s" % (GATEWAY, IFACE))
