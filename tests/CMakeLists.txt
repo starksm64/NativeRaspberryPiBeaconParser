@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(NativeScannerTests)
 
 enable_testing()
-include_directories(. ../src /usr/local/include/activemq-cpp-3.8.3/ /opt/local/include/)
+include_directories(. ../src /usr/local/include/activemq-cpp-3.8.3/ /opt/local/include/ /usr/local/include)
 
 #set(BEACON_FILES ../src/Beacon.cpp ../src/Beacon.h)
 
@@ -36,7 +36,9 @@ add_test(testTime ${CMAKE_CURRENT_BINARY_DIR}/testTime)
 
 set(testProcStat_FILES testProcStat.cpp)
 add_executable(testProcStat ${testProcStat_FILES})
-add_test(testProcStat ${CMAKE_CURRENT_BINARY_DIR}/testProcStat)
+
+add_executable(testBeaconMapping testBeaconMapping.cpp)
+target_link_libraries (testBeaconMapping LINK_PUBLIC restclient-cpp ${jsoncpp_Libs})
 
 set(testMap_FILES testMap.cpp)
 add_executable(testMap ${testMap_FILES})

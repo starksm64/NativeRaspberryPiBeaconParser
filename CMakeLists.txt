@@ -50,6 +50,14 @@ if(WiringPi_Libs AND WiringPiDev_Libs)
     MESSAGE(STATUS "Added lcd source to build")
 endif()
 
+# JSON
+find_library(jsoncpp_Libs NAMES jsoncpp)
+if(jsoncpp_Libs)
+    MESSAGE(STATUS "Found jsoncpp_Libs: ${jsoncpp_Libs}")
+else()
+    MESSAGE(STATUS "No jsoncpp_Libs")
+endif()
+
 # Conditional settings on activemq-cpp lib
 find_library(ActiveMQ_CPP_Libs NAMES activemq-cpp)
 if(ActiveMQ_CPP_Libs)
