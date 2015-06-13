@@ -14,7 +14,7 @@ void BeaconMapper::refresh() {
     Json::Reader reader;
 
     if( !reader.parse(r.body, deserializeRoot) )
-        fprintf(stderr, "Failed to parse json body: %s\n", r.body);
+        fprintf(stderr, "Failed to parse json body: %s\n", r.body.c_str());
 
     Json::ArrayIndex count = deserializeRoot.size();
     printf("Registration response has %d elements\n", count);
