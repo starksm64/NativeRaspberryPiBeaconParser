@@ -14,9 +14,7 @@
  *
  * git clone https://github.com/mrtazz/restclient-cpp.git
  * cd restclient-cpp/
- * ls
  * ./autogen.sh
- * make
  * ./configure
  * make
  * make install

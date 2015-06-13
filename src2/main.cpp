@@ -231,7 +231,16 @@ int main(int argc, const char **argv) {
     // Install default terminate handler to make sure we exit with non-zero status
     std::set_terminate(terminateHandler);
 
+    // Create a beacon mapping instance
+    shared_ptr<BeaconMapper> beaconMapper(new BeaconMapper());
+    printf("Loading the beacon to user mapping...\n");
+    beaconMapper->refresh();
+
+    // Get the scanner view implementation
     shared_ptr<ScannerView> lcd(getDisplayInstance());
+    // Set the scanner view display's beacon mapper to display the minorID to name correctly
+    lcd->setBeaconMapper(beaconMapper);
+
     parserLogic.setScannerView(lcd);
     char cwd[256];
     getcwd(cwd, sizeof(cwd));

@@ -45,12 +45,19 @@ LcdDisplay *LcdDisplay::getLcdDisplayInstance() {
 
 void LcdDisplay::displayBeacon(const Beacon &beacon) {
     char tmp[80];
-    sprintf(tmp, "Beacon(%d):", beacon.getMinor());
+    int minorID = beacon.getMinor();
+    sprintf(tmp, "Beacon(%d):", minorID);
     displayText(tmp, 0, 0);
     sprintf(tmp, "rssi=%d", beacon.getRssi());
     displayText(tmp, 2, 1);
     displayTime(beacon.getTime(), 2, 2);
-    sprintf(tmp, "Hello Scott");
+
+    if(getBeaconMapper()) {
+        string user = getBeaconMapper()->lookupUser(minorID);
+        sprintf(tmp, "Hello %s", user.c_str());
+    } else {
+        sprintf(tmp, "Hello Unknown");
+    }
     displayText(tmp, 2, 3);
 }
 
