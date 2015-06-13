@@ -21,7 +21,8 @@ void BeaconMapper::refresh() {
     for(Json::ArrayIndex n = 0; n < count; n ++) {
         Json::Value value = deserializeRoot[n];
         Json::Value fields = value["fields"];
-        int minorID = fields["beaconId"].asInt();
+        const char* minorIDCstr = fields["beaconId"].asCString();
+        int minorID = std::stoi(minorIDCstr);
         string name = fields["name"].asString().c_str();
         beaconToUser[minorID] = name;
         printf("[%d]: beaconId: %d, name: %s\n", n, minorID, name.c_str());

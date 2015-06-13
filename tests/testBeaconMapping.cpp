@@ -50,6 +50,9 @@ int main() {
     for(Json::ArrayIndex n = 0; n < count; n ++) {
         Json::Value value = deserializeRoot[n];
         Json::Value fields = value["fields"];
-        printf("[%d]: beaconId: %s, name: %s\n", n, fields["beaconId"].asString().c_str(), fields["name"].asString().c_str());
+        const char* minorIDCstr = fields["beaconId"].asCString();
+        int minorID = std::stoi(minorIDCstr);
+        std::string name = fields["name"].asString().c_str();
+        printf("[%d]: beaconId: %d, name: %s\n", n, minorID, name.c_str());
     }
 }
