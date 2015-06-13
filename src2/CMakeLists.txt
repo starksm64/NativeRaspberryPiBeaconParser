@@ -38,12 +38,13 @@ if(Apr_Libs)
     MESSAGE(STATUS "Using Apr_Libs: ${Apr_Libs}")
 endif()
 
-set(SCANNER_LIBS Beacon ${ActiveMQ_CPP_LIBRARIES} ${MQTT_LIBRARIES} pthread ssl crypto z ${Apr_Libs} BluezLibInternal ${Qpid_LIBRARIES} Socket)
+set(SCANNER_LIBS Beacon ${ActiveMQ_CPP_LIBRARIES} ${MQTT_LIBRARIES} pthread ssl crypto z ${Apr_Libs} BluezLibInternal ${Qpid_LIBRARIES} Socket restclient-cpp ${jsoncpp_Libs})
 
 if(WiringPi_FOUND)
     set(SCANNER_LIBS ${SCANNER_LIBS} lcdDisplay wiringPiDev wiringPi)
 endif()
 # The NativeScannerBlueZ executable depends on our local source and the tools_hcidump_SOURCES from the bluez source tree
 add_executable(NativeScannerBlueZ main.cpp HCIDumpCommand.h HCIDumpParser.h HCIDumpParser.cpp HealthStatus.cpp
-    hcidumpinternal.c hcidumpinternal.h ${tools_hcidump_SOURCES} EventsWindow.cpp EventsWindow.h EventExchanger.h EventExchanger.cpp BeaconEventConsumer.cpp BeaconEventConsumer.h EventsBucket.h)
+    hcidumpinternal.c hcidumpinternal.h ${tools_hcidump_SOURCES} EventsWindow.cpp EventsWindow.h
+    EventExchanger.h EventExchanger.cpp BeaconEventConsumer.cpp BeaconEventConsumer.h BeaconMapper.cpp EventsBucket.h)
 target_link_libraries (NativeScannerBlueZ LINK_PUBLIC ${SCANNER_LIBS})
