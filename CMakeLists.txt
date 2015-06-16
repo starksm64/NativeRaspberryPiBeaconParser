@@ -55,6 +55,7 @@ find_library(jsoncpp_Libs NAMES jsoncpp)
 if(jsoncpp_Libs)
     MESSAGE(STATUS "Found jsoncpp_Libs: ${jsoncpp_Libs}")
 else()
+    set(jsoncpp_Libs "")
     MESSAGE(STATUS "No jsoncpp_Libs")
 endif()
 
