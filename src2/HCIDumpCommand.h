@@ -3,6 +3,8 @@
 
 #include <string>
 #include <MsgPublisher.h>
+#include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -20,6 +22,8 @@ private:
     string statusQueue;
     string username;
     string password;
+    vector<string> scannerIDs;
+    int currentID = 0;
     int statusInterval = 30;
     int analyzeWindow = 1;
     int rebootAfterNoReply = -1;
@@ -31,6 +35,7 @@ private:
     bool asyncMode = false;
     bool useQueues = false;
     bool skipHeartbeat = false;
+    bool cyclesScannerIDs = false;
     MsgPublisherType pubType = MsgPublisherType::AMQP_QPID;
 
 public:
@@ -42,8 +47,14 @@ public:
               clientID(clientID),
               destinationName(destinationName),
               pubType(MsgPublisherType::PAHO_MQTT) {
+        // If the scannerID is a comma separated list of ids, then getScannerID() will cycle through the ids
+        stringstream ss(scannerID);
+        string item;
+        while (getline(ss, item, ',')) {
+            scannerIDs.push_back(item);
+        }
+        cyclesScannerIDs = scannerIDs.size() > 1;
     }
-
 
     string getHciDev() const {
         return hciDev;
@@ -53,8 +64,13 @@ public:
         HCIDumpCommand::hciDev = hciDev;
     }
 
-    string getScannerID() const {
-        return scannerID;
+    string getScannerID() {
+        const string* myID = &scannerID;
+        if(cyclesScannerIDs) {
+            myID = scannerIDs.data()+currentID;
+            currentID = (currentID + 1) % scannerIDs.size();
+        }
+        return *myID;
     }
 
     void setScannerID(string &scannerID) {
