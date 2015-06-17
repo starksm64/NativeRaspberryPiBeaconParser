@@ -58,9 +58,9 @@ public:
         }
         cyclesScannerIDs = scannerIDs.size() > 1;
         if(cyclesScannerIDs) {
-            printf("Running with %d scanner IDs: ", scannerIDs.size());
+            printf("Running with %ld scanner IDs: ", scannerIDs.size());
             std::copy(scannerIDs.begin(), scannerIDs.end(),
-                      std::ostream_iterator<int>(std::cout, " "));
+                      std::ostream_iterator<string>(std::cout, " "));
             printf("\n");
         }
     }
