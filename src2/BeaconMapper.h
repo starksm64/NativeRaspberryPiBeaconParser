@@ -12,6 +12,25 @@ using namespace std;
 
 /**
  * Map a beacon id to the registered user by querying the application registration rest api
+ *
+ * Relies on:
+ * git clone https://github.com/open-source-parsers/jsoncpp.git
+ * cd jsoncpp/
+ * mkdir build
+ * cd build/
+ * cmake -DCMAKE_BUILD_TYPE=debug -DBUILD_STATIC_LIBS=ON ..
+ * make
+ * make install
+ *
+ * git clone https://github.com/mrtazz/restclient-cpp.git
+ * apt-get install autoconf
+ * apt-get install libtool
+ * apt-get install libcurl4-openssl-dev
+ * cd restclient-cpp/
+ * ./autogen.sh
+ * ./configure
+ * make
+ * make install
  */
 class BeaconMapper {
 private:
