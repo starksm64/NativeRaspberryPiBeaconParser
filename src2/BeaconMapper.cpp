@@ -1,9 +1,13 @@
 #include "BeaconMapper.h"
+#ifdef HAVE_JSON_LIB
 #include <restclient-cpp/restclient.h>
 #include <json/json.h>
+#endif
 
 void BeaconMapper::refresh() {
     beaconToUser.clear();
+
+#ifdef HAVE_JSON_LIB
     // Query the registration api
     RestClient::response r = RestClient::get("https://summitdemo-540ty4j5jnfp0dusuik5kldm-rht-summit-prod.mbaas2.rht.feedhenry.com/registration");
     if(r.code != 200) {
@@ -27,6 +31,7 @@ void BeaconMapper::refresh() {
         beaconToUser[minorID] = name;
         printf("[%d]: beaconId: %d, name: %s\n", n, minorID, name.c_str());
     }
+#endif
 }
 
 string BeaconMapper::lookupUser(int minorID) {

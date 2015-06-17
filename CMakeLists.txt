@@ -53,6 +53,7 @@ endif()
 # JSON
 find_library(jsoncpp_Libs NAMES jsoncpp)
 if(jsoncpp_Libs)
+    ADD_DEFINITIONS(-DHAVE_JSON_LIB)
     MESSAGE(STATUS "Found jsoncpp_Libs: ${jsoncpp_Libs}")
 else()
     set(jsoncpp_Libs "")
