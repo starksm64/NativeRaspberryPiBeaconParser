@@ -1,10 +1,13 @@
 #ifndef HCIDumpCommand_H
 #define HCIDumpCommand_H
 
+#include <algorithm>
 #include <string>
 #include <MsgPublisher.h>
 #include <sstream>
 #include <vector>
+#include <iterator>
+#include <iostream>
 
 using namespace std;
 
@@ -54,6 +57,12 @@ public:
             scannerIDs.push_back(item);
         }
         cyclesScannerIDs = scannerIDs.size() > 1;
+        if(cyclesScannerIDs) {
+            printf("Running with %d scanner IDs: ", scannerIDs.size());
+            std::copy(scannerIDs.begin(), scannerIDs.end(),
+                      std::ostream_iterator<int>(std::cout, " "));
+            printf("\n");
+        }
     }
 
     string getHciDev() const {
