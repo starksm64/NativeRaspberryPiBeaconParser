@@ -50,6 +50,16 @@ if(WiringPi_Libs AND WiringPiDev_Libs)
     MESSAGE(STATUS "Added lcd source to build")
 endif()
 
+# REST
+find_library(restcpp_Libs NAMES restclient-cpp)
+if(restcpp_Libs)
+    ADD_DEFINITIONS(-DHAVE_REST_LIB)
+    MESSAGE(STATUS "Found restcpp_Libs: ${restcpp_Libs}")
+else()
+    set(restcpp_Libs "")
+    MESSAGE(STATUS "No restcpp_Libs")
+endif()
+
 # JSON
 find_library(jsoncpp_Libs NAMES jsoncpp)
 if(jsoncpp_Libs)
