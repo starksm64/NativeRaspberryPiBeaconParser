@@ -20,6 +20,9 @@ add_test(testEventsWindow ${CMAKE_CURRENT_BINARY_DIR}/testEventsWindow)
 add_executable(testMedFilter medfilter/medflt.h medfilter/testMedFilter.cpp)
 add_test(testProducerConsumer ${CMAKE_CURRENT_BINARY_DIR}/testProducerConsumer)
 
+add_executable(testScannerIDs testScannerIDs.cpp)
+add_test(testScannerIDs ${CMAKE_CURRENT_BINARY_DIR}/testScannerIDs)
+
 set(testProducerConsumer_FILES threads/testProducerConsumer.cpp)
 add_executable(testProducerConsumer ${testProducerConsumer_FILES} threads/MessageExchanger.cpp threads/MessageExchanger.h)
 target_link_libraries (testProducerConsumer LINK_PUBLIC pthread)
