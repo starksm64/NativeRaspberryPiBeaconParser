@@ -135,10 +135,10 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
             "Specify the name of the host controller interface to use; default hci0",
             false, "hci0", "string", cmd);
-    TCLAP::ValueArg<std::string> bcastAddress("", "hciDev",
+    TCLAP::ValueArg<std::string> bcastAddress("", "bcastAddress",
                                               "Address to broadcast scanner status to as backup to statusQueue if non-empty; default empty",
                                               false, "", "string", cmd);
-    TCLAP::ValueArg<int> bcastPort("", "hciDev",
+    TCLAP::ValueArg<int> bcastPort("", "bcastPort",
                                               "Port to broadcast scanner status to as backup to statusQueue if non-empty; default empty",
                                               false, 12345, "int", cmd);
     MsgPublisherTypeConstraint pubTypeConstraint;
