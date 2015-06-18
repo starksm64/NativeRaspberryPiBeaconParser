@@ -6,9 +6,9 @@
 #define NATIVESCANNER_LCDDISPLAY_H
 
 
-#include "../src/Beacon.h"
-#include "../src2/ScannerView.h"
-#include "../src2/StatusInformation.h"
+#include "Beacon.h"
+#include "ScannerView.h"
+#include "StatusInformation.h"
 
 /**
  * A class that configures the wiringPi lcd api to work with a 4x20 lcd display.
