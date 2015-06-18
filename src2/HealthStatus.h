@@ -10,6 +10,7 @@
 #include <thread>
 #include "StatusInformation.h"
 #include "../src/MsgPublisher.h"
+#include "../socket/PracticalSocket.h"
 
 using namespace std;
 using Properties = map<string, string>;
@@ -58,6 +59,7 @@ private:
 
     void monitorStatus();
     void readLoadAvg(char *buffer, int size);
+    void broadcastInformation(unique_ptr<UDPSocket>& bcast);
 
 public:
 
@@ -100,6 +102,13 @@ public:
 
     static const string& getStatusPropertyName(StatusProperties property) {
         return statusPropertyNames[static_cast<unsigned int>(property)];
+    }
+    static vector<string> getStatusPropertyNames(const vector<StatusProperties>& properties) {
+        vector<string> names;
+        for(vector<StatusProperties>::const_iterator it = properties.begin(); it != properties.end(); it ++) {
+            names.push_back(getStatusPropertyName(*it));
+        }
+        return names;
     }
 };
 

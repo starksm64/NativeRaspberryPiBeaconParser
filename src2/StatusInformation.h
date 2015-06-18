@@ -5,6 +5,7 @@
 #include <map>
 #include <mutex>
 #include <string>
+#include "ByteBuffer.h"
 #include "EventsWindow.h"
 #include "hcidumpinternal.h"
 #include "SMA.h"
@@ -16,6 +17,8 @@ class StatusInformation {
 private:
     string scannerID;
     string statusQueue;
+    string bcastAddress;
+    int bcastPort = 12345;
     int32_t statusInterval;
     int32_t rawEventCount;
     int32_t publishEventCount;
@@ -113,6 +116,35 @@ public:
     }
     void clearStatusChanged() {
         statusUpdated = false;
+    }
+    /**
+     *
+     */
+    void encodeLastStatus(ByteBuffer& buffer, const vector<string>& names) {
+        std::lock_guard<mutex> guard(statusMutex);
+        buffer.writeInt(names.size());
+        for(vector<string>::const_iterator it = names.begin(); it != names.end(); it ++) {
+            const string& name = *it;
+            string value = lastStatus[name];
+            buffer.writeBytes(name);
+            buffer.writeBytes(value);
+        }
+    }
+
+    const string &getBcastAddress() const {
+        return bcastAddress;
+    }
+
+    void setBcastAddress(const string &bcastAddress) {
+        StatusInformation::bcastAddress = bcastAddress;
+    }
+
+    int getBcastPort() const {
+        return bcastPort;
+    }
+
+    void setBcastPort(int bcastPort) {
+        StatusInformation::bcastPort = bcastPort;
     }
 };
 #endif //NATIVESCANNER_EVENTCOUNTS_H

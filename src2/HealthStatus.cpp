@@ -8,6 +8,7 @@
 #include <sys/sysinfo.h>
 #include <sys/time.h>
 #include "HealthStatus.h"
+#include "../socket/PracticalSocket.h"
 #include <chrono>
 #include <net/if.h>
 #include <sys/ioctl.h>
@@ -24,6 +25,40 @@ static void getMACAddress(std::string _iface,unsigned char MAC[6]) {
     for(unsigned int i=0;i<6;i++)
         MAC[i] = ifr.ifr_hwaddr.sa_data[i];
     close(fd);
+}
+/**
+ * Lookup host ip and macaddr
+ * @param char hostIPAddress[128]
+ * @param char macaddr[32]
+ */
+static void getHostInfo(char* hostIPAddress, char* macaddr) {
+    struct ifaddrs *ifaddr, *ifa;
+    int family, n;
+    if (getifaddrs(&ifaddr) == -1) {
+        perror("getifaddrs");
+    }
+    for (ifa = ifaddr, n = 0; ifa != nullptr; ifa = ifa->ifa_next, n++) {
+        if (ifa->ifa_addr == nullptr)
+            continue;
+        family = ifa->ifa_addr->sa_family;
+        if(family == AF_INET) {
+            char tmp[128];
+            int err = getnameinfo(ifa->ifa_addr, sizeof(sockaddr_in), tmp, sizeof(tmp), nullptr, 0, NI_NUMERICHOST);
+            if(err != 0) {
+                printf("getnameinfo(%d) failed: %s\n", err, gai_strerror(err));
+            }
+            printf("Found hostIPAddress of: %s\n", tmp);
+            if(strncasecmp(tmp, "127.0", 5) == 0) {
+                printf("Skipping localhost address\n");
+                continue;
+            }
+            strcpy(hostIPAddress, tmp);
+            unsigned char MAC[6];
+            getMACAddress(ifa->ifa_name, MAC);
+            sprintf(macaddr, "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x", MAC[0],MAC[1],MAC[2],MAC[3],MAC[4],MAC[5]);
+        }
+    }
+    freeifaddrs(ifaddr);
 }
 
 const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusProperties::N_STATUS_PROPERTIES)] = {
@@ -49,6 +84,31 @@ const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusP
         string("SwapTotal"),
         string("SwapFree"),
 };
+
+void HealthStatus::broadcastInformation(unique_ptr<UDPSocket>& bcastSocket) {
+    const string &bcastddr = statusInformation->getBcastAddress();
+    int bcastPort = statusInformation->getBcastPort();
+    ByteBuffer buffer;
+    vector<StatusProperties> enums;
+    enums.push_back(StatusProperties::HostIPAddress);
+    enums.push_back(StatusProperties::MACAddress);
+    enums.push_back(StatusProperties::ScannerID);
+    enums.push_back(StatusProperties::LoadAverage);
+    enums.push_back(StatusProperties::MemTotal);
+    enums.push_back(StatusProperties::MemFree);
+    enums.push_back(StatusProperties::SystemTime);
+    enums.push_back(StatusProperties::SystemType);
+    enums.push_back(StatusProperties::SystemUptime);
+    enums.push_back(StatusProperties::Uptime);
+    vector<string> names = HealthStatus::getStatusPropertyNames(enums);
+    statusInformation->encodeLastStatus(buffer, names);
+    vector<uint8_t>& data = buffer.getData();
+    try {
+        bcastSocket->sendTo(data.data(), data.size(), bcastddr, bcastPort);
+    } catch (SocketException &e) {
+        printf("Failed to broadcast status: %s\n", e.what());
+    }
+}
 
 void HealthStatus::monitorStatus() {
     int statusInterval = statusInformation->getStatusInterval();
@@ -89,34 +149,14 @@ void HealthStatus::monitorStatus() {
 // Send an initial hello status msg with the host inet address
     char hostIPAddress[128];
     char macaddr[32];
-    struct ifaddrs *ifaddr, *ifa;
-    int family, n;
-    if (getifaddrs(&ifaddr) == -1) {
-        perror("getifaddrs");
-    }
-    for (ifa = ifaddr, n = 0; ifa != nullptr; ifa = ifa->ifa_next, n++) {
-        if (ifa->ifa_addr == nullptr)
-            continue;
-        family = ifa->ifa_addr->sa_family;
-        if(family == AF_INET) {
-            char tmp[sizeof(hostIPAddress)];
-            int err = getnameinfo(ifa->ifa_addr, sizeof(sockaddr_in), tmp, sizeof(tmp), nullptr, 0, NI_NUMERICHOST);
-            if(err != 0) {
-                printf("getnameinfo() failed: %s\n", gai_strerror(err));
-            }
-            printf("Found hostIPAddress of: %s\n", tmp);
-            if(strncasecmp(tmp, "127.0", 5) == 0) {
-                printf("Skipping localhost address\n");
-                continue;
-            }
-            strcpy(hostIPAddress, tmp);
-            unsigned char MAC[6];
-            getMACAddress(ifa->ifa_name, MAC);
-            sprintf(macaddr, "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n", MAC[0],MAC[1],MAC[2],MAC[3],MAC[4],MAC[5]);
-        }
-    }
+    getHostInfo(hostIPAddress, macaddr);
 
-    freeifaddrs(ifaddr);
+    unique_ptr<UDPSocket> bcast;
+    const string &bcastddr = statusInformation->getBcastAddress();
+    if(bcastddr.size() > 0) {
+        int bcastPort = statusInformation->getBcastPort();
+        bcast.reset(new UDPSocket);
+    }
 
     while(running) {
         statusProperties[ScannerID] = scannerID;
@@ -194,12 +234,14 @@ void HealthStatus::monitorStatus() {
             printf("MemTotal: %s;  MemFree: %s\n", statusProperties[MemTotal].c_str(),  statusProperties[MemFree].c_str());
             statusProperties[SwapFree] = to_string(info.freeswap*info.mem_unit / mb);
             statusProperties[SwapTotal] = to_string(info.totalswap*info.mem_unit / mb);
-            statusInformation->setLastStatus(statusProperties);
         }
         fflush(stdout);
 
         // Publish the status
         statusInformation->setLastStatus(statusProperties);
+        if(bcast) {
+            broadcastInformation(bcast);
+        }
 
         // Wait for statusInterval before next status message
         chrono::seconds sleepTime(statusInterval);
@@ -227,8 +269,13 @@ void HealthStatus::calculateStatus(StatusInformation& statusInformation) {
     const string& scannerID = statusInformation.getScannerID();
     Properties statusProperties;
     const string& ScannerID = getStatusPropertyName(StatusProperties::ScannerID);
+    const string& HostIPAddress = getStatusPropertyName(StatusProperties::HostIPAddress);
+    const string& MACAddress = getStatusPropertyName(StatusProperties::MACAddress);
+    const string& SystemType = getStatusPropertyName(StatusProperties::SystemType);
     const string& SystemTime = getStatusPropertyName(StatusProperties::SystemTime);
+    const string& SystemTimeMS = getStatusPropertyName(StatusProperties::SystemTimeMS);
     const string& Uptime = getStatusPropertyName(StatusProperties::Uptime);
+    const string& SystemUptime = getStatusPropertyName(StatusProperties::SystemUptime);
     const string& LoadAverage = getStatusPropertyName(StatusProperties::LoadAverage);
     const string& Procs = getStatusPropertyName(StatusProperties::Procs);
     const string& RawEventCount = getStatusPropertyName(StatusProperties::RawEventCount);
@@ -236,6 +283,7 @@ void HealthStatus::calculateStatus(StatusInformation& statusInformation) {
     const string& HeartbeatCount = getStatusPropertyName(StatusProperties::HeartbeatCount);
     const string& HeartbeatRSSI = getStatusPropertyName(StatusProperties::HeartbeatRSSI);
     const string& EventsWindow = getStatusPropertyName(StatusProperties::EventsWindow);
+    const string& ActiveBeacons = getStatusPropertyName(StatusProperties::ActiveBeacons);
     const string& MemTotal = getStatusPropertyName(StatusProperties::MemTotal);
     const string& MemFree = getStatusPropertyName(StatusProperties::MemFree);
     const string& MemActive = getStatusPropertyName(StatusProperties::MemActive);
@@ -244,7 +292,18 @@ void HealthStatus::calculateStatus(StatusInformation& statusInformation) {
     struct timeval  tv;
     struct tm *tm;
 
+    // Determine the scanner type
+    string systemType = determineSystemType();
+    printf("Determined SystemType as: %s\n", systemType.c_str());
+
+    char hostIPAddress[128];
+    char macaddr[32];
+    getHostInfo(hostIPAddress, macaddr);
+
     statusProperties[ScannerID] = scannerID;
+    statusProperties[HostIPAddress] = hostIPAddress;
+    statusProperties[MACAddress] = macaddr;
+    statusProperties[SystemType] = systemType;
 
     // Time
     gettimeofday(&tv, nullptr);
@@ -268,24 +327,38 @@ void HealthStatus::calculateStatus(StatusInformation& statusInformation) {
 
     // System uptime, load, procs, memory info
     struct sysinfo info;
+    struct sysinfo& beginInfo = info;
     if(sysinfo(&info)) {
         perror("Failed to read sysinfo");
     } else {
         int mb = 1024*1024;
-        int days = info.uptime / (24*3600);
-        int hours = (info.uptime - days * 24*3600) / 3600;
-        int minute = (info.uptime - days * 24*3600 - hours*3600) / 60;
-        sprintf(tmp, "uptime: %ld, days:%d, hrs:%d, min:%d", info.uptime, days, hours, minute);
+        long uptimeDiff = info.uptime - beginInfo.uptime;
+        long days = uptimeDiff / (24*3600);
+        long hours = (uptimeDiff - days * 24*3600) / 3600;
+        long minute = (uptimeDiff - days * 24*3600 - hours*3600) / 60;
+        long seconds = uptimeDiff - days * 24*3600 - hours*3600 - minute*60;
+        sprintf(tmp, "uptime: %ld, days:%ld, hrs:%ld, min:%ld, sec:%ld", uptimeDiff, days, hours, minute, seconds);
         statusProperties[Uptime] = tmp;
-        printf("%s\n", tmp);
+        printf("Scanner %s\n", tmp);
         sprintf(tmp, "%.2f, %.2f, %.2f", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
+        // Calcualte system uptime
+        uptimeDiff = info.uptime;
+        days = uptimeDiff / (24*3600);
+        hours = (uptimeDiff - days * 24*3600) / 3600;
+        minute = (uptimeDiff - days * 24*3600 - hours*3600) / 60;
+        seconds = uptimeDiff - days * 24*3600 - hours*3600 - minute*60;
+        sprintf(tmp, "uptime: %ld, days:%ld, hrs:%ld, min:%ld, sec:%ld", uptimeDiff, days, hours, minute, seconds);
+        statusProperties[SystemUptime] = tmp;
+        printf("System %s\n", tmp);
+        sprintf(tmp, "%.2f, %.2f, %.2f", info.loads[0]/65536.0, info.loads[1]/65536.0, info.loads[2]/65536.0);
+
         printf("loadavg: %s\n", tmp);
         statusProperties[LoadAverage] = tmp;
         statusProperties[Procs] = to_string(info.procs);
         statusProperties[MemTotal] = to_string(info.totalram*info.mem_unit / mb);
-        printf("MemTotal: %ld;  MemFree: %ld\n", info.totalram*info.mem_unit,  info.freeram*info.mem_unit);
         statusProperties[MemActive] = to_string((info.totalram - info.freeram)*info.mem_unit / mb);
         statusProperties[MemFree] = to_string(info.freeram*info.mem_unit / mb);
+        printf("MemTotal: %s;  MemFree: %s\n", statusProperties[MemTotal].c_str(),  statusProperties[MemFree].c_str());
         statusProperties[SwapFree] = to_string(info.freeswap*info.mem_unit / mb);
         statusProperties[SwapTotal] = to_string(info.totalswap*info.mem_unit / mb);
     }

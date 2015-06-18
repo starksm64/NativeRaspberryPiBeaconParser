@@ -86,6 +86,12 @@ add_executable(testSocket testSocket.cpp)
 target_link_libraries (testSocket LINK_PUBLIC Beacon Socket)
 add_test(testSocket ${CMAKE_CURRENT_BINARY_DIR}/testSocket)
 
+add_executable(testStatusBcast testStatusBcast.cpp ../src2/EventsWindow.cpp ../src2/HealthStatus.cpp)
+target_link_libraries (testStatusBcast LINK_PUBLIC Beacon Socket pthread)
+
+add_executable(testStatusBcastServer testStatusBcastServer.cpp ../src2/EventsWindow.cpp ../src2/HealthStatus.cpp)
+target_link_libraries (testStatusBcastServer LINK_PUBLIC Beacon Socket pthread)
+
 add_executable(testSocketReconnect testSocketReconnect.cpp)
 target_link_libraries (testSocketReconnect LINK_PUBLIC Beacon Socket)
 add_test(testSocketReconnect ${CMAKE_CURRENT_BINARY_DIR}/testSocketReconnect)

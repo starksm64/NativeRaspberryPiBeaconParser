@@ -42,6 +42,8 @@ void HCIDumpParser::processHCI(HCIDumpCommand &parseCommand) {
     statusInformation->setScannerID(parseCommand.getScannerID());
     statusInformation->setStatusInterval(parseCommand.getStatusInterval());
     statusInformation->setStatusQueue(parseCommand.getStatusQueue());
+    statusInformation->setBcastAddress(parseCommand.getBcastAddress());
+    statusInformation->setBcastPort(parseCommand.getBcastPort());
 
     if (parseCommand.isAnalyzeMode()) {
         printf("Running in analyze mode, window=%d seconds, begin=%lld\n", parseCommand.getAnalyzeWindow(),

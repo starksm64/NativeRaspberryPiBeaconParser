@@ -135,6 +135,12 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<std::string> hciDev("D", "hciDev",
             "Specify the name of the host controller interface to use; default hci0",
             false, "hci0", "string", cmd);
+    TCLAP::ValueArg<std::string> bcastAddress("", "hciDev",
+                                              "Address to broadcast scanner status to as backup to statusQueue if non-empty; default empty",
+                                              false, "", "string", cmd);
+    TCLAP::ValueArg<int> bcastPort("", "hciDev",
+                                              "Port to broadcast scanner status to as backup to statusQueue if non-empty; default empty",
+                                              false, 12345, "int", cmd);
     MsgPublisherTypeConstraint pubTypeConstraint;
     TCLAP::ValueArg<std::string> pubType("P", "pubType",
             "Specify the MsgPublisherType enum for the publisher implementation to use; default AMQP_QPID",
@@ -218,6 +224,8 @@ int main(int argc, const char **argv) {
     command.setBatteryTestMode(batteryTestMode.getValue());
     command.setUsername(username.getValue());
     command.setPassword(password.getValue());
+    command.setBcastAddress(bcastAddress.getValue());
+    command.setBcastPort(bcastPort.getValue());
     if(maxCount.getValue() > 0) {
         maxEventCount = maxCount.getValue();
         printf("Set maxEventCount: %ld\n", maxEventCount);

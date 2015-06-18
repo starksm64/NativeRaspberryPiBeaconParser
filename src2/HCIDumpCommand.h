@@ -25,7 +25,9 @@ private:
     string statusQueue;
     string username;
     string password;
+    string bcastAddress;
     vector<string> scannerIDs;
+    int bcastPort = 12345;
     int currentID = 0;
     int statusInterval = 30;
     int analyzeWindow = 1;
@@ -225,6 +227,23 @@ public:
 
     void setStatusInterval(int statusInterval) {
         HCIDumpCommand::statusInterval = statusInterval;
+    }
+
+
+    const string &getBcastAddress() const {
+        return bcastAddress;
+    }
+
+    void setBcastAddress(const string &bcastAddress) {
+        HCIDumpCommand::bcastAddress = bcastAddress;
+    }
+
+    int getBcastPort() const {
+        return bcastPort;
+    }
+
+    void setBcastPort(int bcastPort) {
+        HCIDumpCommand::bcastPort = bcastPort;
     }
 };
 
