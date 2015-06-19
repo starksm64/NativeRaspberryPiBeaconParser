@@ -67,6 +67,7 @@ const string HealthStatus::statusPropertyNames[static_cast<unsigned int>(StatusP
         string("HostIPAddress"),
         string("MACAddress"),
         string("SystemType"),
+        string("SystemOS"),
         string("SystemTime"),
         string("SystemTimeMS"),
         string("Uptime"),
