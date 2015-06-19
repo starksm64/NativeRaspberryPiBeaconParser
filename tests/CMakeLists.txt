@@ -51,6 +51,8 @@ set(testCout_FILES testCout.cpp)
 add_executable(testCout ${testCout_FILES})
 add_test(testCout ${CMAKE_CURRENT_BINARY_DIR}/testCout)
 
+add_executable(testOSType testOSType.cpp)
+
 set(testVector_FILES testVector.cpp)
 add_executable(testVector ${testVector_FILES})
 add_test(testVector ${CMAKE_CURRENT_BINARY_DIR}/testVector)

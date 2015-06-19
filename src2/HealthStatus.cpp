@@ -13,6 +13,7 @@
 #include <net/if.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <fstream>
 
 using namespace std::chrono;
 
@@ -98,6 +99,7 @@ void HealthStatus::broadcastInformation(unique_ptr<UDPSocket>& bcastSocket) {
     enums.push_back(StatusProperties::MemFree);
     enums.push_back(StatusProperties::SystemTime);
     enums.push_back(StatusProperties::SystemType);
+    enums.push_back(StatusProperties::SystemOS);
     enums.push_back(StatusProperties::SystemUptime);
     enums.push_back(StatusProperties::Uptime);
     vector<string> names = HealthStatus::getStatusPropertyNames(enums);
@@ -119,6 +121,7 @@ void HealthStatus::monitorStatus() {
     const string& HostIPAddress = getStatusPropertyName(StatusProperties::HostIPAddress);
     const string& MACAddress = getStatusPropertyName(StatusProperties::MACAddress);
     const string& SystemType = getStatusPropertyName(StatusProperties::SystemType);
+    const string& SystemOS = getStatusPropertyName(StatusProperties::SystemOS);
     const string& SystemTime = getStatusPropertyName(StatusProperties::SystemTime);
     const string& SystemTimeMS = getStatusPropertyName(StatusProperties::SystemTimeMS);
     const string& Uptime = getStatusPropertyName(StatusProperties::Uptime);
@@ -142,6 +145,8 @@ void HealthStatus::monitorStatus() {
     // Determine the scanner type
     string systemType = determineSystemType();
     printf("Determined SystemType as: %s\n", systemType.c_str());
+    string systemOS = determineSystemOS();
+    printf("Determined SystemOS as: %s\n", systemOS.c_str());
 
     if(sysinfo(&beginInfo)) {
         perror("Failed to read sysinfo");
@@ -163,6 +168,7 @@ void HealthStatus::monitorStatus() {
         statusProperties[HostIPAddress] = hostIPAddress;
         statusProperties[MACAddress] = macaddr;
         statusProperties[SystemType] = systemType;
+        statusProperties[SystemOS] = systemOS;
 
         // Time
         system_clock::time_point now = system_clock::now();
@@ -472,4 +478,18 @@ string HealthStatus::determineSystemType() {
     }
 
     return systemType;
+}
+
+string HealthStatus::determineSystemOS() {
+    string os;
+    ifstream pidora("/etc/redhat-release");
+    ifstream debian("/etc/debian_version");
+    if(pidora.good()) {
+        pidora >> os;
+    }
+    else if(debian.good()) {
+        debian >> os;
+        os = "Debian " + os;
+    }
+    return os;
 }
