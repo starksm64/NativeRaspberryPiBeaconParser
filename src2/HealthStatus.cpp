@@ -482,15 +482,18 @@ string HealthStatus::determineSystemType() {
 }
 
 string HealthStatus::determineSystemOS() {
+    char tmp[128];
     string os;
     ifstream pidora("/etc/redhat-release");
     ifstream debian("/etc/debian_version");
     if(pidora.good()) {
-        pidora >> os;
+        pidora.getline(tmp, 128);
+        os = tmp;
     }
     else if(debian.good()) {
-        debian >> os;
-        os = "Debian " + os;
+        debian.getline(tmp, 128);
+        os = "Debian ";
+        os += tmp;
     }
     return os;
 }
