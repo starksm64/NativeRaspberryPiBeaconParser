@@ -181,10 +181,12 @@ int main(int argc, const char **argv) {
     TCLAP::SwitchArg noBrokerReconnect("", "noBrokerReconnect",
              "Don't try to reconnect to the broker on failure, just exit",
              false);
-    TCLAP::SwitchArg batteryTestMode("", "batteryTestMode",
-              "Simply monitor the raw heartbeat beacon events and publish them to the destinationName",
+    TCLAP::SwitchArg skipScannerView("", "skipScannerView",
+              "Skip the scanner view display of closest beacon",
               false);
-
+    TCLAP::SwitchArg  batteryTestMode("", "batteryTestMode",
+                                     "Simply monitor the raw heartbeat beacon events and publish them to the destinationName",
+                                     false);
     try {
         // Add the flag arguments
         cmd.add(skipPublish);
@@ -195,6 +197,7 @@ int main(int argc, const char **argv) {
         cmd.add(generateTestData);
         cmd.add(noBrokerReconnect);
         cmd.add(batteryTestMode);
+        cmd.add(skipScannerView);
         // Parse the argv array.
         printf("Parsing command line...\n");
         cmd.parse( argc, argv );
@@ -252,12 +255,14 @@ int main(int argc, const char **argv) {
     printf("Loading the beacon to user mapping...\n");
     beaconMapper->refresh();
 
-    // Get the scanner view implementation
-    shared_ptr<ScannerView> lcd(getDisplayInstance());
-    // Set the scanner view display's beacon mapper to display the minorID to name correctly
-    lcd->setBeaconMapper(beaconMapper);
+    if(!skipScannerView.getValue()) {
+        // Get the scanner view implementation
+        shared_ptr<ScannerView> lcd(getDisplayInstance());
+        // Set the scanner view display's beacon mapper to display the minorID to name correctly
+        lcd->setBeaconMapper(beaconMapper);
+        parserLogic.setScannerView(lcd);
+    }
 
-    parserLogic.setScannerView(lcd);
     char cwd[256];
     getcwd(cwd, sizeof(cwd));
     printf("Begin scanning, cwd=%s...\n", cwd);
