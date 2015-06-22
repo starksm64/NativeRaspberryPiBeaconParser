@@ -28,8 +28,8 @@ int main() {
         vector<string> names = HealthStatus::getStatusPropertyNames(enums);
         status.encodeLastStatus(buffer, names);
         vector<uint8_t>& data = buffer.getData();
-        bcastSocket.sendTo(data.data(), data.size(), "172.16.156.255", 12345);
-        printf("Sent bcast to 172.16.156.255, size=%d\n", data.size());
+        bcastSocket.sendTo(data.data(), data.size(), "192.168.1.255", 12345);
+        printf("Sent bcast to 192.168.1.255, size=%d\n", data.size());
     } catch (SocketException &e) {
         cerr << e.what() << endl;
         exit(1);
