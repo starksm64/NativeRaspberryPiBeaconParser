@@ -11,11 +11,14 @@ int64_t EventsWindow::currentMilliseconds() {
     return ms.count();
 }
 
-int64_t EventsWindow::reset(int32_t sizeInSeconds) {
-    windowSizeSeconds = sizeInSeconds;
+void EventsWindow::resetCurrentBucket() {
     begin = currentMilliseconds();
     end = begin + 1000*windowSizeSeconds;
+}
+int64_t EventsWindow::reset(int32_t sizeInSeconds) {
+    windowSizeSeconds = sizeInSeconds;
     eventsMap.clear();
+    resetCurrentBucket();
 }
 
 inline void addInfo(map<int32_t, beacon_info>& eventsMap, const beacon_info& info, bool isHeartbeat) {
@@ -74,6 +77,7 @@ unique_ptr<EventsBucket> EventsWindow::addEvent(const beacon_info& info, bool is
         if(end < info.time) {
             // Warn about this as it seems to happen
             fprintf(stderr, "Warn: next bucket end(%lld) < info.time(%lld)\n", end, info.time);
+            resetCurrentBucket();
         }
         eventCount = 0;
         // Add the event to the next window

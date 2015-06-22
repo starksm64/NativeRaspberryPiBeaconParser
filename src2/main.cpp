@@ -33,7 +33,7 @@ static int64_t lastMarkerCheckTime = 0;
 * Callback invoked by the hdidumpinternal.c code when a LE_ADVERTISING_REPORT event is seen on the stack
 */
 extern "C" bool beacon_event_callback(beacon_info * info) {
-#if 1
+#if PRINT_DEBUG
     printf("beacon_event_callback(%ld: %s, code=%d, time=%lld)\n", eventCount, info->uuid, info->code, info->time);
 #endif
     parserLogic.beaconEvent(*info);

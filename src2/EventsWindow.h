@@ -26,6 +26,11 @@ private:
     int64_t end;
     int32_t eventCount;
     map<int32_t, beacon_info> eventsMap;
+
+    /**
+     * Just reset the current bucket begin and end
+     */
+    void resetCurrentBucket();
 public:
 
     /**
