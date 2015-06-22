@@ -389,6 +389,9 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
             printf("Slave Connection Interval Range %d bytes data\n", type, len);
 #endif
             break;
+        case 0x16:
+            printf("16bit ServiceData(%x %x, len=%d\n", data[0], data[1], len);
+            break;
         case 0xff:
 
 #ifdef PRINT_DEBUG
