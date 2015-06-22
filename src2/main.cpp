@@ -209,6 +209,14 @@ int main(int argc, const char **argv) {
         printf("Removed existing %s marker file\n", STOP_MARKER_FILE);
     }
 
+    // Validate the system time as unless the network time has syncd, just exit to wait for it to happen
+    int64_t nowMS = EventsWindow::currentMilliseconds();
+    // 1434954728562 = 2015-06-21 23:32:08.562
+    if(nowMS < 1434954728562) {
+        fprintf(stderr, "currentMilliseconds(%ld) < 1434954728562 = 2015-06-21 23:32:08.562", nowMS);
+        exit(1);
+    }
+
     HCIDumpCommand command(scannerID.getValue(), brokerURL.getValue(), clientID.getValue(), destinationName.getValue());
     command.setUseQueues(useQueues.getValue());
     command.setSkipPublish(skipPublish.getValue());
