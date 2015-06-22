@@ -390,10 +390,12 @@ static inline void ext_inquiry_data_dump(int level, struct frame *frm, uint8_t *
 #endif
             break;
         case 0x16:
+#ifdef PRINT_DEBUG
             printf("ServiceData16(%x %x), len=%d", data[0], data[1], len);
             for (i = 2; i < len; i++)
                 printf(" 0x%2.2x", data[i]);
             printf("\n");
+#endif
             break;
         case 0xff:
 
