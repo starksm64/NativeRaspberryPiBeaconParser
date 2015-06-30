@@ -11,6 +11,7 @@
 #include "MsgPublisherTypeConstraint.h"
 #include "../lcd/LcdDisplay.h"
 #include "MockScannerView.h"
+#include "BeaconMapper.h"
 
 static HCIDumpParser parserLogic;
 
@@ -251,7 +252,7 @@ int main(int argc, const char **argv) {
     std::set_terminate(terminateHandler);
 
     // Create a beacon mapping instance
-    shared_ptr<BeaconMapper> beaconMapper(new BeaconMapper());
+    shared_ptr<AbstractBeaconMapper> beaconMapper(new BeaconMapper());
     printf("Loading the beacon to user mapping...\n");
     beaconMapper->refresh();
 

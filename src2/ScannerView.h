@@ -6,7 +6,7 @@
 #define NATIVESCANNER_SCANNERVIEW_H
 
 #include "../src/Beacon.h"
-#include "BeaconMapper.h"
+#include "AbstractBeaconMapper.h"
 #include "StatusInformation.h"
 
 /**
@@ -19,7 +19,7 @@ class ScannerView {
 private:
     /** Should the scanner display beacon(true) or status information(false) */
     bool displayBeaconsMode;
-    shared_ptr<BeaconMapper> beaconMapper;
+    shared_ptr<AbstractBeaconMapper> beaconMapper;
 
 public:
     ScannerView() : displayBeaconsMode(true) {}
@@ -35,11 +35,11 @@ public:
         return displayBeaconsMode;
     }
 
-    const shared_ptr<BeaconMapper> &getBeaconMapper() const {
+    const shared_ptr<AbstractBeaconMapper> &getBeaconMapper() const {
         return beaconMapper;
     }
 
-    void setBeaconMapper(const shared_ptr<BeaconMapper> &beaconMapper) {
+    void setBeaconMapper(const shared_ptr<AbstractBeaconMapper> &beaconMapper) {
         ScannerView::beaconMapper = beaconMapper;
     }
 

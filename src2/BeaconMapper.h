@@ -7,6 +7,7 @@
 
 #include <map>
 #include <string>
+#include "AbstractBeaconMapper.h"
 
 using namespace std;
 
@@ -32,7 +33,7 @@ using namespace std;
  * make
  * make install
  */
-class BeaconMapper {
+class BeaconMapper : public AbstractBeaconMapper {
 private:
     map<int, string> beaconToUser;
 
@@ -40,9 +41,9 @@ public:
     /**
      * Query the current user registrations to update the beacon minorID to name mappings
      */
-    void refresh();
+    virtual void refresh();
 
-    string lookupUser(int minorID);
+    virtual string lookupUser(int minorID);
 };
 
 
