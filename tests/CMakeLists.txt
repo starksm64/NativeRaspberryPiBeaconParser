@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(NativeScannerTests)
 
 enable_testing()
-include_directories(. ../src /usr/local/include/activemq-cpp-3.8.3/ /opt/local/include/ /usr/local/include)
+include_directories(. ../src ../src2 /usr/local/include/activemq-cpp-3.8.3/ /opt/local/include/ /usr/local/include)
 
 #set(BEACON_FILES ../src/Beacon.cpp ../src/Beacon.h)
 
