@@ -2,7 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <string.h>
-#include "../lcd/LcdDisplay.h"
+#include "WiringPiLcdDisplay.h"
 #include "../src2/HealthStatus.h"
 
 using namespace std;
@@ -17,7 +17,7 @@ static inline void truncateName(string& name) {
 }
 
 int main() {
-    unique_ptr<LcdDisplay> lcd(LcdDisplay::getLcdDisplayInstance());
+    unique_ptr<WiringPiLcdDisplay> lcd(WiringPiLcdDisplay::getLcdDisplayInstance());
     lcd->init();
     StatusInformation status;
     beacon_info beacon;

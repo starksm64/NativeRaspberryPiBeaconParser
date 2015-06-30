@@ -1,11 +1,11 @@
 #include <iostream>
 #include <string>
-#include "../lcd/LcdDisplay.h"
+#include "WiringPiLcdDisplay.h"
 
 using namespace std;
 
 int main() {
-    unique_ptr<LcdDisplay> lcd(LcdDisplay::getLcdDisplayInstance());
+    unique_ptr<WiringPiLcdDisplay> lcd(WiringPiLcdDisplay::getLcdDisplayInstance());
     lcd->init();
     lcd->displayText("Text to display:", 0, 0);
     cout << "Enter text to display: ";

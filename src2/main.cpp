@@ -9,7 +9,7 @@
 #include "tclap/CmdLine.h"
 #include "HCIDumpParser.h"
 #include "MsgPublisherTypeConstraint.h"
-#include "../lcd/LcdDisplay.h"
+#include "WiringPiLcdDisplay.h"
 #include "MockScannerView.h"
 #include "BeaconMapper.h"
 

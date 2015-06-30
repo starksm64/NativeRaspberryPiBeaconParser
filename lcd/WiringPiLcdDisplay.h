@@ -11,14 +11,16 @@
 #include "StatusInformation.h"
 
 /**
- * A class that configures the wiringPi lcd api to work with a 4x20 lcd display.
+ * A class that configures the wiringPi lcd api to work with a 4x20 lcd display that is compatible with the
+ * Hitachi HD44780U as implemented in this wiringpi library:
+ * http://wiringpi.com/dev-lib/lcd-library/
  */
-class LcdDisplay : public ScannerView {
+class WiringPiLcdDisplay : public AbstractLcdView {
 private:
     int nCols;
     int lcdHandle;
 
-    LcdDisplay() { }
+    WiringPiLcdDisplay() { }
 
 public:
     /**
