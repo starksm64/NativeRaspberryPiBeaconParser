@@ -118,8 +118,7 @@ add_executable(testParserLogic ${testParserLogic_FILES})
 target_link_libraries (testParserLogic LINK_PUBLIC Beacon MqttCLib  MqttAsyncCLib)
 add_test(testParserLogic ${CMAKE_CURRENT_BINARY_DIR}/testParserLogic)
 
-set(testLcdDisplay_FILES testLcdDisplay.cpp)
-add_executable(testLcdDisplay ${testLcdDisplay_FILES})
+add_executable(testLcdDisplay testLcdDisplay.cpp ../src2/BeaconMapper.cpp)
 target_link_libraries (testLcdDisplay LINK_PUBLIC Beacon lcdDisplay wiringPiDev wiringPi)
 add_test(testLcdDisplay ${CMAKE_CURRENT_BINARY_DIR}/testLcdDisplay)
 
