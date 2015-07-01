@@ -20,7 +20,7 @@ public:
     /**
      * Singleton accessor
      */
-    static AbstractLcdView *getLcdDisplayInstance();
+    static AbstractLcdView *getLcdDisplayInstance(LcdDisplayType type);
 
     /**
     * Display the given beacon information

@@ -5,6 +5,16 @@
 
 using namespace std;
 
+/**
+ * Types of LCD displays we support
+ */
+enum LcdDisplayType {
+    // Currently maps to WiringPiLcdDisplay. May need other flavors of the HD44780U in future.
+    HD44780U,
+    // A Nokia/Phillips 48x84 lcd display with PCD8544 controller
+    PCD8544,
+    INVALID_LCD_TYPE =-1
+} ;
 
 class AbstractLcdDisplay {
 private:
@@ -16,7 +26,12 @@ protected:
 
 public:
     /**
-     * Initialize the display to the given size
+     * Singleton accessor
+     */
+    static AbstractLcdDisplay *getLcdDisplayInstance(LcdDisplayType type);
+
+    /**
+     * Initialize the display to the given size.
      */
     virtual int init(int rows=4, int cols=20) = 0;
     /**

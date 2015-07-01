@@ -42,6 +42,7 @@ int MiniLcdPCD8544::init(int rows, int cols) {
 
 void MiniLcdPCD8544::clear() {
     LCDclear();
+    LCDdisplay();
 }
 
 void MiniLcdPCD8544::displayText(const string &text, int col, int row) {

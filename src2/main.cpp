@@ -9,9 +9,10 @@
 #include "tclap/CmdLine.h"
 #include "HCIDumpParser.h"
 #include "MsgPublisherTypeConstraint.h"
-#include "AbstractLcdView.h"
+#include "LcdDisplayTypeConstraint.h"
 #include "MockScannerView.h"
 #include "BeaconMapper.h"
+#include "../lcd/AbstractLcdView.h"
 
 static HCIDumpParser parserLogic;
 
@@ -56,10 +57,10 @@ extern "C" bool beacon_event_callback(beacon_info * info) {
 
 using namespace std;
 
-static ScannerView *getDisplayInstance() {
+static ScannerView *getDisplayInstance(LcdDisplayType type) {
     ScannerView *view = nullptr;
 #ifdef HAVE_LCD_DISPLAY
-    AbstractLcdView *lcd = AbstractLcdView::getLcdDisplayInstance();
+    AbstractLcdView *lcd = AbstractLcdView::getLcdDisplayInstance(type);
     lcd->init();
     view = lcd;
 #else
@@ -146,6 +147,11 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<std::string> pubType("P", "pubType",
             "Specify the MsgPublisherType enum for the publisher implementation to use; default AMQP_QPID",
             false, "AMQP_QPID", &pubTypeConstraint, cmd, nullptr);
+    LcdDisplayTypeConstraint lcdTypeConstraint;
+    TCLAP::ValueArg<std::string> lcdType("", "lcdType",
+             "Specify the LcdDisplayType enum for the LCD implementation to use; default PCD8544",
+             false, "PCD8544", &lcdTypeConstraint, cmd, nullptr);
+
     TCLAP::ValueArg<int> maxCount("C", "maxCount",
             "Specify a maxium number of events the scanner should process before exiting; default 0 means no limit",
             false, 0, "int", cmd);
@@ -258,10 +264,15 @@ int main(int argc, const char **argv) {
 
     if(!skipScannerView.getValue()) {
         // Get the scanner view implementation
-        shared_ptr<ScannerView> lcd(getDisplayInstance());
-        // Set the scanner view display's beacon mapper to display the minorID to name correctly
-        lcd->setBeaconMapper(beaconMapper);
-        parserLogic.setScannerView(lcd);
+        LcdDisplayType type = lcdTypeConstraint.toType(lcdType.getValue());
+        if(type == LcdDisplayType::INVALID_LCD_TYPE) {
+            fprintf(stderr, "Skipping scanner view due to invalid LcdDisplayType. No mapping for: %s\n", lcdType.getValue().c_str());
+        } else {
+            shared_ptr<ScannerView> lcd(getDisplayInstance(type));
+            // Set the scanner view display's beacon mapper to display the minorID to name correctly
+            lcd->setBeaconMapper(beaconMapper);
+            parserLogic.setScannerView(lcd);
+        }
     }
 
     char cwd[256];

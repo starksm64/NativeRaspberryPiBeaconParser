@@ -3,6 +3,9 @@
 
 #include "tclap/Constraint.h"
 
+/**
+ * A custom constraint to map strings into MsgPublisherType enums
+ */
 class MsgPublisherTypeConstraint : public TCLAP::Constraint<std::string> {
 public:
     /**
@@ -49,7 +52,7 @@ public:
             return MsgPublisherType::AMQP_QPID;
         if(value.compare("SOCKET") == 0)
             return MsgPublisherType::SOCKET;
-        return MsgPublisherType::INVALID;
+        return MsgPublisherType::INVALID_MSG_PUB_TYPE;
     }
 };
 

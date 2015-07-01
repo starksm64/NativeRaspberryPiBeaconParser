@@ -4,8 +4,19 @@
 /**
  * Singleton accessor
  */
-static AbstractLcdView *getLcdDisplayInstance() {
-
+AbstractLcdView *AbstractLcdView::getLcdDisplayInstance(LcdDisplayType type) {
+    AbstractLcdView *display = nullptr;
+#ifdef HAVE_LCD_DISPLAY
+    switch(type) {
+        case HD44780U:
+            display = new WiringPiLcdDisplay();
+            break;
+        case PCD8544:
+            display = new MiniLcdPCD8544();
+            break;
+    }
+#endif
+    return display;
 }
 
 void AbstractLcdView::displayBeacon(const Beacon &beacon) {
