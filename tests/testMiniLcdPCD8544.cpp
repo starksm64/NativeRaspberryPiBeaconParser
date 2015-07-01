@@ -20,12 +20,12 @@ int main() {
     cout << "Enter text to display: ";
     int count = 0;
     for (std::string line; std::getline(std::cin, line);) {
-        count ++;
         int col = 0;
-        int row = count % 6 + 1;
+        int row = count % 6;
         lcd->clear();
         lcd->displayText(line.c_str(), col, row);
-        cout << "Displayed at row: " << row << "col: " << col << endl;
+        cout << "Displayed at row: " << row << ",col: " << col << endl;
+        count ++;
         cout << "Enter text to display: ";
     }
     lcd->clear();
