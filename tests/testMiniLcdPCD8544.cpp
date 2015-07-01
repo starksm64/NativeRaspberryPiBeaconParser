@@ -10,7 +10,13 @@ using namespace std;
 int main() {
     unique_ptr<MiniLcdPCD8544> lcd(MiniLcdPCD8544::getLcdDisplayInstance());
     lcd->init();
-    lcd->displayText("Text to display:", 0, 0);
+    // Fill display 6 rows of 14 columns
+    char text[16];
+    for(int row = 0; row < 6; row ++) {
+        sprintf(text, "%d:0123456789AB", row);
+        lcd->displayText(text, 0, row);
+    }
+    // ask for test to display
     cout << "Enter text to display: ";
     int count = 0;
     for (std::string line; std::getline(std::cin, line);) {

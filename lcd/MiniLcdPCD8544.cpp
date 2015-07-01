@@ -45,10 +45,9 @@ void MiniLcdPCD8544::clear() {
 }
 
 void MiniLcdPCD8544::displayText(const string &text, int col, int row) {
-    uint8_t x = col;
-    uint8_t y = row;
+    uint8_t x = col * 6;
+    uint8_t y = row * 8;
     char *todraw = (char *) text.c_str();
     LCDdrawstring(x, y, todraw);
-    //LCDdrawline(0, 10, 83, 10, BLACK);^M
     LCDdisplay();
 }

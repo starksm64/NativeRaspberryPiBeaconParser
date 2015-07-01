@@ -24,7 +24,7 @@ public:
     /**
      * Initialize the display to the given size
      */
-    virtual int init(int rows = 4, int cols = 20);
+    virtual int init(int rows = 6, int cols = 14);
 
     /**
      * Erase the display
