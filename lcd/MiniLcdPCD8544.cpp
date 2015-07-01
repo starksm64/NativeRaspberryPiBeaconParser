@@ -51,4 +51,5 @@ void MiniLcdPCD8544::displayText(const string &text, int col, int row) {
     char *todraw = (char *) text.c_str();
     LCDdrawstring(x, y, todraw);
     LCDdisplay();
+    printf("MiniLcdPCD8544::displayText(%s, %d[%d], %d[%d])\n", todraw, col, x, row, y);
 }

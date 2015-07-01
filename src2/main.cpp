@@ -268,6 +268,7 @@ int main(int argc, const char **argv) {
         if(type == LcdDisplayType::INVALID_LCD_TYPE) {
             fprintf(stderr, "Skipping scanner view due to invalid LcdDisplayType. No mapping for: %s\n", lcdType.getValue().c_str());
         } else {
+            printf("Using LCD type=%s\n",  lcdType.getValue().c_str());
             shared_ptr<ScannerView> lcd(getDisplayInstance(type));
             // Set the scanner view display's beacon mapper to display the minorID to name correctly
             lcd->setBeaconMapper(beaconMapper);
