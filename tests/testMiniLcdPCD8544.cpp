@@ -22,11 +22,10 @@ int main() {
     for (std::string line; std::getline(std::cin, line);) {
         count ++;
         int col = 0;
-        int row = count % 3 + 1;
-        if(count % 2)
-            col = 2;
+        int row = count % 6 + 1;
         lcd->clear();
         lcd->displayText(line.c_str(), col, row);
+        cout << "Displayed at row: " << row << "col: " << col << endl;
         cout << "Enter text to display: ";
     }
     lcd->clear();
