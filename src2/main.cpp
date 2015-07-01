@@ -9,7 +9,7 @@
 #include "tclap/CmdLine.h"
 #include "HCIDumpParser.h"
 #include "MsgPublisherTypeConstraint.h"
-#include "WiringPiLcdDisplay.h"
+#include "AbstractLcdView.h"
 #include "MockScannerView.h"
 #include "BeaconMapper.h"
 
@@ -59,7 +59,7 @@ using namespace std;
 static ScannerView *getDisplayInstance() {
     ScannerView *view = nullptr;
 #ifdef HAVE_LCD_DISPLAY
-    LcdDisplay *lcd = LcdDisplay::getLcdDisplayInstance();
+    AbstractLcdView *lcd = AbstractLcdView::getLcdDisplayInstance();
     lcd->init();
     view = lcd;
 #else

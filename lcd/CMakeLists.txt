@@ -13,5 +13,5 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 else()
 endif()
 
-add_library (lcdDisplayObjs OBJECT ../src2/ScannerView.h LcdDisplay.cpp)
+add_library (lcdDisplayObjs OBJECT ../src2/ScannerView.h PCD8544.c AbstractLcdView.cpp MiniLcdPCD8544.cpp WiringPiLcdDisplay.cpp)
 add_library (lcdDisplay SHARED $<TARGET_OBJECTS:lcdDisplayObjs>)

@@ -1,8 +1,4 @@
-//
-// Created by Scott Stark on 4/7/15.
-//
-
-#include "LcdDisplay.h"
+#include "WiringPiLcdDisplay.h"
 #include <wiringPi.h>
 #include <lcd.h>
 #include <string.h>
@@ -17,9 +13,9 @@
 static volatile int debounceTime = 0;
 
 /**
- * The LcdDisplay singleton used invoke in the buttonPressed interrupt callback.
+ * The WiringPiLcdDisplay singleton used invoke in the buttonPressed interrupt callback.
  */
-static LcdDisplay *theDisplay;
+static WiringPiLcdDisplay *theDisplay;
 
 static void buttonPressed() {
     if (millis () < debounceTime)
@@ -27,6 +23,7 @@ static void buttonPressed() {
         debounceTime = millis () + DEBOUNCE_TIME ;
         return;
     }
+
 
     int pinState = digitalRead(BUTTON_PIN);
     if(!pinState) {
@@ -36,14 +33,14 @@ static void buttonPressed() {
     debounceTime = millis () + DEBOUNCE_TIME ;
 }
 
-LcdDisplay *LcdDisplay::getLcdDisplayInstance() {
+WiringPiLcdDisplay *WiringPiLcdDisplay::getLcdDisplayInstance() {
     if(theDisplay == nullptr)
-        theDisplay = new LcdDisplay();
+        theDisplay = new WiringPiLcdDisplay();
     return theDisplay;
 }
 
 
-void LcdDisplay::displayText(const string &text, int col, int row) {
+void WiringPiLcdDisplay::displayText(const string &text, int col, int row) {
     // Clear the prefix
     lcdPosition(lcdHandle, 0, row);
     for(int c = 0; c < col; c++) {
@@ -63,21 +60,7 @@ void LcdDisplay::displayText(const string &text, int col, int row) {
     }
 }
 
-void LcdDisplay::displayTime(int64_t timeInMS, int col, int row) {
-    char timestr[256];
-    struct timeval  tv;
-    struct tm      *tm;
-
-    tv.tv_sec = timeInMS / 1000;
-    tv.tv_usec = timeInMS * 1000 - tv.tv_sec * 1000000;
-    tm = localtime(&tv.tv_sec);
-
-    size_t length = strftime(timestr, 128, "%T", tm);
-    snprintf(timestr+length, 128-length, ".%ld", tv.tv_usec/1000);
-    displayText(timestr, col, row);
-}
-
-int LcdDisplay::init(int rows, int cols) {
+int WiringPiLcdDisplay::init(int rows, int cols) {
     nCols = cols;
     wiringPiSetup () ;
 
@@ -101,6 +84,6 @@ int LcdDisplay::init(int rows, int cols) {
     return 0;
 }
 
-void LcdDisplay::clear() {
+void WiringPiLcdDisplay::clear() {
     lcdClear(lcdHandle);
 }

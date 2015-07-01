@@ -63,6 +63,10 @@ Lesser General Public License for more details.
 #define LSBFIRST  0
 #define MSBFIRST  1
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void LCDInit(uint8_t SCLK, uint8_t DIN, uint8_t DC, uint8_t CS, uint8_t RST, uint8_t contrast);
 void LCDcommand(uint8_t c);
 void LCDdata(uint8_t c);
@@ -88,5 +92,9 @@ void LCDdrawbitmap(uint8_t x, uint8_t y,  const uint8_t *bitmap, uint8_t w, uint
 void LCDspiwrite(uint8_t c);
 void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val);
 void _delay_ms(uint32_t t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //NATIVESCANNER_PCD8544_H

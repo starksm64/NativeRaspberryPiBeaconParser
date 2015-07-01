@@ -1,11 +1,14 @@
 #include <iostream>
 #include <string>
-#include "WiringPiLcdDisplay.h"
+#include "../lcd/MiniLcdPCD8544.h"
 
 using namespace std;
 
+/**
+ * Test the WiringPiLcdDisplay implementation
+ */
 int main() {
-    unique_ptr<WiringPiLcdDisplay> lcd(WiringPiLcdDisplay::getLcdDisplayInstance());
+    unique_ptr<MiniLcdPCD8544> lcd(MiniLcdPCD8544::getLcdDisplayInstance());
     lcd->init();
     lcd->displayText("Text to display:", 0, 0);
     cout << "Enter text to display: ";

@@ -5,11 +5,13 @@
 
 using namespace std;
 
+
 class AbstractLcdDisplay {
 private:
     int nCols;
     int lcdHandle;
 
+protected:
     AbstractLcdDisplay() { }
 
 public:

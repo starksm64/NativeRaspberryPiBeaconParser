@@ -1,6 +1,13 @@
 
 #include "AbstractLcdView.h"
 
+/**
+ * Singleton accessor
+ */
+static AbstractLcdView *getLcdDisplayInstance() {
+
+}
+
 void AbstractLcdView::displayBeacon(const Beacon &beacon) {
     char tmp[80];
     int minorID = beacon.getMinor();
@@ -62,4 +69,19 @@ void AbstractLcdView::displayStatus(const StatusInformation& status){
     displayText(load, 0, 2);
     snprintf(tmp, sizeof(tmp), "S:%.8d;M:%.7d", status.getRawEventCount(), status.getPublishEventCount());
     displayText(tmp, 0, 3);
+}
+
+
+void AbstractLcdView::displayTime(int64_t timeInMS, int col, int row) {
+    char timestr[256];
+    struct timeval  tv;
+    struct tm      *tm;
+
+    tv.tv_sec = timeInMS / 1000;
+    tv.tv_usec = timeInMS * 1000 - tv.tv_sec * 1000000;
+    tm = localtime(&tv.tv_sec);
+
+    size_t length = strftime(timestr, 128, "%T", tm);
+    snprintf(timestr+length, 128-length, ".%ld", tv.tv_usec/1000);
+    displayText(timestr, col, row);
 }
