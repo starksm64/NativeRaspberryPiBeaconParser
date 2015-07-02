@@ -26,7 +26,7 @@ if [ -n "$systemType" ]; then
 fi
 
 CMD="${ROOT}/Debug/src2/NativeScannerBlueZ"
-ARGS="--scannerID "${scannerID:-`hostname`}" --brokerURL "${brokerURL:-192.168.1.107:5672}" --heartbeatUUID "${heartbeatUUID}" --skipScannerView"
+ARGS="--scannerID "${scannerID:-`hostname`}" --brokerURL "${brokerURL:-192.168.1.107:5672}" --heartbeatUUID "${heartbeatUUID}""
 if [ -n "$username" ]; then
         ARGS="${ARGS} --username ${username}"
 fi
