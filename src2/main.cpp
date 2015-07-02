@@ -62,10 +62,12 @@ static ScannerView *getDisplayInstance(LcdDisplayType type) {
 #ifdef HAVE_LCD_DISPLAY
     AbstractLcdView *lcd = AbstractLcdView::getLcdDisplayInstance(type);
     lcd->init();
+    lcd->clear();
     view = lcd;
 #else
     view = new MockScannerView();
 #endif
+    return view;
 }
 
 void printStacktrace() {
