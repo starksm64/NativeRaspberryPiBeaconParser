@@ -20,6 +20,7 @@ AbstractLcdView *AbstractLcdView::getLcdDisplayInstance(LcdDisplayType type) {
 }
 
 void AbstractLcdView::displayBeacon(const Beacon &beacon) {
+    clear();
     char tmp[80];
     int minorID = beacon.getMinor();
     sprintf(tmp, "Beacon(%d):", minorID);
