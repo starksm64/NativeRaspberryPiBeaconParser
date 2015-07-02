@@ -64,6 +64,7 @@ private:
 
 public:
 
+    static void getHostInfo(char* hostIPAddress, char* macaddr);
     static string determineSystemType();
     static string determineSystemOS();
 

@@ -32,7 +32,7 @@ static void getMACAddress(std::string _iface,unsigned char MAC[6]) {
  * @param char hostIPAddress[128]
  * @param char macaddr[32]
  */
-static void getHostInfo(char* hostIPAddress, char* macaddr) {
+void HealthStatus::getHostInfo(char* hostIPAddress, char* macaddr) {
     struct ifaddrs *ifaddr, *ifa;
     int family, n;
     if (getifaddrs(&ifaddr) == -1) {

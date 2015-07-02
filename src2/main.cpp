@@ -229,7 +229,15 @@ int main(int argc, const char **argv) {
         exit(1);
     }
 
-    HCIDumpCommand command(scannerID.getValue(), brokerURL.getValue(), clientID.getValue(), destinationName.getValue());
+    // If scannerID is the string {IP}, replace it with the host IP address
+    string scannerIDValue = scannerID.getValue();
+    if(scannerIDValue.compare("{IP}") == 0) {
+        char hostIPAddress[128];
+        char macaddr[32];
+        HealthStatus::getHostInfo(hostIPAddress, macaddr);
+        scannerIDValue = hostIPAddress;
+    }
+    HCIDumpCommand command(scannerIDValue, brokerURL.getValue(), clientID.getValue(), destinationName.getValue());
     command.setUseQueues(useQueues.getValue());
     command.setSkipPublish(skipPublish.getValue());
     command.setSkipHeartbeat(skipHeartbeat.getValue());
