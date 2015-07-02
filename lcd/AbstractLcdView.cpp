@@ -1,12 +1,13 @@
 
 #include "AbstractLcdView.h"
+#include "WiringPiLcdDisplay.h"
+#include "MiniLcdPCD8544.h"
 
 /**
  * Singleton accessor
  */
 AbstractLcdView *AbstractLcdView::getLcdDisplayInstance(LcdDisplayType type) {
     AbstractLcdView *display = nullptr;
-#ifdef HAVE_LCD_DISPLAY
     switch(type) {
         case HD44780U:
             display = new WiringPiLcdDisplay();
@@ -15,7 +16,6 @@ AbstractLcdView *AbstractLcdView::getLcdDisplayInstance(LcdDisplayType type) {
             display = new MiniLcdPCD8544();
             break;
     }
-#endif
     return display;
 }
 

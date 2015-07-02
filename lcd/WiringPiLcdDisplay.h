@@ -21,9 +21,9 @@ private:
     int nCols;
     int lcdHandle;
 
+public:
     WiringPiLcdDisplay() { }
 
-public:
     /**
      * Singleton accessor
      */
