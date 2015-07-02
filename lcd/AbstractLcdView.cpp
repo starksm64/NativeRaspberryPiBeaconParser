@@ -23,8 +23,9 @@ AbstractLcdView *AbstractLcdView::getLcdDisplayInstance(LcdDisplayType type) {
  * display format:
  * 0: scannerID
  * 1: Beacon(%d)
- * 2:  timestamp
- * 3:  Hello user...
+ * 2:  rssi
+ * 3:  timestamp
+ * 4:  Hello user...
  */
 void AbstractLcdView::displayBeacon(const Beacon &beacon) {
     clear();
@@ -36,7 +37,7 @@ void AbstractLcdView::displayBeacon(const Beacon &beacon) {
     sprintf(tmp, "Beacon(%d):", minorID);
     displayText(tmp, 0, row ++);
     sprintf(tmp, "rssi=%d", beacon.getRssi());
-    displayText(tmp, col, 1);
+    displayText(tmp, col, row ++);
     displayTime(beacon.getTime(), col, row ++);
     if(getBeaconMapper()) {
         string user = getBeaconMapper()->lookupUser(minorID);
