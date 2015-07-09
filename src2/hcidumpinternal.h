@@ -7,6 +7,7 @@
 typedef struct beacon_info {
     char uuid[36];
     bool isHeartbeat;
+    int32_t count;
     int32_t code;
     int32_t manufacturer;
     int32_t major;
@@ -15,7 +16,6 @@ typedef struct beacon_info {
     int32_t calibrated_power;
     int32_t rssi;
     int64_t time;
-    int count;
 } beacon_info;
 
 // The callback function invoked for each beacon event seen by hcidumpinternal

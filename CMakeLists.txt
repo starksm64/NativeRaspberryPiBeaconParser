@@ -2,12 +2,10 @@ cmake_minimum_required(VERSION 2.8.9)
 project(NativeScanner)
 
 # For profiling
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg -std=c++11 -fPIC")
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # Libraries
 add_library(CMS STATIC IMPORTED)
@@ -96,7 +94,25 @@ else()
     set(MQTT_LIBRARIES "")
 endif()
 
+# The location of a local bluez source tree
+if(EXISTS $ENV{HOME}/bluez-5.32)
+    set(BluezHome $ENV{HOME}/bluez-5.32)
+elseif(EXISTS $ENV{HOME}/bluez-5.30)
+    set(BluezHome $ENV{HOME}/bluez-5.30)
+elseif(EXISTS $ENV{HOME}/bluez-5.28)
+    set(BluezHome $ENV{HOME}/bluez-5.28)
+else()
+    set(BluezHome ../../BlueZ/bluez-5.28)
+endif()
+# The bluez internal lib from a local bluez build
+add_library(BluezLibInternal SHARED IMPORTED)
+set_property(TARGET BluezLibInternal PROPERTY IMPORTED_LOCATION ${BluezHome}/lib/.libs/libbluetooth-internal.a)
+
+# We use the tools/parser contents from the bluez source tree as is
+set(BluezToolsParser ${BluezHome}/tools/parser)
+
 # Source directories
+add_subdirectory(jni)
 add_subdirectory(src)
 add_subdirectory(src2)
 add_subdirectory(proton)

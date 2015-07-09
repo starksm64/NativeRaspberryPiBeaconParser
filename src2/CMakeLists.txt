@@ -12,23 +12,9 @@ ENDIF(PRINT_DEBUG)
 
 add_definitions(-DUSE_YIELD_LOOP)
 
-# The location of a local bluez source tree
-if(EXISTS $ENV{HOME}/bluez-5.30)
-    set(BluezHome $ENV{HOME}/bluez-5.30)
-elseif(EXISTS $ENV{HOME}/bluez-5.28)
-    set(BluezHome $ENV{HOME}/bluez-5.28)
-else()
-    set(BluezHome ../../BlueZ/bluez-5.28)
-endif()
-
-# We use the tools/parser contents from the bluez source tree as is
-set(BluezToolsParser ${BluezHome}/tools/parser)
 include_directories(. ../src ${BluezHome} ${BluezHome}/tools /usr/include/apr-1 /usr/local/include/activemq-cpp-3.8.3/)
 
 set(tools_hcidump_SOURCES ${BluezToolsParser}/parser.h ${BluezToolsParser}/parser.c)
-# The bluez internal lib from a local bluez build
-add_library(BluezLibInternal SHARED IMPORTED)
-set_property(TARGET BluezLibInternal PROPERTY IMPORTED_LOCATION ${BluezHome}/lib/.libs/libbluetooth-internal.a)
 
 
 find_library(Apr_Libs NAMES apr-1 apr-1.0)

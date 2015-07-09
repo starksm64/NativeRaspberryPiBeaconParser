@@ -11,8 +11,8 @@
     <content url="file://$USER_HOME$/bluez-5.28/tools/parser/parser.c">
       <sourceFolder url="file://$USER_HOME$/bluez-5.28/tools/parser/parser.c" isTestSource="false" />
     </content>
-    <content url="file://$USER_HOME$/bluez-5.30/tools/parser/parser.c">
-      <sourceFolder url="file://$USER_HOME$/bluez-5.30/tools/parser/parser.c" isTestSource="false" />
+    <content url="file://$USER_HOME$/bluez-5.32/tools/parser/parser.c">
+      <sourceFolder url="file://$USER_HOME$/bluez-5.32/tools/parser/parser.c" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

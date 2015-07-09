@@ -146,8 +146,8 @@ target_link_libraries (testQpidReconnect LINK_PUBLIC Beacon ${ActiveMQ_CPP_LIBRA
 
 add_executable(testSystemD testSystemD.cpp)
 
-add_executable(testBeaconBuffer beaconBuffer.cpp ../src2/hcidumpinternal.h)
+add_executable(testBeaconBuffer testBeaconBuffer.cpp ../src2/hcidumpinternal.h)
 
 # Create a library for testing jni access to the beacon_info data structure
-add_library (beaconBufferObjs OBJECT beaconBuffer.cpp ../src2/hcidumpinternal.h)
+add_library (beaconBufferObjs OBJECT testBeaconBuffer.cpp ../src2/hcidumpinternal.h)
 add_library (beaconBuffer STATIC $<TARGET_OBJECTS:beaconBufferObjs>)
