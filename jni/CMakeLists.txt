@@ -12,7 +12,7 @@ include_directories(. ${BluezHome} ${BluezHome}/tools /usr/include/apr-1)
 
 # Set JAVA_HOME from environment, or default to
 set(JAVA_HOME $ENV{JAVA_HOME})
-if(!JAVA_HOME)
+if("${JAVA_HOME}" STREQUAL "")
     message(STATUS "JAVA_HOME not set in envrionment, attempting to default...")
     # Check for the oracle jvm on our debian image
     if(EXISTS /usr/lib/jvm/jdk-8-oracle-arm-vfp-hflt)
@@ -20,7 +20,7 @@ if(!JAVA_HOME)
     else()
     # Default to a download in my envrionment
         set(JAVA_HOME /root/Downloads/jdk1.8.0_45)
-        message(STATUS "JAVA_HOME not set, defaulting to ${JAVA_HOME}")
+        message(STATUS "JAVA_HOME defaulting to ${JAVA_HOME}")
     endif()
 endif()
 # Validate it has the jni headers
