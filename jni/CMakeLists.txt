@@ -34,3 +34,7 @@ endif()
 # The scannerJni shared library
 add_library (scannerJni SHARED org_jboss_summit2015_beacon_bluez_HCIDump.cpp ../src2/hcidumpinternal.c ${BluezToolsParser}/parser.c)
 target_link_libraries(scannerJni BluezLibInternal)
+install(TARGETS scannerJni
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin)
