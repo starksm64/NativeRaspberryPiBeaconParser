@@ -119,7 +119,8 @@ JNIEXPORT void JNICALL Java_org_jboss_summit2015_beacon_bluez_HCIDump_freeScanne
 
 /**
 * Callback invoked by the hdidumpinternal.c code when a LE_ADVERTISING_REPORT event is seen on the stack. This
- * passes the event beacon_info back to java via the javaBeaconInfo pointer and
+ * passes the event beacon_info back to java via the javaBeaconInfo pointer and returns the stop flag
+ * indicator as returned by the event notification callback return value.
 */
 static long eventCount = 0;
 extern "C" bool beacon_event_callback_to_java(beacon_info * info) {
@@ -130,5 +131,6 @@ extern "C" bool beacon_event_callback_to_java(beacon_info * info) {
     // Copy the event data to javaBeaconInfo
     memcpy(javaBeaconInfo, info, sizeof(*info));
     // Notify java that the buffer has been updated
-    javaEnv->CallStaticVoidMethod(hcidumpClass, eventNotification);
+    jboolean stop = javaEnv->CallStaticBooleanMethod(hcidumpClass, eventNotification);
+    return stop == JNI_TRUE;
 }
