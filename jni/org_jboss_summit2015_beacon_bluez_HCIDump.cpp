@@ -90,9 +90,9 @@ JNIEXPORT void JNICALL Java_org_jboss_summit2015_beacon_bluez_HCIDump_allocScann
     // Create global references to the ByteBuffer and HCIDump class for use in other native threads
     byteBufferObj = (jobject) env->NewGlobalRef(bb);
     hcidumpClass = (jclass) env->NewGlobalRef(clazz);
-    eventNotification = env->GetStaticMethodID(hcidumpClass, "eventNotification", "()V");
+    eventNotification = env->GetStaticMethodID(hcidumpClass, "eventNotification", "()Z");
     if(eventNotification == nullptr) {
-        fprintf(stderr, "Failed to lookup eventNotification()V on: jclass=%s", clazz);
+        fprintf(stderr, "Failed to lookup eventNotification()Z on: jclass=%s", clazz);
         exit(1);
     }
     printf("Found eventNotification=%x\n", eventNotification);
