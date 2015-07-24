@@ -13,6 +13,7 @@
 #include "MockScannerView.h"
 #include "BeaconMapper.h"
 #include "../lcd/AbstractLcdView.h"
+#include "PropertiesMapper.h"
 
 static HCIDumpParser parserLogic;
 
@@ -169,6 +170,9 @@ int main(int argc, const char **argv) {
     TCLAP::ValueArg<std::string> statusQueue("q", "statusQueue",
             "Specify the name of the status health queue destination; default scannerHealth",
             false, "scannerHealth", "string", cmd);
+    TCLAP::ValueArg<std::string> beaconMapping("", "beaconMapping",
+                                             "Specify the source of the beacon id to user name mapping. The following formats are understood:",
+                                             false, "", "string", cmd);
     TCLAP::SwitchArg skipPublish("S", "skipPublish",
             "Indicate that the parsed beacons should not be published",
             false);
@@ -268,9 +272,19 @@ int main(int argc, const char **argv) {
     std::set_terminate(terminateHandler);
 
     // Create a beacon mapping instance
-    shared_ptr<AbstractBeaconMapper> beaconMapper(new BeaconMapper());
-    printf("Loading the beacon to user mapping...\n");
-    beaconMapper->refresh();
+    shared_ptr<AbstractBeaconMapper> beaconMapper(new AbstractBeaconMapper());
+    if(beaconMapping.isSet()) {
+        const string& mapping = beaconMapping.getValue();
+        string filePrefix("file:");
+        if(mapping.compare(0, filePrefix.size(), filePrefix)) {
+            // TODO
+            printf("file: beaconMapper not implemented yet\n");
+        } else {
+            // The value is a series of id1=userid1,id2=userid2,... values
+            beaconMapper.reset(new PropertiesMapper(mapping));
+            printf("Loaded beacon mappings: \n", mapping.c_str());
+        }
+    }
 
     if(!skipScannerView.getValue()) {
         // Get the scanner view implementation

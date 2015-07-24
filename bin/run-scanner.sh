@@ -12,6 +12,7 @@ ROOT=`dirname $BIN`
 # - brokerURL ; the url of the activemq broker
 # - username ; the username to authenticate against the broker
 # - password ; the password to authenticate against the broker
+# - beaconMapping ; the beaconMapping argument to pass to the scanner
 . ~/scanner.conf
 
 # Aliases for backward compatibility to previous variables used from scanner.conf
@@ -32,6 +33,9 @@ if [ -n "$username" ]; then
 fi
 if [ -n "$password" ]; then
         ARGS="${ARGS} --password ${password}"
+fi
+if [ -n "$beaconMapping" ]; then
+        ARGS="${ARGS} --beaconMapping ${beaconMapping}"
 fi
 
 BACKGROUND=""
