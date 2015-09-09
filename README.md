@@ -93,7 +93,6 @@ git clone https://github.com/starksm64/NativeRaspberryPiBeaconParser.git
 	cd Debug
 	cmake -DCMAKE_BUILD_TYPE=Debug ..
 	cd ..
-	cmake --build Debug --target NativeScanner
 	cmake --build Debug --target NativeScannerBlueZ
 	
 ## Making a debug build with print statement enabled
@@ -117,7 +116,6 @@ git clone https://github.com/starksm64/NativeRaspberryPiBeaconParser.git
 	cd Release
 	cmake -DCMAKE_BUILD_TYPE=Release ..
 	cd ..
-	cmake --build Release --target NativeScanner
 	cmake --build Release --target NativeScannerBlueZ
 
 ## <a name="ScanMode"></a>Putting the bluetooth interface into scan mode
