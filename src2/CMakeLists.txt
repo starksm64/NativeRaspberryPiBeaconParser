@@ -29,6 +29,8 @@ set(SCANNER_LIBS Beacon ${ActiveMQ_CPP_LIBRARIES} ${MQTT_LIBRARIES} pthread ssl 
 if(WiringPi_FOUND)
     set(SCANNER_LIBS ${SCANNER_LIBS} lcdDisplay wiringPiDev wiringPi)
 endif()
+
+message("SCANNER_LIBS=${SCANNER_LIBS}")
 # The NativeScannerBlueZ executable depends on our local source and the tools_hcidump_SOURCES from the bluez source tree
 add_executable(NativeScannerBlueZ main.cpp HCIDumpCommand.h HCIDumpParser.h HCIDumpParser.cpp HealthStatus.cpp
     hcidumpinternal.c hcidumpinternal.h ${tools_hcidump_SOURCES} EventsWindow.cpp EventsWindow.h
