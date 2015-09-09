@@ -79,6 +79,7 @@ if(ActiveMQ_CPP_Libs)
     MESSAGE(STATUS "Added cms source to build")
 else()
     MESSAGE(STATUS "Skipping ActiveMQ_CPP publisher")
+    set(ActiveMQ_CPP_LIBRARIES "")
 endif()
 
 # Conditional settings on MqttCLib
