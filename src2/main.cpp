@@ -276,7 +276,7 @@ int main(int argc, const char **argv) {
     if(beaconMapping.isSet()) {
         const string& mapping = beaconMapping.getValue();
         string filePrefix("file:");
-        if(mapping.compare(0, filePrefix.size(), filePrefix)) {
+        if(!mapping.compare(0, filePrefix.size(), filePrefix)) {
             // TODO
             printf("file: beaconMapper not implemented yet\n");
         } else {
