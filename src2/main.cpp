@@ -282,7 +282,7 @@ int main(int argc, const char **argv) {
         } else {
             // The value is a series of id1=userid1,id2=userid2,... values
             beaconMapper.reset(new PropertiesMapper(mapping));
-            printf("Loaded beacon mappings: \n", mapping.c_str());
+            printf("Loaded beacon mappings: %s\n", mapping.c_str());
         }
     }
 
