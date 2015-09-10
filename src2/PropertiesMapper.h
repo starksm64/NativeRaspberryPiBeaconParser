@@ -39,6 +39,7 @@ public:
         }
         std::pair<string,string> info = splitUser(mappings.substr(last));
         mapping[info.first] = info.second;
+        printf("\t%s=%s\n", info.first.c_str(), info.second.c_str());
     }
 
 
