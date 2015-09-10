@@ -31,6 +31,9 @@ add_test(testProducerConsumer ${CMAKE_CURRENT_BINARY_DIR}/testProducerConsumer)
 add_executable(testAtomic testAtomic.cpp)
 add_test(testAtomic ${CMAKE_CURRENT_BINARY_DIR}/testAtomic)
 
+add_executable(testParseMapping testParseMapping.cpp)
+add_test(testParseMapping ${CMAKE_CURRENT_BINARY_DIR}/testParseMapping)
+
 add_executable(testStringParse testStringParse.cpp)
 add_test(testStringParse ${CMAKE_CURRENT_BINARY_DIR}/testStringParse)
 
