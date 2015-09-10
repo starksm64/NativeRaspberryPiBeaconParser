@@ -29,10 +29,12 @@ public:
     PropertiesMapper(const string& mappings) {
         size_t last = 0;
         size_t next = 0;
+        printf("PropertiesMapper():\n");
         while ((next = mappings.find(",", last)) != std::string::npos) {
             string pair = mappings.substr(last, next-last);
             std::pair<string,string> info = splitUser(pair);
             mapping[info.first] = info.second;
+            printf("\t%d=%s\n", info.first, info.seconf.c_str());
             last = next + 1;
         }
         std::pair<string,string> info = splitUser(mappings.substr(last));
